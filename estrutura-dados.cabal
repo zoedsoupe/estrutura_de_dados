@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 80def4f0222c0d22ebd57f6ae1ce4cbc588529b8a49adca4fc38b523b6d2129c
+-- hash: 1245f22b39817a8698b78ba2e9a128f09b470b90777fbc8139ca7b008104e937
 
 name:           estrutura-dados
 version:        0.1.0.0
@@ -14,7 +14,7 @@ bug-reports:    https://github.com/Mdsp9070/estrutura_de_dados/issues
 author:         Matheus de Souza Pessanha
 maintainer:     matheus_pessanha2001@outlook.com
 copyright:      mdsp
-license:        GPLv3
+license:        GPL-3
 license-file:   LICENSE
 build-type:     Simple
 extra-source-files:
