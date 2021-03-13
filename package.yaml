@@ -1,0 +1,47 @@
+name:                estutura-dados
+version:             0.1.0.0
+github:              "Mdsp9070/estutura-dados"
+license:             GPLv3
+author:              "Matheus de Souza Pessanha"
+maintainer:          "matheus_pessanha2001@outlook.com"
+copyright:           "mdsp"
+
+extra-source-files:
+- README.org
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            data-structures
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Please see the README on GitHub at <https://github.com/Mdsp9070/estutura-dados#readme>
+
+dependencies:
+- base >= 4.7 && < 5
+
+library:
+  source-dirs: src
+
+executables:
+  estutura-dados-exe:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - estutura-dados
+
+tests:
+  estutura-dados-test:
+    main:                Spec.hs
+    source-dirs:         test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - estutura-dados

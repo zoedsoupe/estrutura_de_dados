@@ -1,0 +1,19 @@
+#+title: Estrutura de Dados
+#+author: Matheus de Souza Pessanha
+#+email: matheus_pessanha2001@outlook.com
+
+Este repositório tem a finalidade de abrigar meus estudos e exercícios
+referentes à matéria de =Estrutura de Dados= na =UENF=!
+
+Colocarei aqui minhas soluções e testes tanto para a primeira parte da matéria
+(EDI) quanto para a segunda parte, no próximo semestre (EDII).
+
+Decidi fazer todos os trabalhos e exercícios com a linguagem =Haskell=!
+
+** Estruturas
+
+Em construção...
+
+** Exercícios
+
+Em construção...
