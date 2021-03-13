@@ -1,7 +1,7 @@
 name:                estrutura-dados
 version:             0.1.0.0
 github:              "Mdsp9070/estrutura_de_dados"
-license:             GPLv3
+license:             GPL-3
 author:              "Matheus de Souza Pessanha"
 maintainer:          "matheus_pessanha2001@outlook.com"
 copyright:           "mdsp"
@@ -20,6 +20,7 @@ description:         Please see the README on GitHub at <https://github.com/Mdsp
 
 dependencies:
 - base >= 4.7 && < 5
+- hspec
 
 library:
   source-dirs: src
