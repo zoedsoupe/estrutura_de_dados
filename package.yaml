@@ -1,6 +1,6 @@
-name:                estutura-dados
+name:                estrutura-dados
 version:             0.1.0.0
-github:              "Mdsp9070/estutura-dados"
+github:              "Mdsp9070/estrutura_de_dados"
 license:             GPLv3
 author:              "Matheus de Souza Pessanha"
 maintainer:          "matheus_pessanha2001@outlook.com"
@@ -16,7 +16,7 @@ extra-source-files:
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
 # common to point users to the README.md file.
-description:         Please see the README on GitHub at <https://github.com/Mdsp9070/estutura-dados#readme>
+description:         Please see the README on GitHub at <https://github.com/Mdsp9070/estrutura_de_dados#readme>
 
 dependencies:
 - base >= 4.7 && < 5
@@ -25,7 +25,7 @@ library:
   source-dirs: src
 
 executables:
-  estutura-dados-exe:
+  estrutura-dados-exe:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
@@ -33,10 +33,10 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - estutura-dados
+    - estrutura-dados
 
 tests:
-  estutura-dados-test:
+  estrutura-dados-test:
     main:                Spec.hs
     source-dirs:         test
     ghc-options:
@@ -44,4 +44,4 @@ tests:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - estutura-dados
+    - estrutura-dados

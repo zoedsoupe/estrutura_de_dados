@@ -1,0 +1,23 @@
+#+title: Material e Lista de Exercicios
+
+Neste pasta, serão encontrados todo o material de apoio indicado e também as listas de exercícios
+
+** Masteriais
+
+Em construção...
+
+** Listas
+
+1 - [[./listas_exercicios/EDI_Atividade_Semana1.org][EDI_Atividade_Semana1]]
+
+** Vídeos
+
+1 - [[https://www.youtube.com/watch?v=bryesHll0vY][Aula 01 - TAD]]
+2 - [[https://www.youtube.com/watch?v=lKwEQgV6nZk][Aula 02 - Modularização]]
+
+** Materiais Extras
+
+Aqui reuno os materiais que encontrei em pesquisas, com foco em
+programação funcional e =Haskell=!
+
+1 - [[./livros/purely_functional_data_structures.pdf][Purely Functional Data Structures]]
