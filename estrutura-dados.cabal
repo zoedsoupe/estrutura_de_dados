@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 1245f22b39817a8698b78ba2e9a128f09b470b90777fbc8139ca7b008104e937
+-- hash: 0b5eba0e1e963513185d2b1132bfc5193a13a0b80586ae9c334be084701e34c4
 
 name:           estrutura-dados
 version:        0.1.0.0
@@ -26,7 +26,7 @@ source-repository head
 
 library
   exposed-modules:
-      Lib
+      LE1.Exercicio1
   other-modules:
       Paths_estrutura_dados
   hs-source-dirs:

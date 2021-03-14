@@ -1,6 +1,6 @@
 module Main where
 
-import Lib
+import LE1.Exercicio1
 
 main :: IO ()
-main = someFunc
+main = putStr "Cilindro"
