@@ -10,10 +10,17 @@ Colocarei aqui minhas soluções e testes tanto para a primeira parte da matéri
 
 Decidi fazer todos os trabalhos e exercícios com a linguagem =Haskell=!
 
+** Como rodar os testes?
+*** Dependências
+    1 - =gch= -> compilador para =Haskell=
+    2 - =stack= -> ferramente de build (assim como o CMake)
+
+  Clone este repositório e rode =stack test= 🙂
 ** Estruturas
 
 Em construção...
 
 ** Exercícios
-
-Em construção...
+*** LE1
+    1 - [[./src/LE1/Exercicio1.hs][Cilindro]]
+    2 - [[./src/LE1/Exercicio2.hs][Conjunto de Inteiros]]
