@@ -1,18 +1,18 @@
 module LE1.Exercicio3
-  (Data (..),
-   imprimeData,
-   converteData,
-   somaDias,
-   dataPadrao
+  ( Data (..)
+  , imprimeData
+  , converteData
+  , somaDias
+  , dataPadrao
   ) where
 
 import Text.Printf (printf)
 
 -- Implementação
 
-data Data = Data { dia :: Int,
-                   mes :: Int,
-                   ano :: Int
+data Data = Data { dia :: Int
+                 , mes :: Int
+                 , ano :: Int
                  } deriving (Show, Eq, Ord)
 
 -- Interface
@@ -83,14 +83,6 @@ criaData (d, m, a)
   | m == 2 && d > 29   = Nothing
   | otherwise            = Just Data {dia = d, mes = m, ano = a}
 
-{- Dado uma função como (=='-') e uma String,
-   retorno uma lista de String separada por '-' -}
-separa :: (Char -> Bool) -> String -> [String]
-separa p s = case dropWhile p s of
-              "" -> []
-              s' -> w : separa p s''
-                where (w, s'') = break p s'  
-
 anoBissexto :: Int -> Bool
 anoBissexto n = (mod) n 4 == 0 && ((mod) n 100 /= 0 || (mod) n 400 == 0)
 
@@ -112,11 +104,22 @@ faltaEmMes (Data d m y) = tamMes y m - d + 1
    passados + os dias do mes atual - 1 -}
 diasInicioAno :: Data -> Int
 diasInicioAno (Data d m y) = mesesAnterioriores + d - 1 where
- mesesAnterioriores = sum [tamMes y m' | m' <- delete m [1..m]]
+ mesesAnterioriores = sum [tamMes y m' | m' <- deleta m [1..m]]
 
 faltaEmAno :: Data -> Int
 faltaEmAno data' = tamAno (ano data') - inicio
   where inicio = diasInicioAno data'
 
-delete :: Eq a => a -> [a] -> [a]
-delete deleted xs = [ x | x <- xs, x /= deleted ]
+{- Dado uma função como (=='-') e uma String,
+   retorno uma lista de String separada por '-' -}
+separa :: (Char -> Bool) -> String -> [String]
+separa p s = case dropWhile p s of
+              "" -> []
+              s' -> w : separa p s''
+                where (w, s'') = break p s'  
+
+{- Dado uma lista de elementos,
+   deleta o elemento "deleted"
+   e retorna a nova lista -}
+deleta :: Eq a => a -> [a] -> [a]
+deleta deleted xs = [ x | x <- xs, x /= deleted ]

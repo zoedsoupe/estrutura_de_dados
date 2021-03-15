@@ -1,10 +1,10 @@
 module LE1.Exercicio1
-  ( Cilindro (..),
-    initCilindro,
-    getAltura,
-    getRaio,
-    area,
-    volume
+  ( Cilindro (..)
+  , initCilindro
+  , getAltura
+  , getRaio
+  , area
+  , volume
   ) where
 
 -- Implementação
@@ -13,8 +13,8 @@ module LE1.Exercicio1
 type Altura = Double
 type Raio = Double
 
-data Cilindro = Cilindro { raio :: Raio,
-                           altura :: Altura
+data Cilindro = Cilindro { raio :: Raio
+                         , altura :: Altura
                          } deriving (Show, Eq)
 
 -- Interface pública
