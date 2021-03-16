@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 7ed2610c541d9f35c4d27388c45aa2ee3aea560cd904956290f62e94e1ae0eb6
+-- hash: a9f50b68e2f4802c920d41a3fe2c6c72c5b073fe93d039020a589bce103be786
 
 name:           estrutura-dados
 version:        0.1.0.0
@@ -38,7 +38,10 @@ library
       Decimal
     , base >=4.7 && <5
     , bytestring
+    , directory
     , hspec
+    , temporary
+    , unix-compat
   default-language: Haskell2010
 
 executable estrutura-dados-exe
@@ -52,8 +55,11 @@ executable estrutura-dados-exe
       Decimal
     , base >=4.7 && <5
     , bytestring
+    , directory
     , estrutura-dados
     , hspec
+    , temporary
+    , unix-compat
   default-language: Haskell2010
 
 test-suite estrutura-dados-test
@@ -68,6 +74,9 @@ test-suite estrutura-dados-test
       Decimal
     , base >=4.7 && <5
     , bytestring
+    , directory
     , estrutura-dados
     , hspec
+    , temporary
+    , unix-compat
   default-language: Haskell2010

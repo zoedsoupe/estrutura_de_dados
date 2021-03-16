@@ -23,6 +23,9 @@ dependencies:
 - hspec
 - Decimal
 - bytestring
+- temporary
+- directory
+- unix-compat
 
 library:
   source-dirs: src
