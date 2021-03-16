@@ -1,13 +1,19 @@
 module LE1.Exercicio4
-  ( criaCliente
+  ( Cliente (..)
+  , Clientes
+  , criaCliente
   , getCliente
   , carregaClientes
   , salvaCliente
   , salvaClientes
   , excluirCliente
+  , numClientes
+  , clientePadrao
   ) where
 
+import Data.List (isInfixOf)
 import Data.Decimal (Decimal)
+import System.PosixCompat.Files (getFileStatus, isDirectory)
 import qualified Data.ByteString.Lazy.Char8 as L
 
 -- Implementação
@@ -37,6 +43,16 @@ criaCliente (c, n, e, t, dt_p, dt_u, v_u) = Cliente c n' e' t' dt_p' dt_u' v_u
         dt_p' = L.pack dt_p
         dt_u' = L.pack dt_u
 
+clientePadrao :: Cliente
+clientePadrao = Cliente c n e t dt_p dt_u v_u
+  where c     = 423 :: Integer
+        n     = L.pack "Joao"
+        e     = L.pack "Av. Alberto"
+        t     = L.pack "(22)12345-6789"
+        dt_p  = L.pack "27/07/2001"
+        dt_u  = L.pack "27/07/2012"
+        v_u   = 123.67 :: Decimal
+
 {- Dado uma lista de Clientes (resultado de carregClientes)
    Devolvo apenas 1 cliente na dada posição.
 
@@ -64,8 +80,11 @@ getCliente c_io idx = do
 carregaClientes :: FilePath -> IO Clientes
 carregaClientes path = do
   conteudo <- leArquivo path
-  clientes <- return $ map (leCliente) conteudo
-  return clientes
+  case conteudo of
+    [[]] -> return []
+    _ -> do 
+      clientes <- return $ map (leCliente) conteudo
+      return clientes
 
 {- Dado um Cliente e um caminho, adiciono esse
    Cliente no arquivo, acrescentando caso o
@@ -131,5 +150,11 @@ leCliente xs = Cliente cod n e t dt_p dt_u va_u
    uma 2d-lista de ByteString -}
 leArquivo :: FilePath -> IO [[L.ByteString]]
 leArquivo caminho = do
-  conteudo <- L.readFile caminho
-  return [L.split ',' l | l <- L.lines conteudo]
+  status <- getFileStatus caminho
+  if isDirectory status
+    then return [[]]
+    else if not $ isInfixOf ".csv" caminho
+         then return [[]]
+         else do
+    conteudo <- L.readFile caminho
+    return [L.split ',' l | l <- L.lines conteudo]
