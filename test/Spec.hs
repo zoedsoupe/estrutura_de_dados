@@ -10,6 +10,11 @@ import System.Directory (removeFile)
 import System.IO.Temp (writeSystemTempFile)
 import Data.Decimal (Decimal)
 
+criaClientes :: Int -> Clientes -> Clientes
+criaClientes x xs
+  | x <= 0    = xs
+  | otherwise = criaClientes (x - 1) (clientePadrao:xs)
+
 main :: IO ()
 main = hspec $ do
   describe "testa o TAD Cilindro" $ do
@@ -184,5 +189,19 @@ main = hspec $ do
         numClientes (carregaClientes tmp_path) `shouldReturn` 1
         removeFile tmp_path
 
---    describe "testa o salvamento de multiplos clientes" $ do
+    describe "testa o salvamento de multiplos clientes" $ do
+      let clientes = return $ criaClientes 12 []
+
+      it "deve salvar corretamente vários clientes e atualizar um arquivo existente" $ do
+        conteudo <- readFile clientesPeq
+        tmp_path <- writeSystemTempFile "clientes_tmp.csv" conteudo
+        _ <- salvaClientes clientes tmp_path
+        numClientes (carregaClientes tmp_path) `shouldReturn` 42
+        removeFile tmp_path
+
+      it "deve salvar corretamente vários clientes e criar um novo arquivo" $ do
+        let tmp_path = "./clientes_tmp.csv"
+        _ <- salvaClientes clientes tmp_path
+        numClientes (carregaClientes tmp_path) `shouldReturn` 12
+        removeFile tmp_path      
       
