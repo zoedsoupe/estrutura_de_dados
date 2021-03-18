@@ -1,30 +1,63 @@
 module LE1.Exercicio3
-  ( Data (..)
-  , imprimeData
+  ( imprimeData
   , converteData
   , somaDias
-  , dataPadrao
+  , toTuple
+  , isVazia
+  , vazia
+  , isInvalida
+  , fromTuple
+  , mes
+  , ano
+  , dia
   ) where
 
 import Text.Printf (printf)
 
 -- Implementação
 
-data Data = Data { dia :: Int
-                 , mes :: Int
-                 , ano :: Int
-                 } deriving (Show, Eq, Ord)
+type Dia = Int
+type Mes = Int
+type Ano = Int
+
+data Data = Invalida | Vazia |  Data { dia :: Dia
+                                     , mes :: Mes
+                                     , ano :: Ano
+                                     } deriving (Show, Eq, Ord)
+
+vazia :: Data
+isVazia :: Data -> Bool
+isInvalida :: Data -> Bool
+somaDias :: Data -> Int -> Data
+toTuple :: Data -> (Int, Int, Int)
+fromTuple :: (Int, Int, Int) -> Data
+converteData :: String -> Data -> Data
+imprimeData :: (Int, Int, Int) -> IO String
+
 
 -- Interface
+
+vazia = Vazia
+
+isInvalida Invalida = True
+isInvalida _        = False
+
+isVazia Vazia = True
+isVazia _     = False
+
+toTuple (Data d m a) = (d, m, a)
+toTuple _            = (0, 0, 0)
+
+fromTuple d = criaData d
 
 {- Dado uma 3-Tupla (tripla) com dia, mes e ano,
    imprimo na tela uma string com a data formatada
 
    Caso a data seja inválida, retorno Nothing -}
-imprimeData :: (Int, Int, Int) -> Maybe String
 imprimeData (d, m ,a) = (case data' of
-                           Nothing -> Nothing
-                           Just Data {} -> Just dataValida)
+                           Invalida -> return "Invalida"
+                           Vazia    -> return "Estrutura vazia"
+                           Data {}  -> return dataValida)
                              where data'      = criaData (d, m, a)
                                    dataValida =  (printf "%d/%d/%d" d m a) :: String
 
@@ -32,11 +65,14 @@ imprimeData (d, m ,a) = (case data' of
    retorno o TAD data correspondente
 
    Em qualquer outra possibilidde, retorno Nothing -}
-converteData :: String -> Data -> Maybe Data
-converteData d Data {} = (case criaData (d', m, a) of
-                            Nothing -> Nothing
-                            Just Data {} -> Just Data {dia = d', mes = m, ano = a})
-                              where d':m:a:_ = map (\x -> read x :: Int) (separa (=='/') d)
+converteData [] d           = d
+converteData _ (Data _ _ _) = Invalida
+converteData _ Invalida     = Invalida
+converteData d Vazia        = (case criaData (d', m, a) of
+                                 Invalida -> Invalida
+                                 Vazia    -> Vazia
+                                 Data {}  -> Data {dia = d', mes = m, ano = a})
+                                   where d':m:a:_ = map (\x -> read x :: Int) (separa (=='/') d)
 
 {- Somo os dias de forma recursiva
 
@@ -58,30 +94,28 @@ converteData d Data {} = (case criaData (d', m, a) of
        se o mes == 12, aumento o ano, senão aumento o mes e
        x = x - dias restantes do mes
    4 - caso genérico -> retorno uma data com dias somados a x -}
-somaDias :: Data -> Int -> Maybe Data
-somaDias data' 0 = Just data'
+somaDias data' 0 = data'
 somaDias (Data 1 1 y) d'
-  | d' < 0         = Nothing
+  | d' < 0         = Invalida
   | d' >= tamAno y = somaDias (Data 1 1 (y + 1)) (d' - tamAno y)
 somaDias data'@(Data d m y) d'
-  | d' < 0                 = Nothing
+  | d' < 0                 = Invalida
   | d' >= faltaEmAno data' = somaDias (Data 1 1 (y + 1)) (d' - faltaEmAno data')
   | d' >= faltaEmMes data' = somaDias (if m == 12 then Data 1 1 (y + 1) else Data 1 (m + 1) y) (d' - faltaEmMes data')
-  | otherwise              = Just (Data (d + d') m y)
+  | otherwise              = Data (d + d') m y
+somaDias Invalida _ = Invalida
+somaDias Vazia d    = somaDias (Data 1 1 2021) d
 
--- Funções de ajuda
-
-dataPadrao :: Data
-dataPadrao = Data {dia = 27, mes = 7, ano = 2001}
+-- Funções de ajuda (funções privadas)
 
 -- Cria uma "validação" de uma data
-criaData :: (Int, Int, Int) -> Maybe Data
+criaData :: (Int, Int, Int) -> Data
 criaData (d, m, a)
-  | d < 1 || d > 31      = Nothing
-  | m < 1 || m > 12      = Nothing
-  | a < 1920 || a > 2021 = Nothing
-  | m == 2 && d > 29   = Nothing
-  | otherwise            = Just Data {dia = d, mes = m, ano = a}
+  | d < 1 || d > 31      = Invalida
+  | m < 1 || m > 12      = Invalida
+  | a < 1920 || a > 2021 = Invalida
+  | m == 2 && d > 29     = Invalida
+  | otherwise            = Data {dia = d, mes = m, ano = a}
 
 anoBissexto :: Int -> Bool
 anoBissexto n = (mod) n 4 == 0 && ((mod) n 100 /= 0 || (mod) n 400 == 0)
@@ -97,12 +131,16 @@ tamMes a' m' = meses !! (m' - 1) where
   meses'' = [31,29,31,30,31,30,31,31,30,31,30,31]
 
 faltaEmMes :: Data -> Int
+faltaEmMes Invalida     = -1
+faltaEmMes Vazia        = 0
 faltaEmMes (Data d m y) = tamMes y m - d + 1
 
 {- Calcula há quantos dias o ano começou,
    fazendo a soma de todos os dias dos meses
    passados + os dias do mes atual - 1 -}
 diasInicioAno :: Data -> Int
+diasInicioAno Invalida     = -1
+diasInicioAno Vazia        = 0
 diasInicioAno (Data d m y) = mesesAnterioriores + d - 1 where
  mesesAnterioriores = sum [tamMes y m' | m' <- deleta m [1..m]]
 
