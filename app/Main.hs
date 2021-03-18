@@ -1,6 +1,6 @@
 module Main where
 
-import LE1.Exercicio1
+import Helpers (menu)
 
 main :: IO ()
-main = putStr "Cilindro"
+main = menu

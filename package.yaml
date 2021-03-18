@@ -22,10 +22,12 @@ dependencies:
 - base >= 4.7 && < 5
 - hspec
 - Decimal
+- text
 - bytestring
 - temporary
 - directory
 - unix-compat
+- pretty-terminal
 
 library:
   source-dirs: src
