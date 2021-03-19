@@ -12,10 +12,8 @@ module LE1.Exercicio4
   , clientes
   ) where
 
-import Control.Monad (when)
 import Data.List (isInfixOf)
 import Data.Decimal (Decimal)
-import System.Directory (doesFileExist)
 import System.PosixCompat.Files (getFileStatus, isDirectory)
 import qualified Data.ByteString.Char8 as B
 
@@ -107,9 +105,7 @@ salvaCliente c path = do
    Mônada IO, salvo um Cliente por vex, um por linha -}
 salvaClientes [] _    = putStrLn "Lista vazia"
 salvaClientes xs path = do
-  fileExist <- doesFileExist path 
-  when (not fileExist) (writeFile path "")
-  _ <- return [salvaCliente x path | x <- xs]
+  _ <- return $ mapM (\x -> salvaCliente x path) xs
   putStrLn "Os Clientes foram salvos!"
 
 {- Dada uma IO lista de Clientes, um índice e um caminho,

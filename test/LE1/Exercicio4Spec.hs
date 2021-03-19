@@ -2,7 +2,6 @@ module LE1.Exercicio4Spec where
 
 import Test.Hspec
 
-import System.IO (readFile)
 import System.Directory (removeFile)
 import System.IO.Temp (writeSystemTempFile)
 import Data.Decimal (Decimal)
