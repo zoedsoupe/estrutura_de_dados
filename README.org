@@ -4,6 +4,7 @@
 
 #+caption: build
 [[https://github.com/Mdsp9070/estrutura_de_dados/workflows/build/badge.svg?branch=main]]
+ps: caso essa "badge" esteja com a cor verde, significa que todos os testes passaram!
 
 Este repositório tem a finalidade de abrigar meus estudos e exercícios
 referentes à matéria de =Estrutura de Dados= na =UENF=!
