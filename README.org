@@ -22,5 +22,7 @@ Em construção...
 
 ** Exercícios
 *** LE1
-    1. [[./src/LE1/Exercicio1.hs][Cilindro]]
-    2. [[./src/LE1/Exercicio2.hs][Conjunto de Inteiros]]
+1. [[./src/LE1/Exercicio1.hs][Cilindro]]
+2. [[./src/LE1/Exercicio2.hs][Conjunto de Inteiros]]
+3. [[./src/LE1/Exercicio3.hs][Data]]
+4. [[./src/LE1/Exercicio4.hs][Clientes]]
