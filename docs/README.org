@@ -9,6 +9,7 @@ Em construção...
 ** Listas
 
 1. [[./listas_exercicios/EDI_Atividade_Semana1.org][EDI_Atividade_Semana1]]
+1. [[./listas_exercicios/EDI_Atividade_Semana2.org][EDI_Atividade_Semana2]]
 
 ** Vídeos
 
