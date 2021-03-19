@@ -104,9 +104,7 @@ salvaCliente c path = do
 {- Dada uma lista de Clientes salvo um
    Cliente por vez, um por linha -}
 salvaClientes [] _    = putStrLn "Lista vazia"
-salvaClientes xs path = do
-  _ <- return $ mapM (\x -> salvaCliente x path) xs
-  putStrLn "Os Clientes foram salvos!"
+salvaClientes xs path = mapM_ (\x -> salvaCliente x path) xs >> putStrLn "Os Clientes foram salvos!"
 
 {- Dada uma IO lista de Clientes, um índice e um caminho,
    removo dessa lista o Cliente do índice específicado

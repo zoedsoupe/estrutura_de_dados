@@ -1,0 +1,147 @@
+# Runs on notable pushes to master.
+
+# Builds incrementally and runs functional tests on linux,
+# using the latest supported GHC version.
+
+name: build
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    paths:
+      - '.github/workflows/main.yml'
+      - 'stack*.yaml'
+      - 'hledger-lib/**'
+      - 'hledger/**'
+      - 'hledger-ui/**'
+      - 'hledger-web/**'
+      - 'bin/*.hs'
+      # ignore changes to example files, though currently some func tests depend on them
+      - 'examples/**'
+      - '!**.journal'
+      - '!**.j'
+      - '!**.ledger'
+      - '!**.csv'
+      # ignore changes to doc source files
+      - '!**.m4'
+      - '!**.md'
+      - '!**.1'
+      - '!**.5'
+      - '!**.info'
+      - '!**.txt'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        plan:
+        # - { ghc: "80" , stack: "stack --stack-yaml=stack8.0.yaml" }
+        # - { ghc: "82" , stack: "stack --stack-yaml=stack8.2.yaml" }
+        # - { ghc: "84" , stack: "stack --stack-yaml=stack8.4.yaml" }
+        # - { ghc: "86" , stack: "stack --stack-yaml=stack8.6.yaml" }
+        # - { ghc: "88" , stack: "stack --stack-yaml=stack8.8.yaml" }
+        - { ghc: "810"  , stack: "stack --stack-yaml=stack.yaml" }
+
+    steps:
+
+    - name: Check out
+      uses: actions/checkout@v2
+
+    # things to be cached/restored:
+
+    - name: Cache stack global package db
+      id:   stack-global
+      uses: actions/cache@v2
+      with:
+        path: ~/.stack
+        key: ${{ runner.os }}-stack-global-${{ matrix.plan.ghc }}-${{ hashFiles('**.yaml') }}
+        restore-keys: |
+             ${{ runner.os }}-stack-global-${{ matrix.plan.ghc }}
+
+    - name: Cache stack-installed programs in ~/.local/bin
+      id:   stack-programs
+      uses: actions/cache@v2
+      with:
+        path: ~/.local/bin
+        key: ${{ runner.os }}-stack-programs-${{ matrix.plan.ghc }}-${{ hashFiles('**.yaml') }}
+        restore-keys: |
+             ${{ runner.os }}-stack-programs-${{ matrix.plan.ghc }}
+
+    - name: Cache .stack-work
+      uses: actions/cache@v2
+      with:
+        path: .stack-work
+        key: ${{ runner.os }}-stack-work-${{ matrix.plan.ghc }}-${{ hashFiles('**.yaml') }}
+        restore-keys: |
+             ${{ runner.os }}-stack-work-${{ matrix.plan.ghc }}
+
+    - name: Cache hledger-lib/.stack-work
+      uses: actions/cache@v2
+      with:
+        path: hledger-lib/.stack-work
+        key: ${{ runner.os }}-hledger-lib-stack-work-${{ matrix.plan.ghc }}-${{ hashFiles('hledger-lib/package.yaml') }}
+        restore-keys: |
+             ${{ runner.os }}-hledger-lib-stack-work-${{ matrix.plan.ghc }}
+
+    - name: Cache hledger/.stack-work
+      uses: actions/cache@v2
+      with:
+        path: hledger/.stack-work
+        key: ${{ runner.os }}-hledger-stack-work-${{ matrix.plan.ghc }}-${{ hashFiles('hledger/package.yaml') }}
+        restore-keys: |
+             ${{ runner.os }}-hledger-stack-work-${{ matrix.plan.ghc }}
+
+    - name: Cache hledger-ui/.stack-work
+      uses: actions/cache@v2
+      with:
+        path: hledger-ui/.stack-work
+        key: ${{ runner.os }}-hledger-ui-stack-work-${{ matrix.plan.ghc }}-${{ hashFiles('hledger-ui/package.yaml') }}
+        restore-keys: |
+             ${{ runner.os }}-hledger-ui-stack-work-${{ matrix.plan.ghc }}
+
+    - name: Cache hledger-web/.stack-work
+      uses: actions/cache@v2
+      with:
+        path: hledger-web/.stack-work
+        key: ${{ runner.os }}-hledger-web-stack-work-${{ matrix.plan.ghc }}-${{ hashFiles('hledger-web/package.yaml') }}
+        restore-keys: |
+             ${{ runner.os }}-hledger-web-stack-work-${{ matrix.plan.ghc }}
+
+    # actions:
+
+    - name: Install stack
+      run: |
+        mkdir -p ~/.local/bin
+        export PATH=~/.local/bin:$PATH
+        # curl -sL https://get.haskellstack.org/stable/linux-x86_64.tar.gz | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'; chmod a+x ~/.local/bin/stack
+        if [[ ! -x ~/.local/bin/stack ]]; then curl -sL https://get.haskellstack.org/stable/linux-x86_64.tar.gz | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'; chmod a+x ~/.local/bin/stack; fi
+        stack --version
+
+    - name: Install GHC
+      env:
+        stack: ${{ matrix.plan.stack }}
+      run: |
+        $stack setup --install-ghc
+
+    - name: Install haskell deps
+      env:
+        stack: ${{ matrix.plan.stack }}
+      run: |
+        $stack build --only-dependencies
+
+    - name: Build hledger fast
+      env:
+        stack: ${{ matrix.plan.stack }}
+      run: |
+        $stack build --fast --ghc-options=-Werror --force-dirty
+        # --ghc-options=-fforce-recomp   # needed occasionally to clear out stale compiled modules
+        #  --pedantic
+
+    - name: Test functional tests (excluding addons)
+      env:
+        stack: ${{ matrix.plan.stack }}
+      run: |
+        $stack test

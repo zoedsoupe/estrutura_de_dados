@@ -61,11 +61,11 @@ spec = do
         conteudo <- readFile clientesPeq
         tmp_path <- writeSystemTempFile "clientes_tmp.csv" conteudo
         _ <- salvaClientes clientes tmp_path
-        numClientes (carregaClientes tmp_path) `shouldReturn` 42
+        numClientes (carregaClientes tmp_path) `shouldReturn`33
         removeFile tmp_path
 
       it "deve salvar corretamente vários clientes e criar um novo arquivo" $ do
         let tmp_path = "./clientes_tmp.csv"
         _ <- salvaClientes clientes tmp_path
-        numClientes (carregaClientes tmp_path) `shouldReturn` 12
+        numClientes (carregaClientes tmp_path) `shouldReturn` 3
         removeFile tmp_path      
