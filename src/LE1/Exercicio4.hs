@@ -101,8 +101,8 @@ salvaCliente c path = do
   conteudo <- return $ B.concat (nl:(converteCliente c):[])
   B.appendFile path conteudo
 
-{- Dada uma lista de CBientes, envolvida por uma
-   Mônada IO, salvo um Cliente por vex, um por linha -}
+{- Dada uma lista de Clientes salvo um
+   Cliente por vez, um por linha -}
 salvaClientes [] _    = putStrLn "Lista vazia"
 salvaClientes xs path = do
   _ <- return $ mapM (\x -> salvaCliente x path) xs
