@@ -10,8 +10,10 @@ module LE1.Exercicio3
   , mes
   , ano
   , dia
+  , show
   ) where
 
+import Data.List (intercalate)
 import Text.Printf (printf)
 
 -- Implementação
@@ -23,7 +25,12 @@ type Ano = Int
 data Data = Invalida | Vazia |  Data { dia :: Dia
                                      , mes :: Mes
                                      , ano :: Ano
-                                     } deriving (Show, Eq, Ord)
+                                     } deriving (Eq, Ord)
+
+instance Show Data where
+  show (Data d m a) = intercalate "/" (map (show) [d, m, a])
+  show Invalida     = "Data Inválida"
+  show Vazia        = "Data Vazia"
 
 vazia :: Data
 isVazia :: Data -> Bool
