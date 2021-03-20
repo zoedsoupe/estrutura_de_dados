@@ -62,7 +62,7 @@ criaCliente (c, n, e, t, dt_p, dt_u, v_u) = Cliente c n' e' t' dt_p' dt_u' v_u
         dt_p' = B.pack dt_p
         dt_u' = B.pack dt_u
 
-{- Dado uma lista de Clientes (resultado de carregClientes)
+{- Dado uma lista de Clientes (resultado de carregaClientes)
    Devolvo apenas 1 cliente na dada posição.
 
    O operador (!!) em Haskell não é seguro, portanto,
