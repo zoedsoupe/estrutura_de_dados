@@ -10,6 +10,7 @@ module LE1.Exercicio2
   , isVazio
   , contem
   , fromList
+  , show
   ) where
 
 import Data.List (nub, intercalate)
@@ -28,7 +29,7 @@ instance Monoid ConjuntoInt where
 -- Instancia para imprimir de forma eprsonaliazda um Conjunto
 instance Show ConjuntoInt where
   show (ConjuntoInt []) = "{}"
-  show (ConjuntoInt xs) = "{ " ++ intercalate "," (map (show) xs) ++ " }"
+  show (ConjuntoInt xs) = "{" ++ intercalate ", " (map (show) xs) ++ "}"
 
 -- | Contrato das interfaces
 criaConjunto :: ConjuntoInt
