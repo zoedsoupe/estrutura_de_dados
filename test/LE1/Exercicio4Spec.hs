@@ -61,7 +61,7 @@ spec = do
         conteudo <- readFile clientesPeq
         tmp_path <- writeSystemTempFile "clientes_tmp.csv" conteudo
         _ <- salvaClientes clientes tmp_path
-        numClientes (carregaClientes tmp_path) `shouldReturn`33
+        numClientes (carregaClientes tmp_path) `shouldReturn` 33
         removeFile tmp_path
 
       it "deve salvar corretamente vários clientes e criar um novo arquivo" $ do
@@ -69,3 +69,41 @@ spec = do
         _ <- salvaClientes clientes tmp_path
         numClientes (carregaClientes tmp_path) `shouldReturn` 3
         removeFile tmp_path      
+
+    describe "testa a consulta de um Cliente" $ do
+      let clienteIO = getCliente (carregaClientes clientesPeq) 2
+
+      it "deve retornar o mesmo cliente caso o indice seja o mesmo" $ do
+        clienteTest <- getCliente (carregaClientes clientesPeq) 2
+        cliente'    <- clienteIO
+        clienteTest `shouldBe` cliente'
+
+      it "deve retornar um cliente válido caso o índice seja negativo" $ do
+        clienteTest <- getCliente (carregaClientes clientesPeq) (-2)
+        cliente'    <- clienteIO
+        clienteTest `shouldBe` cliente'
+
+      it "deve retornar o cliente no indíce que seja o resto da divisão do tamanho da lista" $ do
+        clienteTest <- getCliente (carregaClientes clientesPeq) 31
+        cliente'    <- getCliente (carregaClientes clientesPeq) 29
+        clienteTest `shouldBe` cliente'
+
+      describe "testa a exclusão de um cliente" $ do
+        it "deve excluir corretamente um cliente e atualizar o arquivo" $ do
+          cliente' <- clienteIO
+          conteudo <- readFile clientesPeq
+          tmp_path <- writeSystemTempFile "clientes_tmp.csv" conteudo
+          _ <- excluirCliente (carregaClientes tmp_path) 2 tmp_path
+          clienteTest <- getCliente (carregaClientes tmp_path) 2
+          numClientes (carregaClientes tmp_path) `shouldReturn` 29
+          clienteTest `shouldSatisfy` (/= cliente')
+          removeFile tmp_path
+
+        it "deve excluir corretamente um cliente e criar um novo arquivo" $ do
+          let tmp_path = "./clientes_tmp.csv"
+          cliente' <- clienteIO
+          _ <- excluirCliente (carregaClientes clientesPeq) 4 tmp_path
+          clienteTest <- getCliente (carregaClientes clientesPeq) 4
+          numClientes (carregaClientes tmp_path) `shouldReturn` 29
+          clienteTest `shouldSatisfy` (/= cliente')
+          removeFile tmp_path
