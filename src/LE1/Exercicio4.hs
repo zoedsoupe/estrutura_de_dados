@@ -10,6 +10,7 @@ module LE1.Exercicio4
   , isVazio
   , isInvalido
   , clientes
+  , toList
   ) where
 
 import Data.List (isInfixOf)
@@ -33,6 +34,7 @@ type Clientes = [Cliente]
   
 vazio :: Cliente
 isVazio :: Cliente -> Bool
+toList :: Cliente -> [String]
 isInvalido :: Cliente -> Bool
 carregaClientes :: FilePath -> IO Clientes
 getCliente :: IO Clientes -> Int -> IO Cliente
@@ -50,6 +52,19 @@ isVazio _     = False
 
 isInvalido Invalido = True
 isInvalido _        = False
+
+toList Vazio                           = ["Cliente Vazio"]
+toList Invalido                        = ["Cliente Inválido"]
+toList (Cliente c n e t dt_p dt_u v_u) = list
+  where c'     = show c
+        n'     = B.unpack n
+        e'     = B.unpack e
+        t'     = B.unpack t
+        dt_p'  = B.unpack dt_p
+        dt_u'  = B.unpack dt_u
+        v_u'   = show v_u
+        list = [c', n', e', t', dt_p', dt_u', v_u']
+        
 
 {- Dado os seguintes parâmetros, em ordem:
    código, nome, endereço, telefone,
@@ -90,7 +105,7 @@ carregaClientes path = do
   case conteudo of
     [[]] -> return []
     _ -> do 
-      clientes' <- return $ map (leCliente) conteudo
+      clientes' <- return $ filter (/= Invalido) (map (leCliente) conteudo)
       return clientes'
 
 {- Dado um Cliente e um caminho, adiciono esse

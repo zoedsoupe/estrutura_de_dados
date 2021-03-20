@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 12abe160bf24c4cd492a9bfb675409b84b38f4b8e66c574bd7e7e9606ce387a0
+-- hash: 63fcf93bcfe417b82b3f2ded606c6960acfc9ec56ad5c9fcac45ce7347866d19
 
 name:           estrutura-dados
 version:        0.1.0.0
@@ -41,6 +41,7 @@ library
     , directory
     , hspec
     , pretty-terminal
+    , table-layout
     , temporary
     , text
     , unix-compat
@@ -62,6 +63,7 @@ executable estrutura-dados-exe
     , estrutura-dados
     , hspec
     , pretty-terminal
+    , table-layout
     , temporary
     , text
     , unix-compat
@@ -87,6 +89,7 @@ test-suite estrutura-dados-test
     , estrutura-dados
     , hspec
     , pretty-terminal
+    , table-layout
     , temporary
     , text
     , unix-compat

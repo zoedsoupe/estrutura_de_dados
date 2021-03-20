@@ -1,9 +1,11 @@
 module Helpers (menu) where
 
 -- Imports básicos
+import Data.Decimal (Decimal)
 import System.IO (hFlush, stdout)
 import System.Exit (exitSuccess)
 import System.Console.Pretty (Pretty(..), Color(..), Style(..), style, color)
+import Text.Layout.Table (HeaderSpec, ColSpec, tableString, def, numCol, unicodeRoundS, rowG, titlesH)
 
 -- Imports das funcionalidades/estruturas
 import qualified LE1.Exercicio1 as Cilindro
@@ -40,7 +42,7 @@ choices = zip [0.. ]
   , ("Cilindro", runCilindro)
   , ("Conjunto Inteiro", runConjunto)
   , ("Data", runData)
-  , ("Clientes", undefined)
+  , ("Clientes", runClientes)
   , ("Estruturas", menu)
   , ("Algoritmos", menu)
   , ("Sair", exit)
@@ -132,13 +134,13 @@ runCilindro = do
 introConjunto :: IO ()
 introConjunto = do
   putStrLn $ toInfo "Iniciando demonstração do TAD Conjunto Inteiros"
-  putStrLn $ toInfo "Este TAD recebe como entrada uma lista de inteiros\n"
+  putStrLn $ toInfo "Este TAD recebe como entrada uma lista de inteiros\nExemplo: [1,2,3]\n"
 
 getConjunto :: IO String
 getConjunto = do
   putStrLn $ toInfo"\nExecutando \"fromList/1\"\n"
-  cil <- promptLine "conjunto_int> "
-  return cil
+  con <- promptLine "conjunto_int> "
+  return con
 
 runConjunto :: IO ()
 runConjunto = do
@@ -154,15 +156,15 @@ runConjunto = do
   let conjunto' = ConjuntoInt.insereItem (read el :: Integer) conjunto
   putStrLn . toSuccess $ "Novo conjunto -> " ++ toBold (ConjuntoInt.show conjunto')
   putStrLn $ toInfo "Remova um elemento no conjunto:"
-  el <- promptLine "elemento> "
-  let conjunto'' = ConjuntoInt.removeItem (read el :: Integer) conjunto'
+  el' <- promptLine "elemento> "
+  let conjunto'' = ConjuntoInt.removeItem (read el' :: Integer) conjunto'
   putStrLn . toSuccess $ "Novo conjunto -> " ++ toBold (ConjuntoInt.show conjunto'')
   let min1 = ConjuntoInt.minEl conjunto'
   putStrLn . toSuccess $ "Menor elemento do conjunto -> " ++ toBold (show min1)
   putStrLn $ toInfo "Teste se um elemento pertence ao conjunto:"
-  el' <-  promptLine "elemento> "
-  let el''     = read el' :: Integer
-      pertence = if ConjuntoInt.pertence el'' conjunto'' then "O elemento pertence ao conjunto!" else "Este elemento não pertence ao conjunto!"
+  el'' <-  promptLine "elemento> "
+  let el'''     = read el'' :: Integer
+      pertence = if ConjuntoInt.pertence el''' conjunto'' then "O elemento pertence ao conjunto!" else "Este elemento não pertence ao conjunto!"
   putStrLn $ toSuccess pertence
   putStrLn $ toInfo "Insira outro conjunto para as compartações"
   lista2 <- getConjunto
@@ -207,8 +209,8 @@ validData s = do
 
 getData :: IO String
 getData = do
-  cil <- promptLine "data> "
-  return cil
+  dt <- promptLine "data> "
+  return dt
   
 runData :: IO ()
 runData = do
@@ -234,4 +236,87 @@ runData = do
   putStrLn (yellow (iData' ++ " + 10 dias -> ") ++ toBold (Data.show sData''))
   putStrLn $ toSuccess "\nFim demo TAD Data!\n"    
   
-  
+-- | Clientes
+
+introClientes :: IO ()
+introClientes = do
+  putStrLn $ toInfo "Iniciando demonstração do TAD Clientes"
+  putStrLn $ toInfo "Este TAD lê clientes de um arquivo e manipula este arquivo nas operções de consulta, deleção e inserção\n"
+
+getClientes :: IO String
+getClientes = do
+  path <- promptLine "caminho_csv> "
+  return path
+
+getCliente :: IO String
+getCliente = do
+  cliente <- promptLine "cliente> "
+  return cliente
+
+formatoCliente :: String
+formatoCliente = "(Código :: Integer\n"
+                 ++ "Endereço :: String\n"
+                 ++ "Telefone :: String\n"
+                 ++ "Data primeira compra :: String\n"
+                 ++ "Data última compra :: String\n"
+                 ++ "Valor última compra :: Decimal)\n"
+                 ++ "Data -> DD/MM/AAAA\n"
+                 ++ "Strings -> com aspas\n"
+
+getIndex :: Int -> IO String
+getIndex n = do
+  idx <- promptLine $  "índice (0 a " ++ (show n) ++ ")> "
+  return idx
+
+tClienteFormat :: [ColSpec]
+tClienteFormat = [numCol, def, def, def, def, def, numCol]
+
+titulos :: HeaderSpec
+titulos = titlesH ["Nome", " Endereço", "Tel", "Dt pri compra", "Dt ult com", "Valor ult compra"]
+
+runClientes :: IO ()
+runClientes = do
+  introClientes
+  putStrLn $ toInfo "Informe o caminho para o arquivo `.csv`"
+  path <- getClientes
+  clientesT <- Clientes.carregaClientes path
+  clientes <- return $ take 5 clientesT
+  putStrLn $ toInfo "Esses são os 5 primeiros clientes do arquivo:"
+  ct <- return $ map (Clientes.toList) clientes
+  putStrLn $ tableString tClienteFormat
+                         unicodeRoundS
+                         titulos
+                         [rowG c | c <- ct]
+  putStrLn $ toInfo "Insira um cliente:"
+  putStr $ color Magenta formatoCliente
+  c <- getCliente
+  let c' = read c :: (Integer, String, String, String, String, String, Decimal)
+      cliente = Clientes.criaCliente c'
+  Clientes.salvaCliente cliente path
+  putStrLn $ toInfo "Recuperando os últimos 5 clientes do arquivo..."
+  cs <- Clientes.carregaClientes path
+  clientes' <- return $ take 4 (reverse cs)
+  ct' <- return $ map (Clientes.toList) clientes'
+  putStrLn $ tableString tClienteFormat
+                         unicodeRoundS
+                         titulos
+                         [rowG c'' | c'' <- ct']
+  putStrLn $ toInfo "Consulte um Cliente do arquivo:"
+  n' <- Clientes.numClientes (return clientesT)
+  n <- return $ n' - 1
+  idx <- getIndex n
+  gCliente <- Clientes.getCliente (return clientesT) (read idx :: Int)
+  putStrLn $ toInfo "Este foi o Cliente encontrado:"
+  putStrLn $ tableString tClienteFormat
+                         unicodeRoundS
+                         titulos
+                         [rowG (Clientes.toList gCliente)]
+  nA <- Clientes.numClientes (return cs)
+  putStrLn . yellow $ "Número atual de Clientes -> " ++ (show nA)
+  putStrLn "Delete um Cliente do arquivo:"
+  idx' <- getIndex n
+  _ <- Clientes.excluirCliente (return clientesT) (read idx' :: Int) path
+  cs' <- Clientes.carregaClientes path
+  nA' <- Clientes.numClientes (return cs')
+  putStrLn . yellow $ "Número atual de Clientes -> " ++ (show  nA')
+  putStrLn $ toSuccess "\nFim demo TAD Clientes!\n"      
