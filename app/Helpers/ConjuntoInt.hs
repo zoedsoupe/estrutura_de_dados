@@ -10,7 +10,7 @@ introConjunto = do
 
 getConjunto :: IO String
 getConjunto = do
-  putStrLn $ toInfo"\nExecutando \"fromList/1\"\n"
+  putStrLn $ toInfo "\nInsira um conjunto de inteiros válido:"
   con <- promptLine "conjunto_int> "
   return con
 
@@ -20,25 +20,28 @@ runConjunto = do
   vazio <- return ConjuntoInt.criaConjunto
   putStrLn . toSuccess $ "Conjunto criado -> " ++ (show vazio)
   lista <- getConjunto
+  putStrLn $ toInfo"\nExecutando \"fromList/1\"\n"  
   let lista'   = read lista :: [Integer]
       conjunto = ConjuntoInt.fromList lista'
   putStrLn . toSuccess $ "Conjunto criado -> " ++ toBold (show conjunto)
   putStrLn $ toInfo "Insira um elemento no conjunto:"
   el <- promptLine "elemento> "
   let conjunto' = ConjuntoInt.insereItem (read el :: Integer) conjunto
-  putStrLn . toSuccess $ "Novo conjunto -> " ++ toBold (ConjuntoInt.show conjunto')
+  putStrLn . toSuccess $ "\nNovo conjunto -> " ++ toBold (ConjuntoInt.show conjunto')
   putStrLn $ toInfo "Remova um elemento no conjunto:"
   el' <- promptLine "elemento> "
   let conjunto'' = ConjuntoInt.removeItem (read el' :: Integer) conjunto'
-  putStrLn . toSuccess $ "Novo conjunto -> " ++ toBold (ConjuntoInt.show conjunto'')
+  putStrLn . toSuccess $ "\nNovo conjunto -> " ++ toBold (ConjuntoInt.show conjunto'')
   let min1 = ConjuntoInt.minEl conjunto'
   putStrLn . toSuccess $ "Menor elemento do conjunto -> " ++ toBold (show min1)
   putStrLn $ toInfo "Teste se um elemento pertence ao conjunto:"
   el'' <-  promptLine "elemento> "
   let el'''     = read el'' :: Integer
-      pertence = if ConjuntoInt.pertence el''' conjunto'' then "O elemento pertence ao conjunto!" else "Este elemento não pertence ao conjunto!"
+      pertence = if ConjuntoInt.pertence el''' conjunto''
+                 then "\nO elemento pertence ao conjunto!"
+                 else "\nEste elemento não pertence ao conjunto!"
   putStrLn $ toSuccess pertence
-  putStrLn $ toInfo "Insira outro conjunto para as compartações"
+  putStrLn $ toInfo "\nInsira outro conjunto para as compartações"
   lista2 <- getConjunto
   let lista2'   = read lista2 :: [Integer]
       conjunto2 = ConjuntoInt.fromList lista2'

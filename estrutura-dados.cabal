@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 63fcf93bcfe417b82b3f2ded606c6960acfc9ec56ad5c9fcac45ce7347866d19
+-- hash: 8b537024bde6b6c4cc3f3fc0a6e4db0a862de6da1e9fbe8ca41f941b95e2163a
 
 name:           estrutura-dados
 version:        0.1.0.0
@@ -51,6 +51,11 @@ executable estrutura-dados-exe
   main-is: Main.hs
   other-modules:
       Helpers
+      Helpers.Cilindro
+      Helpers.Clientes
+      Helpers.ConjuntoInt
+      Helpers.Data
+      Menu
       Paths_estrutura_dados
   hs-source-dirs:
       app
