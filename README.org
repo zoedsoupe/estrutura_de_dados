@@ -16,7 +16,7 @@ Decidi fazer todos os trabalhos e exercícios com a linguagem =Haskell=!
 
 ** Como rodar os testes?
 *** Dependências
-    1. =gch= -> compilador para =Haskell=
+    1. =ghc= -> compilador para =Haskell=
     2. =stack= -> ferramente de build (assim como o CMake)
 
   Clone este repositório e rode =stack test= 🙂
