@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 8b537024bde6b6c4cc3f3fc0a6e4db0a862de6da1e9fbe8ca41f941b95e2163a
+-- hash: 5557b48afa5d3b8d0e9867b4c6cbc8c61b8e5bcd0b4c65ad20604bfcaba1489d
 
 name:           estrutura-dados
 version:        0.1.0.0
@@ -30,6 +30,7 @@ library
       LE1.Exercicio2
       LE1.Exercicio3
       LE1.Exercicio4
+      LE2.Helpers
   other-modules:
       Paths_estrutura_dados
   hs-source-dirs:
@@ -40,6 +41,7 @@ library
     , bytestring
     , directory
     , hspec
+    , normaldistribution
     , pretty-terminal
     , table-layout
     , temporary
@@ -67,6 +69,7 @@ executable estrutura-dados-exe
     , directory
     , estrutura-dados
     , hspec
+    , normaldistribution
     , pretty-terminal
     , table-layout
     , temporary
@@ -93,6 +96,7 @@ test-suite estrutura-dados-test
     , directory
     , estrutura-dados
     , hspec
+    , normaldistribution
     , pretty-terminal
     , table-layout
     , temporary

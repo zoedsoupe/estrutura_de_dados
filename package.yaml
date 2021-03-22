@@ -29,6 +29,7 @@ dependencies:
 - unix-compat
 - pretty-terminal
 - table-layout
+- normaldistribution
 
 library:
   source-dirs: src

@@ -18,6 +18,13 @@ packages:
       sha256: 92969ddf22c5f54123fb2bcfbe5917b59a7e6382473b0306bcd8fb7990d9aa1a
   original:
     hackage: data-default-instances-base-0.1.0.1@sha256:985a13d7103e45a65f06f277b735ef025636014f0d29dd6de998bc7628e09be9,509
+- completed:
+    hackage: normaldistribution-1.1.0.3@sha256:2615b784c4112cbf6ffa0e2b55b76790290a9b9dff18a05d8c89aa374b213477,2160
+    pantry-tree:
+      size: 269
+      sha256: 856818862d12df8b030fa9cfef2c4ffa604d06f0eb057498db245dfffcd60e3c
+  original:
+    hackage: normaldistribution-1.1.0.3@sha256:2615b784c4112cbf6ffa0e2b55b76790290a9b9dff18a05d8c89aa374b213477,2160
 snapshots:
 - completed:
     size: 565266
