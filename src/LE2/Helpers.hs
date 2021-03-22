@@ -1,4 +1,7 @@
-module LE2.Helpers where
+module LE2.Helpers
+  ( randList
+  , randMatrix
+  ) where
 
 import System.Random (Random)
 import Data.Random.Normal (mkNormals')
