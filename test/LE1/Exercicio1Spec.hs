@@ -17,28 +17,32 @@ spec = do
     describe "tenta criar um cilindro" $ do
       it "deve retornar um cilindro com os parâmetros válidos" $ do
         let cil'' = fromTuple (raio', altura')
-        getRaio cil''  `shouldBe` raio'
-        getAltura cil'' `shouldBe` altura'
+        getRaio cil''  `shouldBe` Just raio'
+        getAltura cil'' `shouldBe` Just altura'
         isVazio cil'' `shouldBe` False
 
     describe "retorna os campos básicos de um cilindro" $ do
       it "deve retornar apenas a altura de um cilindro" $
-        getAltura cil' `shouldBe` altura'
+        getAltura cil' `shouldBe` Just altura'
 
       it "deve retornar apenas o raio de um cilindro" $
-        getRaio cil' `shouldBe` raio'
+        getRaio cil' `shouldBe` Just raio'
+
+      it "deve retornar Nothing se o cilindro for vazio" $ do
+        getRaio vazio `shouldBe` Nothing
+        getAltura vazio `shouldBe` Nothing
 
     describe "testa as operações de área e volume de um cilindro" $ do
       it "deve retornar a área correta" $
-        calcArea cil' `shouldBe` area'
+        calcArea cil' `shouldBe` Just area'
 
       it "deve retornar o volume correto" $
-        calcVolume cil' `shouldBe` volume'
+        calcVolume cil' `shouldBe` Just volume'
 
     describe "testa se um cilindro vazio e válido" $ do
       it "deve retornar um cilindro 'vazio'" $ do
-        getRaio vazio `shouldBe` 0
-        getAltura vazio `shouldBe` 0
+        getRaio vazio `shouldBe` Nothing
+        getAltura vazio `shouldBe` Nothing
 
       it "deve retornar True se um cilindro é válido" $ do
         valido vazio `shouldBe` False
