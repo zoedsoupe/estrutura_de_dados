@@ -3,18 +3,22 @@
 Neste pasta, serão encontrados todo o material de apoio indicado e também as listas de exercícios
 
 ** Materiais
-
-Em construção...
+*** Slides
+1. [[./apresentacoes/EDI_aula01.pdf][Aula 01 - Conceitos Básicos sobre Dados]]
+2. [[./apresentacoes/EDI_aula02.pdf][Aula 02 - Continuação Conceitos Básicos]]
+3. [[./apresentacoes/EDI_aula03.pdf][Aula 03 - Eficiência de Algoritmos]]
+4. [[./apresentacoes/EDI_aula04.pdf][Aula 04 - Recursão]]
+5. [[./apresentacoes/EDI_aula05.pdf][Aula 05 - Eficiência de Algoritmos Recursivos]]
 
 ** Listas
 
 1. [[./listas_exercicios/EDI_Atividade_Semana1.org][EDI_Atividade_Semana1]]
-1. [[./listas_exercicios/EDI_Atividade_Semana2.org][EDI_Atividade_Semana2]]
+2. [[./listas_exercicios/EDI_Atividade_Semana2.org][EDI_Atividade_Semana2]]
+3. [[./listas_exercicios/EDI_Atividade_Semana3.org][EDI_Atividade_Semana3]]
 
 ** Vídeos
 
-1. [[https://www.youtube.com/watch?v=bryesHll0vY][Aula 01 - TAD]]
-2. [[https://www.youtube.com/watch?v=lKwEQgV6nZk][Aula 02 - Modularização]]
+Em oncstrução...
 
 ** Materiais Extras
 
