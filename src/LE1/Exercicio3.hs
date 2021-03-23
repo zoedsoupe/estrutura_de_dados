@@ -32,35 +32,31 @@ instance Show Data where
   show Invalida     = "Data Inválida"
   show Vazia        = "Data Vazia"
 
-vazia :: Data
-isVazia :: Data -> Bool
-isInvalida :: Data -> Bool
-somaDias :: Data -> Int -> Data
-toTuple :: Data -> (Int, Int, Int)
-fromTuple :: (Int, Int, Int) -> Data
-converteData :: String -> Data -> Data
-imprimeData :: (Int, Int, Int) -> IO String
-
-
 -- Interface
 
+vazia :: Data
 vazia = Vazia
 
+isInvalida :: Data -> Bool
 isInvalida Invalida = True
 isInvalida _        = False
 
+isVazia :: Data -> Bool
 isVazia Vazia = True
 isVazia _     = False
 
+toTuple :: Data -> (Int, Int, Int)
 toTuple (Data d m a) = (d, m, a)
 toTuple _            = (0, 0, 0)
 
+fromTuple :: (Int, Int, Int) -> Data
 fromTuple d = criaData d
 
 {- Dado uma 3-Tupla (tripla) com dia, mes e ano,
    imprimo na tela uma string com a data formatada
 
    Caso a data seja inválida, retorno Nothing -}
+imprimeData :: (Int, Int, Int) -> IO String
 imprimeData (d, m ,a) = (case data' of
                            Invalida -> return "Invalida"
                            Vazia    -> return "Estrutura vazia"
@@ -72,6 +68,7 @@ imprimeData (d, m ,a) = (case data' of
    retorno o TAD data correspondente
 
    Em qualquer outra possibilidde, retorno Nothing -}
+converteData :: String -> Data -> Data
 converteData [] d           = d
 converteData _ (Data _ _ _) = Invalida
 converteData _ Invalida     = Invalida
@@ -101,6 +98,7 @@ converteData d Vazia        = (case criaData (d', m, a) of
        se o mes == 12, aumento o ano, senão aumento o mes e
        x = x - dias restantes do mes
    4 - caso genérico -> retorno uma data com dias somados a x -}
+somaDias :: Data -> Int -> Data
 somaDias data' 0 = data'
 somaDias (Data 1 1 y) d'
   | d' < 0         = Invalida

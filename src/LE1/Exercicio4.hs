@@ -30,29 +30,20 @@ data Cliente = Invalido | Vazio | Cliente { codigo :: Integer
 
 type Clientes = [Cliente]
 
--- | Interface Pública
-  
-vazio :: Cliente
-isVazio :: Cliente -> Bool
-toList :: Cliente -> [String]
-isInvalido :: Cliente -> Bool
-carregaClientes :: FilePath -> IO Clientes
-getCliente :: IO Clientes -> Int -> IO Cliente
-salvaCliente :: Cliente -> FilePath -> IO ()
-salvaClientes :: Clientes -> FilePath -> IO ()
-excluirCliente :: IO Clientes -> Int -> FilePath -> IO Cliente
-criaCliente :: (Integer, String, String, String, String, String, Decimal) -> Cliente
-
 -- | Implementação
 
+vazio :: Cliente
 vazio = Vazio
 
+isVazio :: Cliente -> Bool
 isVazio Vazio = True
 isVazio _     = False
 
+isInvalido :: Cliente -> Bool
 isInvalido Invalido = True
 isInvalido _        = False
 
+toList :: Cliente -> [String]
 toList Vazio                           = ["Cliente Vazio"]
 toList Invalido                        = ["Cliente Inválido"]
 toList (Cliente c n e t dt_p dt_u v_u) = list
@@ -70,6 +61,7 @@ toList (Cliente c n e t dt_p dt_u v_u) = list
    código, nome, endereço, telefone,
    data primeira compra, data última compra
    e valor da última compra, retorno um Cliente -}
+criaCliente :: (Integer, String, String, String, String, String, Decimal) -> Cliente
 criaCliente (c, n, e, t, dt_p, dt_u, v_u) = Cliente c n' e' t' dt_p' dt_u' v_u
   where n'    = B.pack n
         e'    = B.pack e
@@ -90,6 +82,7 @@ criaCliente (c, n, e, t, dt_p, dt_u, v_u) = Cliente c n' e' t' dt_p' dt_u' v_u
       posição (-x)
    Se x > tamnho lista -> retorno o Cliente na
       posição do resto do índice pelo tamanho da lista -}
+getCliente :: IO Clientes -> Int -> IO Cliente
 getCliente c_io idx = do
   num <- numClientes c_io
   c   <- c_io
@@ -100,6 +93,7 @@ getCliente c_io idx = do
 {- Dado um caminho de um arquivo,
    leio o conteúdo desse arquivo
    e devolvo uma lista de Clientes -}
+carregaClientes :: FilePath -> IO Clientes
 carregaClientes path = do
   conteudo <- leArquivo path
   case conteudo of
@@ -111,6 +105,7 @@ carregaClientes path = do
 {- Dado um Cliente e um caminho, adiciono esse
    Cliente no arquivo, acrescentando caso o
    arquivo já exista -}
+salvaCliente :: Cliente -> FilePath -> IO ()
 salvaCliente c path = do
   nl       <- return $ B.pack "\n"
   conteudo <- return $ B.concat (nl:(converteCliente c):[])
@@ -118,6 +113,7 @@ salvaCliente c path = do
 
 {- Dada uma lista de Clientes salvo um
    Cliente por vez, um por linha -}
+salvaClientes :: Clientes -> FilePath -> IO ()
 salvaClientes [] _    = putStrLn "Lista vazia"
 salvaClientes xs path = mapM_ (\x -> salvaCliente x path) xs >> putStrLn "Os Clientes foram salvos!"
 
@@ -129,6 +125,7 @@ salvaClientes xs path = mapM_ (\x -> salvaCliente x path) xs >> putStrLn "Os Cli
    Para ter o efeito de atualizar um arquivo já existe,
    forneça como parâmetro um arquivo já existe, pois essa
    função irá sobrescrevê-lo -}
+excluirCliente :: IO Clientes -> Int -> FilePath -> IO Cliente
 excluirCliente cs idx path = do
   cs'      <- cs
   cl       <- getCliente cs idx
