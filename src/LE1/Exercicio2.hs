@@ -31,22 +31,12 @@ instance Show ConjuntoInt where
   show (ConjuntoInt []) = "{}"
   show (ConjuntoInt xs) = "{" ++ intercalate ", " (map (show) xs) ++ "}"
 
--- | Contrato das interfaces
-criaConjunto :: ConjuntoInt
-fromList :: [Integer] -> ConjuntoInt
-insereItem :: Integer -> ConjuntoInt -> ConjuntoInt
-removeItem :: Integer -> ConjuntoInt -> ConjuntoInt
-minEl :: ConjuntoInt -> Integer
-uniao :: ConjuntoInt -> ConjuntoInt -> ConjuntoInt
-igual :: ConjuntoInt -> ConjuntoInt -> Bool
-contem :: ConjuntoInt -> ConjuntoInt -> Bool
-isVazio :: ConjuntoInt -> Bool
-pertence :: Integer -> ConjuntoInt -> Bool
-
 -- Inrterface Pública
 
+fromList :: [Integer] -> ConjuntoInt
 fromList xs = ConjuntoInt xs
 
+criaConjunto :: ConjuntoInt
 criaConjunto = mempty
 
 {- Insiro um novo elemento num conjunto
@@ -54,6 +44,7 @@ criaConjunto = mempty
    Por questões de eficiência, decidi
    inserir como "head" ou "cabeçalho"
    da lista -}
+insereItem :: Integer -> ConjuntoInt -> ConjuntoInt
 insereItem x (ConjuntoInt ys)
   | not $ pertence x (ConjuntoInt ys) = ConjuntoInt (x:ys)
   | otherwise                      = ConjuntoInt ys
@@ -65,6 +56,7 @@ insereItem x (ConjuntoInt ys)
     Caso seja dado um conjunto válido e um elemento x,
     percorro o conjunto filtrando apenas os elementos
     que são diferentes de x -}
+removeItem :: Integer -> ConjuntoInt -> ConjuntoInt
 removeItem _ (ConjuntoInt [])     = ConjuntoInt []
 removeItem x (ConjuntoInt ys) = ConjuntoInt (filter (/= x) ys)
 
@@ -75,6 +67,7 @@ removeItem x (ConjuntoInt ys) = ConjuntoInt (filter (/= x) ys)
 
    O caso base da recursão também previne
    argumentos errados -}
+pertence :: Integer -> ConjuntoInt -> Bool
 pertence x (ConjuntoInt xs) = any (== x) xs
  
 {-  Eu poderia seguir a mesma recursividade
@@ -83,6 +76,7 @@ pertence x (ConjuntoInt xs) = any (== x) xs
     "foldl", nesse caso realiza um ação de reduzir
     um conjunto a apenas um elemento "x" onde x é
     o menor elemento do conjunto "xs" -}
+minEl :: ConjuntoInt -> Integer
 minEl (ConjuntoInt xs) = foldl1 (\acc x -> if x < acc then x else acc) xs
 
 {-  A união de A e B é definida
@@ -93,6 +87,7 @@ minEl (ConjuntoInt xs) = foldl1 (\acc x -> if x < acc then x else acc) xs
     elementos duplicados de uma lista e também
     utilizo a função de "remover" como parâmetro
     da função "foldl" -}
+uniao :: ConjuntoInt -> ConjuntoInt -> ConjuntoInt
 uniao xs (ConjuntoInt [])            = xs
 uniao (ConjuntoInt []) ys            = ys
 uniao (ConjuntoInt xs) (ConjuntoInt ys) =
@@ -101,13 +96,16 @@ uniao (ConjuntoInt xs) (ConjuntoInt ys) =
                        (x:xs') -> foldl (flip removeItem) (removeItem x nubbed) xs'))
                          where nubbed = ConjuntoInt (nub ys)
 
+contem :: ConjuntoInt -> ConjuntoInt -> Bool
 contem (ConjuntoInt []) _ = True
 contem (ConjuntoInt (x:xs)) (ConjuntoInt ys) = elem x ys && contem (ConjuntoInt xs) (ConjuntoInt ys) 
 
+igual :: ConjuntoInt -> ConjuntoInt -> Bool
 igual xs ys = contem xs ys && contem ys xs 
 
 {- Por "correspondência de valores",
    um conjunto A só será vazio caso
    A = {} -}
+isVazio :: ConjuntoInt -> Bool
 isVazio (ConjuntoInt []) = True
 isVazio _                = False
