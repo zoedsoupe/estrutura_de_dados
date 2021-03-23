@@ -59,13 +59,13 @@ getRaio (Cilindro r _) = r
 
 {- Calculo a área de um Cilindro seguindo a fórmula:
    A = 2πr^2 + h(2πr)
-   onde A = 2πr(r + a) -}
+   onde A = 2πr(r + h) -}
 calcArea (Cilindro r a) = (*) com (r + a)
   where com = (* pi) 2 * r
 
 {- Dado um Cilindro, calculo seu volume com a seguinte
-   fórmula: V = πr2h -}
-calcVolume (Cilindro r a) = pi * r * ((*) 2 a)
+   fórmula: V = πr^2h -}
+calcVolume (Cilindro r a) = pi * (r * r) * a
 
 {- Recebe uma 2-Tupla ou Par, onde os 2 elemetos são Double
    O primeiro elemento dessa 2-Tupla é o raio e o segundo, a altura

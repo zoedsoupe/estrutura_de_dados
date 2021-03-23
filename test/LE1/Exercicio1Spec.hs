@@ -12,7 +12,7 @@ spec = do
     let cil'    = fromTuple (raio', altura')
 
     let area'   = 2 * pi * raio' * (raio' + altura')
-    let volume' = pi * raio' * (2 * altura')
+    let volume' = pi * (raio' * raio') * altura'
 
     describe "tenta criar um cilindro" $ do
       it "deve retornar um cilindro com os parâmetros válidos" $ do
