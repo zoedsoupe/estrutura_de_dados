@@ -41,7 +41,7 @@ spec = do
 
       it "deve retornar uma data válida caso o argumento seja vazio" $
         let d = toTuple $ somaDias (vazia) 12
-            in d `shouldBe` (13, 1, 2021)
+            in d `shouldBe` Just (13, 1, 2021)
 
       it "deve retornar uma data inválida se os dias forem negativos" $ do
         let i  = somaDias data' (-2)
@@ -52,7 +52,7 @@ spec = do
         isInvalida i'' `shouldBe` True
 
       it "deve retornar uma data com um ano a mais" $
-        let (_, _, ano') = toTuple $ somaDias data' 365
+        let Just (_, _, ano') = toTuple $ somaDias data' 365
             in ano' `shouldSatisfy` (> 2001)
 
       it "deve retornar uma data com um mês a mais" $ do
@@ -71,5 +71,5 @@ spec = do
 
       it "deve retornar uma data após N dias" $ do
         let s = somaDias data' 2
-            in toTuple s `shouldBe` (29, 7, 2001)
+            in toTuple s `shouldBe` Just (29, 7, 2001)
 
