@@ -1,18 +1,26 @@
 module LE2.Helpers
-  ( randList
+  ( Matrix(..)
+  , show
   , randMatrix
   ) where
 
-import System.Random (Random)
-import Data.Random.Normal (mkNormals')
+import System.Random (Random, randomRs, mkStdGen)
 
-seed :: Num a => a
-seed = 726420620519930218067873149734376981
+data Matrix a = Matrix { linhas  :: Int
+                       , colunas :: Int
+                       , valores :: [[a]]
+                       } deriving (Eq, Ord)
 
-randList :: (Random a, Floating a, RealFrac a, Integral b) => (a, a) -> Int -> [b]
-randList (m, sd) n = map (round) $ take n $ mkNormals' (m, sd) seed
+instance Show m => Show (Matrix m) where
+  show (Matrix _ _ []) = "[]"
+  show (Matrix _ _ vs) = showLines vs
+    where showLines [] = ""
+          showLines (x:xs) = showElems x ++ "\n" ++ showLines xs
+          showElems [] = ""
+          showElems (x:xs) = show x ++ "  " ++ showElems xs
 
-randMatrix :: (Random a, Floating a, RealFrac a) => (a, a) -> (Int, Int) -> [[Int]]
-randMatrix (m, sd) (a, b)
-  | a /= b    = []
-  | otherwise = [ randList (m, sd) a | _ <- [1..b] ]
+randMatrix :: (Num a, Random a) => Int -> Matrix a
+randMatrix n = Matrix n n values
+  where format _ 0 _   = []
+        format n' m xs = (take n' xs) : format n' (m-1) (drop n' xs)
+        values         = format n n (take (n*n) (randomRs (3, 10) (mkStdGen (n*n))))
