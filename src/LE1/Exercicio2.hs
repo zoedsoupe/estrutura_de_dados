@@ -15,97 +15,114 @@ module LE1.Exercicio2
 
 import Data.List (nub, intercalate)
 
-{-| Interface Privada -}
+-- | Implementação
 
-data ConjuntoInt = ConjuntoInt [Integer] deriving (Eq, Read, Ord)
+{- | Um TAD Conjunto no qual-}
+data Conjunto a = Conjunto [a] deriving (Eq, Read, Ord)
 
--- Instancia para ser possivel concatenar Conjuntos
-instance Semigroup ConjuntoInt where
-  (<>) (ConjuntoInt xs) (ConjuntoInt ys) = ConjuntoInt (xs ++ ys)
+-- | Instancia para ser possivel concatenar Conjuntos
+instance Semigroup (Conjunto a) where
+  (<>) (Conjunto xs) (Conjunto ys) = Conjunto (xs ++ ys)
 
-instance Monoid ConjuntoInt where
-  mempty = ConjuntoInt []
+-- | Instância para representar um COnjunto vazio
+instance Monoid (Conjunto a) where
+  mempty = Conjunto []
 
 -- Instancia para imprimir de forma eprsonaliazda um Conjunto
-instance Show ConjuntoInt where
-  show (ConjuntoInt []) = "{}"
-  show (ConjuntoInt xs) = "{" ++ intercalate ", " (map (show) xs) ++ "}"
+instance Show a => Show (Conjunto a) where
+  show (Conjunto []) = "{}"
+  show (Conjunto xs) = "{" ++ intercalate ", " (map (show) xs) ++ "}"
 
 -- Inrterface Pública
 
-fromList :: [Integer] -> ConjuntoInt
-fromList xs = ConjuntoInt xs
+{- | Converto uma lista de Inteiros
+     para um Conjunto de inteiros -}
+fromList :: [Integer] -> Conjunto Integer
+fromList xs = Conjunto xs
 
-criaConjunto :: ConjuntoInt
+{- | Seguindo a intância da classe Monoid,
+     um COnjunto vazio é um TAD com uma lista
+     vazia -}
+criaConjunto :: Conjunto Integer
 criaConjunto = mempty
 
-{- Insiro um novo elemento num conjunto
+{- | Insiro um novo elemento num conjunto
 
-   Por questões de eficiência, decidi
-   inserir como "head" ou "cabeçalho"
-   da lista -}
-insereItem :: Integer -> ConjuntoInt -> ConjuntoInt
-insereItem x (ConjuntoInt ys)
-  | not $ pertence x (ConjuntoInt ys) = ConjuntoInt (x:ys)
-  | otherwise                      = ConjuntoInt ys
+     Por questões de eficiência, decidi
+     inserir como "head" ou "cabeçalho"
+     da lista -}
+insereItem :: Integer -> Conjunto Integer -> Conjunto Integer
+insereItem x a@(Conjunto ys)
+  | not $ pertence x a = Conjunto (x:ys)
+  | otherwise          = a
 
-{-  Removo um item do conjunto de forma recursiva
-    O caso base é quando chego no final da lista,
-    logo, interrompo a recursão
+{-  | Removo um item do conjunto de forma recursiva
 
-    Caso seja dado um conjunto válido e um elemento x,
-    percorro o conjunto filtrando apenas os elementos
-    que são diferentes de x -}
-removeItem :: Integer -> ConjuntoInt -> ConjuntoInt
-removeItem _ (ConjuntoInt [])     = ConjuntoInt []
-removeItem x (ConjuntoInt ys) = ConjuntoInt (filter (/= x) ys)
+      O caso base é quando chego no final da lista,
+      logo, interrompo a recursão
 
-{- Repito a lógica de remover:
-   caso um elemento x seja igual a algum
-   "cabeçalho" de um conjunto, retorno True
-   case contrário, retorno False
+      Caso seja dado um conjunto válido e um elemento x,
+      percorro o conjunto filtrando apenas os elementos
+      que são diferentes de x -}
+removeItem :: Integer -> Conjunto Integer -> Conjunto Integer
+removeItem _ a@(Conjunto []) = a
+removeItem x (Conjunto ys)   = Conjunto (filter (/= x) ys)
 
-   O caso base da recursão também previne
-   argumentos errados -}
-pertence :: Integer -> ConjuntoInt -> Bool
-pertence x (ConjuntoInt xs) = any (== x) xs
+{- | Dado um Conjunto, verifico se existe pelo menos
+     um elemento igual a "x", logo, se existir, "x"
+     pertence ao Conjunto -}
+pertence :: Integer -> Conjunto Integer -> Bool
+pertence x (Conjunto xs) = any (== x) xs
  
-{-  Eu poderia seguir a mesma recursividade
-    das funções de "remover" ou "pertence"
-    mas decidi usar uma função nativa da linguagem
-    "foldl", nesse caso realiza um ação de reduzir
-    um conjunto a apenas um elemento "x" onde x é
-    o menor elemento do conjunto "xs" -}
-minEl :: ConjuntoInt -> Integer
-minEl (ConjuntoInt xs) = foldl1 (\acc x -> if x < acc then x else acc) xs
+{-  | Eu poderia seguir a mesma recursividade
+      das funções de "remover" ou "pertence"
+      mas decidi usar uma função nativa da linguagem
+      "foldl", nesse caso realiza um ação de reduzir
+      um conjunto a apenas um elemento "x" onde x é
+      o menor elemento do conjunto "xs" -}
+minEl :: Conjunto Integer -> Integer
+minEl (Conjunto xs) = foldl1 (\acc x -> if x < acc then x else acc) xs
 
-{-  A união de A e B é definida
-    pela junção de todos os elementos de A e B,
-    removendo os repetidos
+{-  | A união de A e B é definida
+      pela junção de todos os elementos de A e B,
+      removendo os repetidos
 
-    Para isso, uso a função "nub" que remove os
-    elementos duplicados de uma lista e também
-    utilizo a função de "remover" como parâmetro
-    da função "foldl" -}
-uniao :: ConjuntoInt -> ConjuntoInt -> ConjuntoInt
-uniao xs (ConjuntoInt [])            = xs
-uniao (ConjuntoInt []) ys            = ys
-uniao (ConjuntoInt xs) (ConjuntoInt ys) =
-  (ConjuntoInt xs <> (case xs of
-                       []      -> nubbed
-                       (x:xs') -> foldl (flip removeItem) (removeItem x nubbed) xs'))
-                         where nubbed = ConjuntoInt (nub ys)
+      Para isso, uso a função "nub" que remove os
+      elementos duplicados de uma lista e também
+      utilizo a função de "remover" como parâmetro
+      da função "foldl", que percorre um Traversal
+      que neste caso é uma lista, da esquerda para
+      a direita reducindo a um acumulador que nessa
+      implementação, é uma outra lista
 
-contem :: ConjuntoInt -> ConjuntoInt -> Bool
-contem (ConjuntoInt []) _ = True
-contem (ConjuntoInt (x:xs)) (ConjuntoInt ys) = elem x ys && contem (ConjuntoInt xs) (ConjuntoInt ys) 
+      No final, concateno o Conjunto A com os
+      elementos restantes, não repetidos de B -}
+uniao :: Conjunto Integer -> Conjunto Integer -> Conjunto Integer
+uniao xs (Conjunto [])              = xs
+uniao (Conjunto []) ys              = ys
+uniao a@(Conjunto xs) (Conjunto ys) =
+  (a <> (case xs of
+            []      -> nubbed
+            (x:xs') -> foldl (flip removeItem) (removeItem x nubbed) xs'))
+  where nubbed = Conjunto (nub ys)
 
-igual :: ConjuntoInt -> ConjuntoInt -> Bool
-igual xs ys = contem xs ys && contem ys xs 
+{- | Recursivamente percorro o Conjunto A
+     verificando se cada elemento de A pertence a B
+
+     Caso seja verdade em todos os casos, retorno True
+     senão, False -}
+contem :: Conjunto Integer -> Conjunto Integer -> Bool
+contem (Conjunto []) _                  = True
+contem (Conjunto (x:xs)) b@(Conjunto _) = pertence x b && contem (Conjunto xs) b
+
+{- | Um Conjunto só será estritamente igual a outro
+     se os 2 se contem -}
+igual :: Conjunto Integer -> Conjunto Integer -> Bool
+igual a b = contem a b && contem b a
 
 {- Por "correspondência de valores",
    um conjunto A só será vazio caso
    A = {} -}
-isVazio :: ConjuntoInt -> Bool
-isVazio (ConjuntoInt []) = True
-isVazio _                = False
+isVazio :: Conjunto Integer -> Bool
+isVazio (Conjunto []) = True
+isVazio _             = False
