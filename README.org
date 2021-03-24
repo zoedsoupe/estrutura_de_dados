@@ -2,7 +2,8 @@
 #+author: Matheus de Souza Pessanha
 #+email: matheus_pessanha2001@outlook.com
 
-https://img.shields.io/badge/PRs-welcome-brightgreen.svg
+#+caption: PRs
+[[https://img.shields.io/badge/PRs-welcome-brightgreen.svg]]
 
 #+caption: build
 [[https://github.com/Mdsp9070/estrutura_de_dados/workflows/build/badge.svg?branch=main]]
