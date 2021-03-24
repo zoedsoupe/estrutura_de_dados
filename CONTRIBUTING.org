@@ -1,0 +1,106 @@
+#+title: Instruções para novas contribuições
+#+author: Matheus de Souza Pessanha
+#+email: matheus_pessanha2001@outlook.com
+
+Este repositório é dividido em duas macro partes:
+1. O programa executável, que mostra demos de cada TAD, Estrutura ou Algoritmo
+2. Minhas soluções e implementações referentes à matéria de Estrtura de Dados na faculdade
+3. Implementações de outras Estruturas/Algoritmos, por contribuições ou por minha parte
+
+A princípio, o repositório só irá aceitar implementações na linguagem de programação =Haskell=,
+porém, nada impede de você propor uma implementação, com fontes e refências em outra linguagem,
+e eu fazer a implementação na lingugem principal.
+
+O documento a seguir descreve como propor a implementação de uma Estrutura/Algoritmo
+ou uma nova funcionaliade para o programa em CLI.
+
+** O que você precisa saber antes de abrir uma PR?
+
+New recipe submissions should adhere to the following guidelines:
+
+- Aberto à feedbacks ::  O processo de revisão da proposta inclui
+     que eu revise se a implementação segue as regras do repositório
+     e claro, dar minha opinião sobre como a proposta foi implementada.
+
+- Apenas uma implementação por PR :: Caso você queria fazer várias
+     implementações, por favor, crie várias pull requests! Assim
+     será mais fácil de revisar uma por uma e não gerar confusões
+     na hora de mesclar com o repositório! Propostas que tenham
+     mudanças não relacionadas com a implementação em questão ou
+     que tentem implementar mais de uma proposta, serão descartadas
+     automaticamente.
+
+- Qualidade :: Prezo não só pela qualidade do código, mas com a organização
+     do repositório em si! Por isso, leia os guias abaixo para se esclarer.
+
+** Preparando sua implementação para uma proposta
+
+- Estilo de código e convenções :: As implementações em Haskell
+     devem seguir os guias de estilo e convenções de nomeação
+     apresentados no documento [[https://wiki.haskell.org/Programming_guidelines][Haskell Programming Guidelines]]!
+     Caso voê encontre algum erro neste repositório, abra uma
+     issue demonstrando a localização do erro e como pode ser
+     corrigido/melhorado!
+
+- Use validadores de qualidade :: Caso use o =Emacs= por exemplo, use
+     o [[https://www.flycheck.org/en/latest/][flycheck]]. Cada editor terá suas extemsões, mas o foco é usar,
+     de forma geral o [[https://github.com/ndmitchell/hlint][hlint]]!
+
+- Não crie funções longas :: Quanto maior a função, mais complexa ela
+     fica e mais difícil de entender/debuggar/documentar ela fica.
+     Realize a separação de conceitos corretamente, com o foco na
+     composição de diversas funções menores.
+
+- Implemente testes unitários :: Todas as implementações de Estruturas/
+  Algoritmos devem possuir seus respectivos testes unitários! Propostas
+  que não implementarem testes serão rejeitadas automaticamente. o CI está
+  configurado para rodar todos os testes a cada pull request!
+
+** Preparando a pull request
+
+Para submeter uma pull request, você deve fazer um =fork= e clonar
+o repositório! Depois, você deve organizar sua implementação nas
+estruturas de diretórios criadas ou então, caso ainda não existam,
+criar a árvore de diretórios correspondente à sua implementação.
+   
+*** Criando a árvore de diretórios
+
+    Como dito anteriormente, este repositório abriga, primordialmente,
+    minhas soluções dos exercícios propostos pela matéria de Estruturas de Dados
+    na faculdade. Porém, decide abrir para contribuições pois assim será possível
+    contemplar diversas implementações de Estruturas/Algoritmos diferentes!
+
+    Por tanto, para manter essas finalidades separadas, proponho a seguinte árvore de
+    diretórios:
+
+    #+begin_example
+    .
+    ├── src
+    ├── contribuicoes
+    │   ├── algoritmos
+    │   └── estruturas
+    ├── LE1
+    └── LE2
+    #+end_example
+
+    No exemplo acima, a partir do diretório =src=, temos 3 pastas que são filhas diretas, como
+    =LE1=, =LE2= e =contribuicoes=.
+
+    As duas primerias (e suas sequências como =LE3=) representão as minhas soluções dos exercícios
+    propostos na matéria!
+
+    Já o diretório =contribuicoes=, é o responsável por abrigar as implementações das propostas feitas
+    por outras pessoas, sendo claramente dividas em =estruturas= e =algoritmos=.
+
+** Submetendo a pull request
+
+No seu repositório fork, cria uma branch dedicada à proposta com o nome =<seu_user_github>/<estrutura_ou_algoritmo>=
+
+Exemplo: Meu usuário do Github é =Mdsp9070= e quero propor a implementação de uma pilha! Logo, depois de fazer o fork,
+criarei uma branch com o nome =Mdsp9070/pilha=.
+
+Após isso, entre neste repositório e crie a pull request, ou crie pela CLI do Github.
+
+As pull requests possuem templates com todas as informações necessárias que precisam ser inclusas.
+
+Pronto! Após isso resta esperar minha revisão, e o mais importante: se divirta na implementação :)!!!
