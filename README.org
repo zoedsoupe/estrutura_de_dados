@@ -2,6 +2,8 @@
 #+author: Matheus de Souza Pessanha
 #+email: matheus_pessanha2001@outlook.com
 
+https://img.shields.io/badge/PRs-welcome-brightgreen.svg
+
 #+caption: build
 [[https://github.com/Mdsp9070/estrutura_de_dados/workflows/build/badge.svg?branch=main]]
 ps: caso essa "badge" esteja com a cor verde, significa que todos os testes passaram!
@@ -9,17 +11,30 @@ ps: caso essa "badge" esteja com a cor verde, significa que todos os testes pass
 Este repositório tem a finalidade de abrigar meus estudos e exercícios
 referentes à matéria de =Estrutura de Dados= na =UENF=!
 
+Além disso, este repositório é aberto para qualquer um que queira propor
+novas implementações ou novas Estruturas de Dados/Algoritmos!
+
 Colocarei aqui minhas soluções e testes tanto para a primeira parte da matéria
 (EDI) quanto para a segunda parte, no próximo semestre (EDII).
 
 Decidi fazer todos os trabalhos e exercícios com a linguagem =Haskell=!
 
+** Como contribuir?
+   Por favor, siga as instruções de contribuição [[./CONTRIBUTING.org][deste arquivo]].
+** Material
+   Além das implementações, você irá encontrar todo o material que usei como base
+   para esta matéria, feito upload na pasta =docs= deste repositório!
+
+   Obviamente pedi permissão ao professor, e ele permitiu eu fazer upload dos slides dele.
+
+   Tmbém faço refência à materiais de apoio, vídeos e etc... Tudo pode ser encontrado [[./docs][aqui]].
 ** Como rodar os testes?
 *** Dependências
     1. =ghc= -> compilador para =Haskell=
     2. =stack= -> ferramente de build (assim como o CMake)
 
   Clone este repositório e rode =stack test= 🙂
+
 ** Estruturas
 
 Em construção...
