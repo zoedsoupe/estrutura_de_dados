@@ -1,0 +1,112 @@
+#+title: TAD Cilindro
+#+author: Matheus de Souza Pessanha
+#+email: matheus_pessanha2001@outlook.com
+
+Este documento se refere ao exercício 1 da LE1, que pode ser encontrado [[../../../docs/listas_exercicios/EDI_Atividade_Semana1.org][neste documento]].
+
+** Interface Pública
+No começo do arquivo, defino a interface pública:
+
+#+begin_src haskell
+  module LE1.Cilindro
+    ( fromTuple
+    , getAltura
+    , getRaio
+    , calcArea
+    , calcVolume
+    , vazio
+    , isVazio
+    , valido
+    , toTuple
+    ) where
+#+end_src
+
+Exporto apenas as funções que serão acessíveis aos outros módulos e
+mantenho privado, em especial, a estrututra do =TAD=.
+
+** Implementação
+   Primeiro, defino o =TAD= e seus construtores de tipos:
+
+   #+begin_src haskell
+     type Altura = Double
+     type Raio = Double
+     type Area = Double
+     type Volume = Double
+
+     data Cilindro = Vazio | Cilindro { raio :: Raio
+				      , altura :: Altura
+				      } deriving (Show, Eq)
+  #+end_src
+
+   Nas primeiras linhas, defino apelidos para o tipo =Double= para deixar mais legível as implementações.
+   Após isso, defino de fato o =TAD=, quie possui 2 construtores de tipo:
+   1. =Vazio= -> representa um =Cilindro= não definido ou "inválido" matemáticamente
+   2. =Cilindro= -> o =Cilindro= de fato, que possui um raio e uma altura
+
+   Digo que esse TAD deriva das classes de tipo, =Show=, =Eq= e =Ord=. Em outras palavras,
+   isso me permite, respectivamente:
+   - Imprimir na tela um =TAD Cilindro=
+   - Verificar se um =Cilindro= é igual ou diferente de outro
+
+*** Funções principais
+    Essas são as funções explicitamente pedididas no exercício:
+
+    Funções que lidam com um =Cilindro= vazio
+    #+begin_src haskell
+      vazio :: Cilindro
+      vazio = Vazio
+
+      isVazio :: Cilindro -> Bool
+      isVazio Vazio = True
+      isVazio _     = False
+    #+end_src
+
+    Funções para recuperar apenas a =Altura= ou apenas o =Raio= de um =Cilindro=. Utilizo a Mônada =Maybe=
+    #+begin_src haskell
+      getAltura :: Cilindro -> Maybe Altura
+      getAltura Vazio          = Nothing
+      getAltura (Cilindro _ a) = Just a
+
+      getRaio :: Cilindro -> Maybe Raio
+      getRaio Vazio          = Nothing
+      getRaio (Cilindro r _) = Just r
+    #+end_src
+
+    O cálculo da área de um =Cilindro é definido por: ~A = 2πr^2 + h(2πr)~. Isolando o termo em comum,
+    a fórmula pode ser siomplificada, resultando em: ~A = 2πr(r + h)~
+    #+begin_src haskell
+      calcArea :: Cilindro -> Maybe Area
+      calcArea Vazio          = Nothing
+      calcArea (Cilindro r a) = Just area
+	where area = (*) (r + a) . twice $ (*) pi r
+    #+end_src
+
+    Já o cálculo do volume de um =Cilindro= é definido por: ~V = πr^2h~
+    #+begin_src haskell
+      calcVolume :: Cilindro -> Maybe Volume
+      calcVolume Vazio          = Nothing
+      calcVolume (Cilindro r a) = Just volume
+	where volume = pi * (r * r) * a
+    #+end_src
+
+*** Funções de ajuda
+    Funções para se adequar aos padrões da linguagem, oferecer uma compatibilidade
+    entre outras estruturas de dados ou que tornam a implementação das funções principais
+    mais legível.
+
+    Funções que convertem de um =2d-Tupla=, ou =Par= de =Double= para um =Cilindro= ou
+    vice-versa
+    #+begin_src haskell
+      fromTuple :: (Double, Double) -> Cilindro
+      fromTuple (r, a) = Cilindro r a
+
+      toTuple :: Cilindro -> Maybe (Double, Double)
+      toTuple Vazio          = Nothing
+      toTuple (Cilindro r a) = Just (r, a)
+    #+end_src
+
+    Apenas uma função que dobra o parâmetro
+    #+begin_src haskell
+      twice :: Floating a => a -> a
+      twice x = 2 * x
+    #+end_src

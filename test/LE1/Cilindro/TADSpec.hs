@@ -1,8 +1,8 @@
-module LE1.Exercicio1Spec where
+module LE1.Cilindro.TADSpec where
 
 import Test.Hspec
 
-import LE1.Exercicio1
+import LE1.Cilindro.TAD
 
 spec :: Spec
 spec = do
@@ -43,10 +43,6 @@ spec = do
       it "deve retornar um cilindro 'vazio'" $ do
         getRaio vazio `shouldBe` Nothing
         getAltura vazio `shouldBe` Nothing
-
-      it "deve retornar True se um cilindro é válido" $ do
-        valido vazio `shouldBe` False
-        valido cil' `shouldBe` True
 
       it "deve retornar True se um cilindro estiver 'vazio'" $
         isVazio vazio `shouldBe` True
