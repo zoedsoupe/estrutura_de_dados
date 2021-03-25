@@ -1,4 +1,4 @@
-module LE2.Helpers
+module LE1.Helpers
   ( Matrix(..)
   , show
   , randMatrix
