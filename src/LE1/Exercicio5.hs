@@ -1,6 +1,6 @@
-module LE2.Exercicio1 where
+module LE1.Exercicio5 where
 
-import LE2.Helpers (Matrix(..))
+import LE1.Helpers (Matrix(..))
 
 somaMatriz :: Num a => Matrix a -> Matrix a -> Matrix a
 somaMatriz (Matrix _ _ [[]]) (Matrix _ _ [[]]) = Matrix 0 0 []
