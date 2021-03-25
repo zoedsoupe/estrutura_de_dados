@@ -1,7 +1,7 @@
 module Helpers.Cilindro (runCilindro) where
 
 import Helpers (toBold, toInfo, promptLine, toSuccess, yellow)
-import qualified LE1.Exercicio1 as Cilindro
+import qualified LE1.Cilindro.TAD as Cilindro
 
 introCilindro :: IO ()
 introCilindro = do
@@ -23,8 +23,6 @@ runCilindro = do
   putStrLn . toSuccess $ "\nTAD == " ++ (show c) ++ "\n"
   let isVazio = Cilindro.isVazio c
   putStrLn . toInfo $ "Esse Cilindro é vazio? " ++ (show isVazio)
-  let isValido = Cilindro.valido c
-  putStrLn . toInfo $ "\nSerá que esse Cilindro é válido? " ++ (show isValido)
   putStrLn $ toInfo "\nE qual a altura desse Cilindro?"
   let altura = Cilindro.getAltura c
   putStrLn (yellow "Altura -> " ++ toBold (show altura))
