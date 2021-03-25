@@ -78,7 +78,7 @@ mantenho privado, em especial, a estrututra do =TAD=.
       calcArea :: Cilindro -> Maybe Area
       calcArea Vazio          = Nothing
       calcArea (Cilindro r a) = Just area
-	where area = (*) (r + a) . twice $ (*) pi r
+	      where area = (*) (r + a) . twice $ (*) pi r
     #+end_src
 
     Já o cálculo do volume de um =Cilindro= é definido por: ~V = πr^2h~
@@ -86,7 +86,7 @@ mantenho privado, em especial, a estrututra do =TAD=.
       calcVolume :: Cilindro -> Maybe Volume
       calcVolume Vazio          = Nothing
       calcVolume (Cilindro r a) = Just volume
-	where volume = pi * (r * r) * a
+	      where volume = pi * (r * r) * a
     #+end_src
 
 *** Funções de ajuda
