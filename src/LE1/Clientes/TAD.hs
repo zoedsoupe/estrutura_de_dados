@@ -20,15 +20,6 @@ import qualified Data.ByteString.Char8 as B
 
 -- | Implementação
 
-{- | Um TAD Cliente possui 3 construtores:
-
-     1 - Vazio
-     2 - Invalido
-     3 - Cliente com seus campos, onde
-         valor = Decimal
-         cod = Integer
-         textos = ByteString, representação
-         de cada byte em um Array de um conteúdo -}
 data Cliente = Invalido | Vazio | Cliente { codigo :: Integer
                                           , nome :: B.ByteString
                                           , endereco :: B.ByteString
@@ -67,10 +58,6 @@ toList (Cliente c n e t dt_p dt_u v_u) = list
         list = [c', n', e', t', dt_p', dt_u', v_u']
         
 
-{- | Dado os seguintes parâmetros, em ordem:
-     código, nome, endereço, telefone,
-     data primeira compra, data última compra
-     e valor da última compra, retorno um Cliente -}
 criaCliente :: (Integer, String, String, String, String, String, Decimal) -> Cliente
 criaCliente (c, n, e, t, dt_p, dt_u, v_u) = Cliente c n' e' t' dt_p' dt_u' v_u
   where n'    = B.pack n
@@ -79,19 +66,6 @@ criaCliente (c, n, e, t, dt_p, dt_u, v_u) = Cliente c n' e' t' dt_p' dt_u' v_u
         dt_p' = B.pack dt_p
         dt_u' = B.pack dt_u
 
-{- | Dado uma lista de Clientes (resultado de carregaClientes)
-     Devolvo apenas 1 cliente na dada posição.
-
-     O operador (!!) em Haskell não é seguro, portanto,
-     para minimizar seu efeito, realizo uma simples conta
-     onde se o índice dado for negativo, converto o índice
-     para ser acessível no lista, tendo:
-
-     Tendo índice == x,
-     Se x < 0 -> troco o sinal e retorno o cliente na
-        posição (-x)
-     Se x > tamnho lista -> retorno o Cliente na
-        posição do resto do índice pelo tamanho da lista -}
 getCliente :: IO Clientes -> Int -> IO Cliente
 getCliente c_io idx = do
   num <- numClientes c_io
@@ -100,9 +74,6 @@ getCliente c_io idx = do
     then return $ c !! (mod (negate idx) num)
     else return $ c !! idx
 
-{- | Dado um caminho de um arquivo,
-     leio o conteúdo desse arquivo
-     e devolvo uma lista de Clientes -}
 carregaClientes :: FilePath -> IO Clientes
 carregaClientes path = do
   conteudo <- leArquivo path
@@ -112,9 +83,6 @@ carregaClientes path = do
       clientes' <- return $ filter (/= Invalido) (map (leCliente) conteudo)
       return clientes'
 
-{- | Dado um Cliente e um caminho, adiciono esse
-     Cliente no arquivo, acrescentando caso o
-     arquivo já exista -}
 salvaCliente :: Cliente -> FilePath -> IO ()
 salvaCliente c path = do
   nl       <- return $ B.pack "\n"
@@ -127,14 +95,6 @@ salvaClientes :: Clientes -> FilePath -> IO ()
 salvaClientes [] _    = putStrLn "Lista vazia"
 salvaClientes xs path = mapM_ (\x -> salvaCliente x path) xs >> putStrLn "Os Clientes foram salvos!"
 
-{- | Dada uma IO lista de Clientes, um índice e um caminho,
-     removo dessa lista o Cliente do índice específicado
-     (levando em conta a função getCliente), e crio um novo
-     arquivo com a nova lista!
-
-     Para ter o efeito de atualizar um arquivo já existe,
-     forneça como parâmetro um arquivo já existe, pois essa
-     função irá sobrescrevê-lo -}
 excluirCliente :: IO Clientes -> Int -> FilePath -> IO Cliente
 excluirCliente cs idx path = do
   cs'      <- cs
@@ -150,7 +110,6 @@ excluirCliente cs idx path = do
 numClientes :: IO Clientes -> IO Int
 numClientes xs = return . length . filter (/= Invalido) =<< xs
 
-{- | Converto um TAD Cliente para uma representação binária -}
 converteCliente :: Cliente -> B.ByteString
 converteCliente Invalido = B.pack ""
 converteCliente Vazio    = B.intercalate (B.pack ",") cliente
@@ -162,8 +121,6 @@ converteCliente (Cliente c n t e dt_p dt_u v_u) = cliente'
         cliente  = cod:n:t:e:dt_p:dt_u:va:[]
         cliente' = B.intercalate (B.pack ",") cliente
 
-{- | Transformo uma lista de ByTeString (dados crus do Cliente)
-     em um TAD Cliente válido -}
 leCliente :: [B.ByteString] -> Cliente
 leCliente (x:_)
   | x == B.empty = Invalido
