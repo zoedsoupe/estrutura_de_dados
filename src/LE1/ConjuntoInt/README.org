@@ -33,7 +33,7 @@ Este documento se refere ao exercício 2 da LE1, que pode ser encontrado [[../..
    ={1,2,3} ≡ {1,2,3}= ou ={1,2,3} ≠ {4,5,6}=;
    Ele também pode ser lido/analisado a partir de uma string, por meio da classe de tipo =Read=. ex:
    =read "[1,2,3]" :: Conjunto Int=;
-   E por último, também pode ser comprado por ordem de grandeza:
+   E por último, também pode ser comparado por ordem de grandeza:
    ={1,2,3} ≥ {3,2}= ou ={3,2} ≤ {1,2,3}=
 
    Após a definição do =TAD=, crio algumas instâncias nas classes de tipo =Show=, =Semigroup= e =Monoid=:
@@ -115,12 +115,12 @@ Este documento se refere ao exercício 2 da LE1, que pode ser encontrado [[../..
       minEl (Conjunto xs) = foldl1 (\acc x -> if x < acc then x else acc) xs
     #+end_src
 
-    A união de A e B é definida pela junção de todos os elementos de A e B, ignorando os repetidos.
+    A união de A e B é definida pela junção de todos os elementos de =A= e =B=, ignorando os repetidos.
     Para isso, uso a função =nub= que remove os elementos duplicados de uma lista e também
     utilizo a função de =remover= como parâmetro da função =foldl=, que percorre um Traversal
     que neste caso é uma lista, da esquerda para a direita reduzindo a um acumulador que nessa
-    implementação, é uma outra lista. No final, concateno o Conjunto A com os elementos restantes,
-    não repetidos de B
+    implementação, é uma outra lista. No final, concateno o =Conjunto A= com os elementos restantes,
+    não repetidos de =B=
     #+begin_src haskell
       uniao :: Conjunto Integer -> Conjunto Integer -> Conjunto Integer
       uniao xs (Conjunto [])              = xs
@@ -162,8 +162,8 @@ Este documento se refere ao exercício 2 da LE1, que pode ser encontrado [[../..
 			      else seen ++ [x]) []
     #+end_src
 
-    Recursivamente checo se cada elemento de =Conjunto= A pertence a um =Conjunto B=.
-    Caso seja verdade em todos os casos, significa que A contém B
+    Recursivamente checo se cada elemento do =Conjunto A= pertence a um =Conjunto B=.
+    Caso seja verdade em todos os casos, significa que =A= contém =B=
     #+begin_src haskell
       contem :: Conjunto Integer -> Conjunto Integer -> Bool
       contem (Conjunto []) _                  = True
