@@ -1,7 +1,7 @@
 module Helpers.Data (runData) where
 
 import Helpers
-import qualified LE1.Exercicio3 as Data
+import qualified LE1.Data.TAD as Data
 
 introData :: IO ()
 introData = do
