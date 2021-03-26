@@ -1,7 +1,7 @@
 module Helpers.ConjuntoInt (runConjunto) where
 
 import Helpers (toInfo, toSuccess, promptLine, toBold, yellow)
-import qualified LE1.Exercicio2 as ConjuntoInt
+import qualified LE1.ConjuntoInt.TAD as ConjuntoInt
 
 introConjunto :: IO ()
 introConjunto = do

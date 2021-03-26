@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: cc5162bfe3e3ede39f341ade1f64fd0c396ad0c80d3f09f56d5fc28b85f9b94c
+-- hash: c51e17d17e2403fe78a47b71ee466ac556b7b99302be3f2cbc99754c596e64ff
 
 name:           estrutura-dados
 version:        0.2.1.0
@@ -27,7 +27,7 @@ source-repository head
 library
   exposed-modules:
       LE1.Cilindro.TAD
-      LE1.Exercicio2
+      LE1.ConjuntoInt.TAD
       LE1.Exercicio3
       LE1.Exercicio4
       LE1.Exercicio5
@@ -82,7 +82,7 @@ test-suite estrutura-dados-test
   main-is: Spec.hs
   other-modules:
       LE1.Cilindro.TADSpec
-      LE1.Exercicio2Spec
+      LE1.ConjuntoInt.TADSpec
       LE1.Exercicio3Spec
       LE1.Exercicio4Spec
       Paths_estrutura_dados
