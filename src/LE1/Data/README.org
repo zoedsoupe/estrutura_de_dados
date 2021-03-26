@@ -34,9 +34,9 @@ Este documento se refere ao exercício 2 da LE1, que pode ser encontrado [[../..
      type Ano = Int
 
      data Data = Invalida | Vazia |  Data { dia :: Dia
-                              		, mes :: Mes
-					                        , ano :: Ano
-					                        } deriving (Eq, Ord)
+					  , mes :: Mes
+					  , ano :: Ano
+					  } deriving (Eq, Ord)
    #+end_src
 
    Defino que meu =TAD Data= possui três contrutores de tipo: =Invalida=, =Vazia= e a própria =Data=
