@@ -1,4 +1,4 @@
-module LE1.Exercicio4Spec where
+module LE1.Clientes.TADSpec where
 
 import Test.Hspec
 
@@ -6,15 +6,15 @@ import System.Directory (removeFile)
 import System.IO.Temp (writeSystemTempFile)
 import Data.Decimal (Decimal)
 
-import LE1.Exercicio4
+import LE1.Clientes.TAD
 
 spec :: Spec
 spec = do
   describe "testa TAD Clientes" $ do
-    let clientesPeq    = "./src/LE1/clientes_small.csv"
+    let clientesPeq    = "./src/LE1/Clientes/clientes_small.csv"
     let numClientesPeq = 30 :: Int
     let numClientesMed = 340 :: Int
-    let clientesMed    = "./src/LE1/clientes_medium.csv"
+    let clientesMed    = "./src/LE1/Clientes/clientes_medium.csv"
     let cod            = 423 :: Integer
     let n              = "Joao"
     let en             = "Av. Alberto"
