@@ -15,7 +15,7 @@ que os códigos presentes aqui no repositório sejam minimamente entendidos.
 
    1. [[http://learnyouahaskell.com/chapters][Learn You a Haskell for Great Good!]] -> Uma apresentação light, com vários exemplos, mas sem exercícios. Possui uma [[http://haskell.tailorfontela.com.br/chapters][versão em português]]
    2. [[https://github.com/bitemyapp/learnhaskell][Learn Haskell]] -> Versão mais aprofundada, com muitos exercícios práticos! [[https://github.com/bitemyapp/learnhaskell/blob/master/guide-pt.md][Versão em português]]
-   3. [[https://hoogle.haskell.org/][Hoogle]] -> Uma enciclopédia para =Haskell=! Pode procurar pela tipagem das funções, seus nomes sou operadores.
+   3. [[https://hoogle.haskell.org/][Hoogle]] -> Uma enciclopédia para =Haskell=! Pode procurar pela tipagem das funções, seus nomes ou operadores.
    4. [[https://hackage.haskell.org/][Hackage]] -> Repositório dos pacotes/libs para =Haskell=. Reúne também toda a documentação das implementações nativas da linguagem
    5. [[https://t.me/haskellbr][Haskell Brasil]] -> Grupo do Telegram para discutir ou pedir ajuda sobre a linguagem
 
@@ -46,9 +46,18 @@ que os códigos presentes aqui no repositório sejam minimamente entendidos.
     ser corretamente combinados, caso contrário o compilador irá rejeitar o programa.
 
     Você não precisa declarar a tipagem das expressões de forma explícita! O compilador
-    já faz esse processo de forma bidirecional. Porém, é uma boa prática escrever
+    já faz esse processo de forma automática e bidirecional. Porém, é uma boa prática escrever
     as notações de tipos para melhor documentação, melhor legibilidade ou forçar
     o compilador a inferir a tipagem desejada.
+
+    Ser =lazy= significa que nenhuma função computa o valor de seus argumentos, a menos
+    que seja necessário. Isso cria a possibilidade de gerenciamento de estruturas de dados
+    infinitas ou a habilidade de de escrever estruturas de controle de fluxo (=if/else=) apenas
+    escrevendo funções normais.
+
+    Exemplo: =take 10 [1..]=
+
+    Isso me retorna 10 elementos de uma lista infinita!
 
 **** Tipos
      Como esse assunto é uma das fundações da linguagem, não será possível compreender todo o escopo
@@ -61,20 +70,11 @@ que os códigos presentes aqui no repositório sejam minimamente entendidos.
      - =Double= -> números com ponto flutuante com precisão dobrada
      - =Bool= -> representação booleana (=True= ou =False=)
 
-     Vale dizer que existe o tiop =String=, mas na verdade ele é apenas um apelido
+     Vale dizer que existe o tipo =String=, mas na verdade ele é apenas um apelido
      para uma lista de =Char=: =[Char]=.
 
      Funções também possuem tipos!
-     - =Char -> Char= -> uma função que recebe um argumento =Char= e devolve outro od mesmo tipo
-
-    Ser =lazy= significa que nenhuma função computa o valor de seus argumentos, a menos
-    que seja necessário. Isso cria a possibilidade de gerenciamento de estruturas de dados
-    infinitas ou a habilidade de de escrever estruturas de controle de fluxo (=if/else=) apenas
-    escrevendo funções normais.
-
-    Exemplo: =take 10 [1..]=
-
-    Isso me retorna 10 elementos de uma lista infinita!
+     - =Char -> Char= -> uma função que recebe um argumento =Char= e devolve outro do mesmo tipo
 
 ***** Variáveis de tipos
       Qual seria a tipagem da função =head=, que retorna o primeiro elemento de uma lista?
@@ -84,7 +84,7 @@ que os códigos presentes aqui no repositório sejam minimamente entendidos.
 
       Hmmm... Ok, mas o que é =a=?
       É uma variável de tipo! Isso significa que qualquer tipo
-      pode substituir =a=! É como se você a ideia de "Generics" em
+      pode substituir =a=! É como se fosse a ideia de "Generics" em
       =Java=, =C#= ou =TypeScript=!
 
       A variável de tipo pode ter qualquer nome, mas para fins de legibilidade e
@@ -104,7 +104,7 @@ que os códigos presentes aqui no repositório sejam minimamente entendidos.
 	(/=) :: Eq a => a -> a -> Bool
       #+end_src
 
-      Mais para frente explico como os operadores são na verdade, funções em =Haskell=.
+      Mais para frente explico como os operadores são, na verdade, funções em =Haskell=.
 
       A =Eq= classe define dois comportamentos, que na verdade apenas um precisa ser implementado:
       ~(==), (/==)~. Os operadores de igualdade e desigualdade. Se um tipo faz parte da classe de tipo =Eq=, ele
@@ -125,14 +125,14 @@ que os códigos presentes aqui no repositório sejam minimamente entendidos.
     uma vez definidas, "declaradas" ou inicializadas, elas não poderão
     assumir outro valor durante a execução do programa.
 
-    Por consequência, possui várias vantagens:
-    - Efeitos colaterais são evitados "não visíveis"
+    Por consequência, isso possui várias vantagens:
+    - Efeitos colaterais "não visíveis" são evitados
     - Torna-se simples fazer cache de valores
-    - Programação em múltiplas thread se torna mais segura
+    - Programação em múltiplas threads se torna mais segura
     - Caso haja algum erro, fica mais fácil de debuggar
 
-    Obviamente essas vantagens vêm conjunto uma disvantagem: o consumo
-    de memória se torna considerávelmente maior, uma vez que é necessário
+    Obviamente essas vantagens vêm traz uma desvantagem: o consumo
+    de memória se torna consideravelmente maior, uma vez que é necessário
     duplicar e recriar diversas vezes o mesmo valor na memória.
 
     Entretanto, se projetado de forma consciente, principalmente nos dias
@@ -176,7 +176,7 @@ que os códigos presentes aqui no repositório sejam minimamente entendidos.
        x[3] = 8;
 
        // [1, 2, 3, 8]
-       print(x);
+       print(&x);
      #+end_src
 
      Em =Haskell=, você faria:
@@ -233,7 +233,7 @@ que os códigos presentes aqui no repositório sejam minimamente entendidos.
 
      Pois bem, definimos uma variável =soma=, que recebe a função de adição!
 
-     *É importante notar que operadores em =Haskell= também são funções.*
+     *É importante notar que operadores em Haskell também são funções.*
 
      Isso significa que podemos usar nossa função =soma= na representação infixa:
      #+begin_src haskell
@@ -248,12 +248,12 @@ que os códigos presentes aqui no repositório sejam minimamente entendidos.
      #+end_src
 
      Primeira observação: colocamos um apóstrofo no nome de uma variável quando
-     queremos dizer que ela representa um valor existe, mas que foi alterado! Quanto
-     mais apostófos, mais modificação (não mutação) a variável sofreu, mas tenha o bom senso...
+     queremos dizer que ela representa um valor existente, mas que foi modificado! Quanto
+     mais apostófos, mais modificações (não mutação) a variável sofreu, mas tenha o bom senso...
 
      Bem, a função =map= (=map :: (a -> b) -> [a] -> [b]=) recebe outra função como primeiro parâmetro e aplica ela em cada elemento
      da lista, retornando uma outra lista de outro tipo! Neste caso, aplico a função =show=, que transforma um valor em =String=,
-     desde que o tipo do valor seja membro da classe de tiop =Show=.
+     desde que o tipo do valor seja membro da classe de tipo =Show=.
 
      Já uma closure, poderia ser assim:
      #+begin_src haskell
@@ -270,7 +270,7 @@ que os códigos presentes aqui no repositório sejam minimamente entendidos.
      Primeiro definimos =f=, que recebe um argumento =x= e devolve uma função anônima, ou
      uma função =lambda=. Ela é anônima pois depois que é executada, é descartada da memória.
 
-     Depois, definimos uma nova função =soma5=, que a é a função =f= com o argumento =5=.
+     Depois, definimos uma nova função =soma5=, que a é a função =f= chamada com o argumento =5=.
      Isso siginifica q =f= retornou uma função, mesmo que =lambda=, dessa maneira:
      =(\y -> 5 + y)=.
 
@@ -284,7 +284,7 @@ que os códigos presentes aqui no repositório sejam minimamente entendidos.
       double x = (*) x 2
     #+end_src
 
-    Essa função é pura, pois ela não afeta nenhum escopo, muito menos afeta algum estado fora
+    Essa função é pura, pois ela não afeta nenhum escopo externo, muito menos afeta algum estado fora
     do escopo dela.
 
     Outra regra que uma função pura deve seguir é que se ela for chamada com o mesmo argumento, sempre
@@ -292,19 +292,19 @@ que os códigos presentes aqui no repositório sejam minimamente entendidos.
 
     Exemplo, mesmo que você chame a função =double= N vezes com o argumento =2=, ela sempre retornará =4=.
 
-    Em =Haskell= isso é levado ainda mais longe: mesmo operações de =IO= são formadas por funções puras,
+    Em =Haskell=, funções puras são levadas ainda mais longe: mesmo operações de =IO= são formadas por funções puras,
     sendo apenas uma descrição do que fazer. Não existem =statements=.
 
     #+begin_src haskell
       "Name: " ++ getLine
     #+end_src
 
-    Essa concatenação de strings dará erro de tipo, pois ="Nanme: "= é do tipo =String= e
+    Essa concatenação de strings dará erro de tipo, pois ~"Name: "~ é do tipo =String= e
     =getLine= retorna um valor do tipo =IO String=.
 
 
 *** Sintaxes
-    Aqui listarei algumas sintaxes que serão necessárias para o código desse repositório:
+    Aqui listarei algumas sintaxes que serão necessárias para entender o código desse repositório:
 
 **** Pattern Matching
     Imagine que tenho uma lista =[1,2,3]=, e quero fazer uma função para somar os elementos.
@@ -315,13 +315,13 @@ que os códigos presentes aqui no repositório sejam minimamente entendidos.
       soma (x:xs) = x + (soma xs)
     #+end_src
 
-    Interessante... Houve duas definições da mesma função, alem de ser um algoritmo recursivo...
+    Interessante... Houve duas definições da mesma função, além de ser um algoritmo recursivo...
 
     Bem, na primeira cláusula, dizemos que, caso a função =soma= receba uma lista vazia,
     será devolvida uma lista vazia. Esse é o caso base da recursão.
 
     Agora, caso ela receba uma lista com elementos, usamos a correspôndencia de valores novamente
-    para tentar dar um =match=. Divido a lista na sua cabeça e na sua cauda, atribuindo respectivamente as
+    para tentar dar um =match=. Divido a lista na sua cabeça e na sua cauda, atribuindo respectivamente às
     variáveis =x= e =xs=.
 
     Uma lista, como =[1,2,3]= não é nada mais nada menos do que: ~(1:(2:(3:[])))~.
@@ -331,24 +331,23 @@ que os códigos presentes aqui no repositório sejam minimamente entendidos.
 
      #+begin_src haskell
        max' :: (Ord a) => a -> a -> a
-       max' a b
-	 | a > b     = a
-	 | otherwise = b
+       max' x y
+	 | x > y     = x
+	 | otherwise = y
      #+end_src
 
      Uma função para retornar o maior entre dois números!
 
      A função pode ser lida assim:
 
-     Dado os argumentos =a= e =b=, que possuem o tipo =a=, que é membro da classe de tipo
-     =Ord=, verifico se =a= é maior que =b=, caso seja, retorno a, em qualquer outro caso
-     (otherwise), retorno =b=
-
+     Dado os argumentos =x= e =y=, que possuem o tipo =a=, que é membro da classe de tipo
+     =Ord=. Verifico se =x= é maior que =y=, caso seja, retorno =x=, em qualquer outro caso
+     (otherwise), retorno =y=
 
 
 **** Where
      Podemos usar a cláusula =where= para evitar repetições em definições
-     de funções e varáveis, melhorando a ligibilidade dio código.
+     de funções e varáveis, melhorando a legibilidade do código.
 
      #+begin_src haskell
        iniciais :: String -> String -> String
@@ -365,6 +364,6 @@ que os códigos presentes aqui no repositório sejam minimamente entendidos.
 
      E por fim, concatenamos esses carecteres com pontos.
 
-     Podemos definir varáveis, extrair valores de outras varáveis ou funções por meio da
+     Podemos definir varáveis, extrair valores de outras varáveis por meio da
      correspôndencia de valores ou até definir outras funções dentro de uma cláusula =where=, que
      será acessível a todo o escopo daquela função.
