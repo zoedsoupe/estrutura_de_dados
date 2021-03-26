@@ -86,8 +86,8 @@ Este documento se refere ao exercício 2 da LE1, que pode ser encontrado [[../..
     #+begin_src haskell
       insereItem :: Integer -> Conjunto Integer -> Conjunto Integer
       insereItem x a@(Conjunto ys)
-	| not $ pertence x a = Conjunto (x:ys)
-	| otherwise          = a
+	      | not $ pertence x a = Conjunto (x:ys)
+	      | otherwise          = a
     #+end_src
 
     Para remover um elemento de um =Conjunto=, primeiro verifico se é um =Conjunto= vazio.
