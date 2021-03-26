@@ -39,8 +39,8 @@ mantenho privado, em especial, a estrututra do =TAD=.
   #+end_src
 
    Nas primeiras linhas, defino apelidos para o tipo =Double= para deixar mais legível as implementações.
-   Após isso, defino de fato o =TAD=, quie possui 2 construtores de tipo:
-   1. =Vazio= -> representa um =Cilindro= não definido ou "inválido" matemáticamente
+   Após isso, defino de fato o =TAD=, que possui 2 construtores de tipo:
+   1. =Vazio= -> representa um =Cilindro= não definido ou "inválido" matematicamente
    2. =Cilindro= -> o =Cilindro= de fato, que possui um raio e uma altura
 
    Digo que esse TAD deriva das classes de tipo, =Show=, =Eq= e =Ord=. Em outras palavras,
@@ -63,7 +63,7 @@ mantenho privado, em especial, a estrututra do =TAD=.
 
     Funções para recuperar apenas a =Altura= ou apenas o =Raio= de um =Cilindro=. Utilizo a Mônada =Maybe=
 
-    Na Filosofia uma Mônada, do grego ~monas "unit"~, é uma substância individualmente elementar que reflete
+    Na Filosofia uma Mônada, do grego =monas "unit"=, é uma substância individualmente elementar que reflete
     uma dada ordem do mundo da qual propriedades materiais são derivados.
 
     Já na Programação Funcional, uma Mônada é uma abstração que permite estruturar programas de forma genérica.
@@ -74,7 +74,7 @@ mantenho privado, em especial, a estrututra do =TAD=.
     O =Nothing= representa o vazio, ou que algum processamento falhou, porém não há necessidade de lançar uma exeção
     ou parar o programa por inteiro.
 
-    Já o =Just <value>= envolve um valoer que foi corretamente computado e significa que houve êxito.
+    Já o =Just <value>= envolve um valor que foi corretamente computado e significa que houve êxito.
     #+begin_src haskell
       getAltura :: Cilindro -> Maybe Altura
       getAltura Vazio          = Nothing
@@ -85,8 +85,8 @@ mantenho privado, em especial, a estrututra do =TAD=.
       getRaio (Cilindro r _) = Just r
     #+end_src
 
-    O cálculo da área de um =Cilindro é definido por: ~A = 2πr^2 + h(2πr)~. Isolando o termo em comum,
-    a fórmula pode ser siomplificada, resultando em: ~A = 2πr(r + h)~
+    O cálculo da área de um =Cilindro= é definido por: ~A = 2πr^2 + h(2πr)~. Isolando o termo em comum,
+    a fórmula pode ser simplificada, resultando em: ~A = 2πr(r + h)~
     #+begin_src haskell
       calcArea :: Cilindro -> Maybe Area
       calcArea Vazio          = Nothing
