@@ -55,14 +55,14 @@ Este documento se refere ao exercício 4 da LE1, que pode ser encontrado [[../..
     um apelido para o tipo =String=.
 
     Eu simplesmente "encodo", ou, empacoto e converto todos os campos para um único
-    =ByteString=, separado por =,=. Deopis, acrescento as novas linhas no arquivo caso ele exista
+    =ByteString=, separado por vírgulas. Deopis, acrescento as novas linhas no arquivo caso ele exista
     ou crio outro caso ele não exista.
 
-    Note que na função =salvaClientes= eu uso a função =mapM_=, que, assim como a =map=, aplico uma função
+    Note que na função =salvaClientes= eu uso a função =mapM_=, que, assim como a =map=, aplica uma função
     em cada elemento de uma lista. Porém, nesse caso, é uma lista de operações =IO=, que é uma
     Mônada. Portanto, utilizo a versão =mapM_= que permite iterar uma lista de valores envolvidos por
     uma Mônada, aplicar a função desejada em cada elemento, ou nesse caso, apenas executar a tarefa =IO=,
-    e ainda descartar a nova lista gerada por essa operação, pois não me imoprto com ela
+    e ainda descartar a nova lista gerada por essa operação, pois não me importo com ela
     #+begin_src haskell
       salvaCliente :: Cliente -> FilePath -> IO ()
       salvaCliente c path = do
@@ -80,13 +80,13 @@ Este documento se refere ao exercício 4 da LE1, que pode ser encontrado [[../..
     que o tamanho da lista ou menor do que =0=, será lançada uma exeção.
 
     Para evitar isso, faço uma simples conta onde se o índice dado for negativo, converto o índice
-    para ser acessível no lista:
+    para ser acessível na lista:
 
     Tendo índice == x,
 
     Se x < 0 -> troco o sinal e retorno o cliente na posição (-x)
 
-    Se x > tamnho lista -> retorno o Cliente na posição do resto do índice pelo tamanho da lista
+    Se x > tamanho lista -> retorno o Cliente na posição do resto do índice pelo tamanho da lista
     #+begin_src haskell
       getCliente :: IO Clientes -> Int -> IO Cliente
       getCliente c_io idx = do
@@ -165,7 +165,7 @@ Este documento se refere ao exercício 4 da LE1, que pode ser encontrado [[../..
 	      return clientes'
     #+end_src
 
-    Converto um =TAD Cliente= para uma representação de um único =ByteString=, seprado por vírgulas
+    Converto um =TAD Cliente= para uma representação de um único =ByteString=, separado por vírgulas
     #+begin_src haskell
       converteCliente :: Cliente -> B.ByteString
       converteCliente Invalido = B.pack ""
