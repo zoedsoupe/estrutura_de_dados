@@ -21,7 +21,7 @@ Colocarei aqui minhas soluções e testes tanto para a primeira parte da matéri
 Decidi fazer todos os trabalhos e exercícios com a linguagem =Haskell=!
 
 ** Introdução ao Haskell
-   Caso você nunca tenha visto nada sobre =Haskell=, leia [[./INTRODUCAO][este arquivo]].
+   Caso você nunca tenha visto nada sobre =Haskell=, leia [[./INTRODUCAO.org][este arquivo]].
 ** Como contribuir?
    Por favor, siga as instruções de contribuição [[./CONTRIBUTING.org][deste arquivo]].
 ** Material
