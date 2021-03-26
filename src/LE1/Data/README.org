@@ -39,7 +39,7 @@ Este documento se refere ao exercício 3 da LE1, que pode ser encontrado [[../..
 					  } deriving (Eq, Ord)
    #+end_src
 
-   Defino que meu =TAD Data= possui três contrutores de tipo: =Invalida=, =Vazia= e a própria =Data=
+   Defino que meu =TAD Data= possui três construtores de tipo: =Invalida=, =Vazia= e a própria =Data=
    
    Essa é a instância da classe de tipo =Show=, customizada para imprimir um =Data= formatada
    #+begin_src haskell
@@ -70,7 +70,7 @@ Este documento se refere ao exercício 3 da LE1, que pode ser encontrado [[../..
 
     Dado uma =String= no formato =dd/mm/AAAA=, tento criar uma =Data= validada e retorno essa estrutura.
     Uso fortemente a estrutura de controle =case ... of= que, por correspondência de valores, retorna
-    determinado valor caso o argumento de =match= com uma das opções
+    determinado valor caso o argumento dê =match= com uma das opções
     #+begin_src haskell
       converteData :: String -> Data -> Data
       converteData [] d           = d
@@ -85,24 +85,19 @@ Este documento se refere ao exercício 3 da LE1, que pode ser encontrado [[../..
 
     Defino a função de somar dias de uma =Data= recursivamente.
     O caso base é quando os dias a serem somados são 0.
-    Se o dia e mes da data forem 1 e os dias a serem
-    somados forem maior que o tamanho do ano da data,
+    Se o dia e mês da data forem 1 e os dias a serem
+    somados forem maior que o tamanho do ano da =Data=,
     aumento o ano e chamo novamente a função com os dias
-    a serem somados menos o tamnho do ano da data
-    Para qualquer outra data, faço a seguinte verificação:
+    a serem somados menos o tamanho do ano da =Data=
+    Para qualquer outra =Data=, faço a seguinte verificação:
 
     Sendo x os dias a serem somados, temos que
 
-    1. se x é negativo? -> Data Invalida
-    2. se x >= os dias restantes do ano -> ano + 1 e
-       
-          x = x - tamanho do ano
-    3. se x >= os dias restantes no mes ->
-
-          se o mes == 12, aumento o ano, senão aumento o mes e
-
-	  x = x - dias restantes do mes
-    4. caso genérico -> retorno uma data com dias somados a x
+    1. se x é negativo? -> =Data Invalida=
+    2. se x >= os dias restantes do ano -> ano + 1 e x = x - tamanho do ano
+    3. se x >= os dias restantes no mes -> \\
+        se o mes == 12, aumento o ano, senão aumento o mes e x = x - dias restantes do mes
+    4. caso genérico -> retorno uma =Data= com dias somados a x
     #+begin_src haskell
       somaDias :: Data -> Int -> Data
       somaDias data' 0 = data'
@@ -163,9 +158,9 @@ Este documento se refere ao exercício 3 da LE1, que pode ser encontrado [[../..
     da quantidade de dias no mês mais um;
 
     Para achar há quantos dias um ano começou, basta somar a quantidade de dias dos meses passados
-    mais a quantidade de dias do mês atual menos um;
+    com a quantidade de dias do mês atual menos um;
 
-    Finalmente, diminuo do tamnho total (em dias) de um ano, os dias que j́a passaram, obtendo
+    Finalmente, diminuo do tamanho total (em dias) de um ano, os dias que já passaram, obtendo
     quantos dias ainda faltam para aquele ano acabar
     #+begin_src haskell
       anoBissexto :: Int -> Bool
@@ -202,7 +197,7 @@ Este documento se refere ao exercício 3 da LE1, que pode ser encontrado [[../..
     A primeira, recebe como argumento uma função =Char -> Bool=, exemplo: ~(== '!')~, e uma =String=;
     devolve a =String= separada pelo delimitador em forma de lista
 
-    A segunda apenas remove um dado elemento de uma lista, retorno outra
+    A segunda apenas remove um dado elemento de uma lista, retornando outra lista sem tal elemento
     #+begin_src haskell
       separa :: (Char -> Bool) -> String -> [String]
       separa p s = case dropWhile p s of
