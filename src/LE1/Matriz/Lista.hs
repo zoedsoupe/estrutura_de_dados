@@ -1,4 +1,4 @@
-module LE1.Exercicio5 where
+module LE1.Matriz.Lista where
 
 import System.Random (Random, randomRs, mkStdGen)
 
