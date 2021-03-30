@@ -1,7 +1,7 @@
 module LE1.Matriz.Array where
 
 import System.Random (randomRs, mkStdGen)
-import Data.Array.Unboxed (UArray, (!), elems, listArray, bounds, array)
+import Data.Array.Unboxed (UArray, (!), elems, listArray, bounds, array, range)
 
 type Elem = Int
 type Arr = UArray
@@ -69,9 +69,21 @@ somaMatriz a b
   where xs = elems a
         ys = elems b
 
--- multiplica :: Matriz -> Matriz -> Matriz
--- multiplica (M m _ xs) b@(M _ n _) = M m n resultado
---    where (M _ _ tys) = transpose b
---          dot x y     = sum $ zipW (*) x y
---          resultado   = map (\col -> map (dot col) tys) xs
--- | n /= m'   = array ((0,0),(-1,0)) []
+multiplicaMatriz :: Matriz -> Matriz -> Matriz
+multiplicaMatriz a b
+  | y0' /= x1'   = array ((0,0),(-1,0)) []
+  | otherwise    = array ((0, 0), (x0', y1')) resultado
+    where ((x0, y0), (x0', y0')) = bounds a
+          ((_, y1), (x1', y1'))  = bounds b
+          linhasA                = range (x0, x0')
+          colunasA               = range (y0, y0')
+          colunasB               = range (y1, y1')
+          resultado              =
+            [ ((la, cb),
+               sum
+               [ a ! (la, ca) * b ! (ca, cb)
+               | ca <- colunasA
+               ])
+            | la <- linhasA
+            , cb <- colunasB
+            ]
