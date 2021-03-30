@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: e7deaca7eec54004e4679e1d094a64e90fbcdd702f3dbdf8e53bf29f6b033328
+-- hash: 09b3249fee1d274676a2c9fd26c5ffddecc18bc3a788b863a3ec00ca82bc1da9
 
 name:           estrutura-dados
 version:        0.2.1.0
@@ -38,6 +38,7 @@ library
       src
   build-depends:
       Decimal
+    , array
     , base >=4.7 && <5
     , bytestring
     , directory
@@ -65,6 +66,7 @@ executable estrutura-dados-exe
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       Decimal
+    , array
     , base >=4.7 && <5
     , bytestring
     , directory
@@ -92,6 +94,7 @@ test-suite estrutura-dados-test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       Decimal
+    , array
     , base >=4.7 && <5
     , bytestring
     , directory
