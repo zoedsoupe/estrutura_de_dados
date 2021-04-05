@@ -8,8 +8,8 @@ import LE1.Matriz.Lista
 spec :: Spec
 spec = do
   describe "testa Algoritmos Matrizes Lista" $ do
-    let m       = 5 :: Int
-    let n       = 5 :: Int
+    let m = 5 :: Int
+    let n = 5 :: Int
 
     describe "testa a criação de matrizes lista" $ do
       it "deve criar uma matriz quadrada 2x2 corretamente" $ do
@@ -34,6 +34,24 @@ spec = do
         txs `shouldBe` valores resTxs
 
     describe "testa funções extras" $ do
+      it "deve retornar uma matriz absoluta a partir de outra matriz" $ do
+        let a      = M 2 2 [[-1, -2], [-3, -4]] :: (Matriz Int)
+        let axs    = valores a
+        let axs'   = [[1, 2], [3, 4]]
+        let absa   = abs a
+        let absaxs = valores absa
+        absaxs `shouldBe` axs'
+        axs `shouldSatisfy` (/= absaxs)
+
+      it "deve retornar uma matriz negada" $ do
+        let a    = matriz 2 2 :: (Matriz Int)
+        let axs  = valores a
+        let na   = negate a
+        let naxs = valores na
+        let allN = foldr (\x _ -> if x < 0 then True else False) False $ concat naxs
+        allN `shouldBe` True
+        axs `shouldSatisfy` (/= naxs)
+      
       it "deve retornar uma matriz vazia de signum caso a matriz não seja quadrada" $ do
         let a  = matriz 2 3 :: (Matriz Int)
         let xs = valores $ signum a
