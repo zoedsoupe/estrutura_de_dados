@@ -48,3 +48,5 @@ Em construção...
 2. [[./src/LE1/ConjuntoInt/README.org][Conjunto de Inteiros]]
 3. [[./src/LE1/Data/README.org][Data]]
 4. [[./src/LE1/Clientes/README.org][Clientes]]
+5. [[./src/LE1/Matriz/README.org][Matrizes]]
+6. [[./src/LE1/Recursao/README.org][Recursão]]

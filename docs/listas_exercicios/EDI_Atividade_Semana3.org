@@ -22,37 +22,32 @@ Universidade Estadual do Norte Fluminense Darcy Ribeiro
      seguir:
    #+end_quote
 
-#+begin_quote
-  [[file:media/image1.png]]
+  [[../../assets/sqrt_form.png]]
 
-  Onde: $\text{num}$: é o número cuja raiz quadrada queremos calcular;
-
-  $\text{ans}$: é uma aproximação inicial da raiz quadrada;
-
-  $\text{tol}$: é a tolerância permitida para a raiz quadrada.
+  Onde: 
+  - /num/: é o número cuja raiz quadrada queremos calcular;
+  - /ans/: é uma aproximação inicial da raiz quadrada;
+  - /tol/: é a tolerância permitida para a raiz quadrada.
 
   Implemente um algoritmo recursivo que utilize o método de Newton para
   calcular a raiz quadrada de um número. Verifique o seu algoritmo nos
   seguintes casos:
 
-  $\text{squareRoot}\left( 5,\ 2,\ 0.01 \right)$,
-  $squareRoot(4,\ 2,\ 0.01)$
-#+end_quote
+  /squareRoot(5, 2, 0.01)/,
+  /squareRoot(4, 2, 0.01)/
 
 2. 
 
    #+begin_quote
-     A combinação de $n$ objetos tomados $k$ de cada vez, pode ser
+     A combinação de /n/ objetos tomados /k/ de cada vez, pode ser
      calculada de maneira recursiva usando a seguinte formula de
      recorrência:
    #+end_quote
 
-#+begin_quote
-  [[file:media/image2.png]]
+  [[../../assets/combination.png]]
 
   Esta fórmula pode ser usada para calcular o número de combinações
-  possíveis, $k$ de $n$ objetos. Implemente um algoritmo recursivo para
+  possíveis, /k/ de /n/ objetos. Implemente um algoritmo recursivo para
   calcular a combinação de $n$ objetos tomados $k$ de cada vez.
-  Verifique o seu algoritmo, para $C(49,\ 6)$ que corresponde a um total
+  Verifique o seu algoritmo, para /C(49,\ 6)/ que corresponde a um total
   de $13.983.816$ combinações diferentes.
-#+end_quote
