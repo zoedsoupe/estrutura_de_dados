@@ -1,0 +1,411 @@
+#+title: Matrizes
+#+author: Matheus de Souza Pessanha
+#+email: matheus_pessanha2001@outlook.com
+
+Este documento se refere aos exercícios da LE1, segunda lista, que pode ser encontrado [[../../../docs/listas_exercicios/EDI_Atividade_Semana2.org][neste documento]].
+
+** AVISO
+   Para questões de comparações práticas, implementei os mesmos algoritmos nas suas versões usando
+   Listas Encadeadas e outra usando Unboxed Arrays, que básicamente são Arrays como em C, porém imutáveis!
+
+   Em ~Haskell~ temos dois tipos de Arrays:
+   1. Boxed Arrays
+   2. Unboxed Arrays
+
+*** Boxed Arrays
+    Essa estrutura é implementada como todas as outras em ~Haskell~: de forma ~lazy~, ou seja
+    os elementos apenas são computadas quando necessário!
+
+    Para cada valor nesse Array existe um ponteiro na memória! Isso é perfeito pois podemos definir os elementos
+    de forma recursiva em termos um do outro, além de ser possível de criar um Array infinito.
+
+    Porém, caso o Array seja muito grande, o gasto de memória será muito grande e sua eficiência não
+    será notada! Junto a isso, temos que a Estrutura de Dados Array geralmente é usada para grandes
+    operações com diversos elementos, ou seja, o acesso por índice é extremamente necessário! Para isso,
+    existem os Unboxed Arrays.
+
+*** Unboxed Arrays
+    Essa estrutura se assemelha com os Arrays em ~C~! O acesso por índice é significantevamente mais rápido.
+
+    Entretanto, há algumas desvantagens, como não ser possível usar tipos de dados compostos como valores.
+    Exemplo: o tipo ~String~ é apenas uma lista de ~Char~ (~[Char]~). Apenas tipos únicos podem compor um Unboxed
+    Array!
+
+    Outra desvantagem é que perdemos a característica ~laziness~ da linguagem, pois assim que um do elementos
+    desse Array for computado, todos os outros também serão!
+
+    Esse tipo de Array se encaixa melhor para as implementações dos algoritmos já que sua eficiência pode
+    ser comparada com os Arrays em ~C~!
+    
+** Implementação
+*** Array
+    Criei um novo tipo, que representa um Umboxed Array!
+    Cada Array em ~Haskell~ possui um limite mínimo e máxixo de posições,
+    representados por uma ~2-Tupla~ ou ~Par~. Nesse caso é uma tupla de Inteiros.
+    #+begin_src haskell
+      type Elem = Int
+      type Arr = UArray
+
+      type Matriz = Arr (Int, Int) Elem
+    #+end_src
+
+    Para criar uma ~Matriz~, criei duas funções:
+    1. para converter a partir de uma lista
+    2. para criar aleatoriamente
+
+    Na ~fromList~ eu uso a função ~listArray~ do módulo ~Data.Array.Unboxed~ que recebe
+    os limites mínimos e máximos e uma lista e devolve um ~UArray~ que nesse caso é uma ~Matriz~.
+
+    Como esse ~Array~ tem duas dimensões, o limite mínimo e máximo são ~Pares~, arranjados da seguinte
+    forma: ~((minLinhas, minColunas), (maxLinhas, maxColunas))~
+    #+begin_src haskell
+      fromList :: Int -> Int -> [Elem] -> Matriz
+      fromList i j = listArray ((0, 0),(i-1, j-1))
+    #+end_src
+
+    Já a função ~matriz~, devolve uma ~Matriz~ com os valores aleatoriamente gerados. Porém,
+    como ~Haskell~ é uma linguagem puramente funcional, ela obedece a *Transparência Referencial*, que diz
+    que se uma função recebe os mesmos argumentos, ela irá retornar o mesmo resultado.
+
+    Dito isso, se eu criar duas ~Matrizes~ 2x2, essa função irá me retornar a mesma ~Matriz~ duas vezes!
+    Para solucionar isso eu poderia fazer com que essa função recebesse uma ~seed~ diferente a cada
+    chamada (passando por parâmetro), mas achei desnecessário para fins de testes.
+    #+begin_src haskell
+      matriz :: Int -> Int -> Matriz
+      matriz m n = fromList m n values'
+	where format _ 0 _    = []
+	      format m' n' xs = (take m' xs) : format m' (n'-1) (drop m' xs)
+	      values          = format m n (take (m*n) (randomRs (3, 10) (mkStdGen (m*n))))
+	      values'         = concat values
+    #+end_src
+
+   Soma de ~Matrizes~! Caso os limites sejam diferentes, eu devolvo um ~Array~ vazio, caso contrário
+   crio um novo ~Array~, porém somo todos os elementos da ~Matriz A~ e ~Matriz B~
+   #+begin_src haskell
+     somaMatriz :: Matriz -> Matriz -> Matriz
+     somaMatriz a b
+       | bounds a /= bounds b = array ((0,0),(-1,0)) []
+       | otherwise            = listArray (bounds a) $ zipW (+) xs ys
+       where xs = elems a
+	     ys = elems b
+   #+end_src
+
+   Multiplicação de ~Matrizes~! Essa foi um pouco mais complicada, porém, vamos lá:
+
+   Primeiro, verifico se o número máximo de colunas da ~Matriz A~ é diferente do número máximo
+   de linhas da ~Matriz B~! Se for, eu retorno um ~Array~ vazio.
+
+   Quando forem iguais, eu crio ~ranges~ ou "distância" do número mínimo de linhas e colunas de ~A~ e
+   número de colunas de ~B~, respectivamente.
+
+   Depois, crio uma compreensão de listas de duas dimensões (os elementos de Array são representados por uma lista,
+   porém internamente eles são otimizados para agir como ~Arrays~) e para cada liinha de ~A~ e colunas de ~B~
+   eu realizo a soma de todos os elementos de ~A~ na posição ~(linhaA, colunaA)~ com todos os elementos
+   de ~B~ na posição ~(colunaA, colunaB)~.
+   #+begin_src haskell
+     multiplicaMatriz :: Matriz -> Matriz -> Matriz
+     multiplicaMatriz a b
+       | y0' /= x1'   = array ((0,0),(-1,0)) []
+       | otherwise    = array ((0, 0), (x0', y1')) resultado
+	 where ((x0, y0), (x0', y0')) = bounds a
+	       ((_, y1), (x1', y1'))  = bounds b
+	       linhasA                = range (x0, x0')
+	       colunasA               = range (y0, y0')
+	       colunasB               = range (y1, y1')
+	       resultado              =
+		 [ ((la, cb),
+		    sum
+		    [ a ! (la, ca) * b ! (ca, cb)
+		    | ca <- colunasA
+		    ])
+		 | la <- linhasA
+		 , cb <- colunasB
+		 ]
+   #+end_src
+
+**** Funções extras
+     Algumas funções para manipular ~Matrizes~!
+
+     Funções para:
+     1. Calcular a ~Matriz~ absoluta a partir de outra ~Matriz~
+     2. Negar uma ~Matriz~
+     3. Retornar todas as linhas de uma ~Matriz~
+     4. Retornas todas colunas de uma ~Matriz~
+     5. Criar a transposta de uma ~Matriz~
+     6. Imprimir uma ~Matriz~ formatada
+     #+begin_src haskell
+       absMatriz :: Matriz -> Matriz
+       absMatriz a = listArray (bounds a) $ map (abs) xs
+	 where xs = elems a
+
+       negateMatriz :: Matriz -> Matriz
+       negateMatriz a = listArray (bounds a) $ map (negate) xs
+	 where xs = elems a
+
+       linhas :: Matriz -> Int
+       linhas m = numLinhas + 1
+	 where (_, (numLinhas, _)) = bounds m
+
+       colunas :: Matriz -> Int
+       colunas m = numColunas + 1
+	 where (_, (_, numColunas)) = bounds m
+
+       transpose :: Matriz -> Matriz
+       transpose a = array (bounds a)
+	 [ ((linha, coluna), a ! (coluna, linha))
+	 | linha  <- [sl..el]
+	 , coluna <- [sc..ec]
+	 ]
+	 where ((sl, sc), (el, ec)) = bounds a
+
+       printMatriz :: Matriz -> IO ()
+       printMatriz m = putStrLn $ concat
+	  [ "┌ ", unwords (replicate (colunas m) blank), " ┐\n"
+	  , unlines
+	  [ "│ " ++ unwords (map (\j -> fill . show $ m ! (i,j)) [0..cols]) ++ " │" | i <- [0..lin] ]
+	  , "└ ", unwords (replicate (colunas m) blank), " ┘"
+	  ]
+	where xs                   = elems m
+	      strings              = map (show) xs
+	      widest               = maximum $ map (length) strings
+	      fill str             = replicate (widest - length str) ' ' ++ str
+	      blank                = fill ""
+		cols                 = (colunas m) - 1
+	      lin                  = (linhas m ) - 1
+     #+end_src
+**** Funções de ajuda
+     Minha própria implementação da função ~zipWith~, que aplica uma função
+     ao mesmo tempo que junta duas listas!
+     #+begin_src haskell
+       zipW :: (a -> b -> c) -> [a] -> [b] -> [c]
+       zipW _ [] _          = []
+	 zipW _ _ []          = []
+       zipW f (x:xs) (y:ys) = f x y : zipW f xs ys
+     #+end_src
+
+*** Lista
+    Já para a implementação de Lista eu criei uma nova Estrutura dados (Pública) que
+    representa uma ~Matriz~! O Construtor ~M~ possui linhase colunas do tipo ~Int~ e os
+    valores representação como uma lista de duas dimensões do tipo fornecido. Note que
+    em ~Haskell~, as funções ~linhas~, ~colunas~ e ~valores~ são automaticamente implementadas!
+
+    Essa ~Matriz~ também deriva das classes de tipo ~Eq~ e ~Ord~, ou seja, cada ~Matriz~ pode ser
+    comparada com outras!
+    #+begin_src haskell
+      data Matriz a = M { linhas  :: Int
+			, colunas :: Int
+			, valores :: [[a]]
+			} deriving (Eq, Ord)
+    #+end_src
+
+    Também defino algumas instâncias de outras classes de tipo:
+
+    1. A classe de tipoe ~Foldable~ permite eu implementar as funções ~length~, ~foldr~ e ~foldMap~,
+       porém, nesse caso, preciso apenas da ~length~
+    2. Fazer parte da classe de tipo ~Functor~ significa que essa estrutura
+       pode ser mapeada, ou seja, transforma algo da categoria ~a~ para
+       ~b~. A função ~map~ é uma implementação da ~fmap~ da classe de tipo ~Functor~,
+       porém especializada em ~Listas~.
+
+       Essa instância permite que eu use ~fmap~ diretamente numa ~Matriz~ ao invés de eu ter
+       que pegar os valores dela e mapear.
+
+    3. Geralmente n~ devemos usar a instância da classe de tipos ~Show~, porém, como os valores
+       são representador por uma lista, decidi implementar essa instância.
+
+    4. A instância princicpal! A classe de tipo ~Num~ permite que eu use os
+       operadores ~(+)~, ~(*)~ entre outras funções! É nessa instância que defino as
+       *guard clauses*, ou seja, decido se uma ~Matriz~ é válida para ser somada ou multiplicada.
+
+       Também defino as funções ~abs~, ~negate~, que possuem a mesma finalidade que a ~absMatriz~
+       e ~negateMatriz~ na implementação com ~Arrays~.
+
+       Já função ~signum~ retorna 1 caso o número seja positivo, -1 se for negatuivo e 0 se o argumento
+       for 0. Implemntei ela para caso receba uma ~Matriz mXn~ ela retorne uma ~Matriz Identidade~ de
+       ~m~ linhas e ~n~ colunas, a partir de uma lista infinita.
+    #+begin_src haskell
+      instance Foldable Matriz where
+	length (M _ _ xs) = length $ concat xs
+	foldMap = undefined
+	foldr   = undefined
+
+      instance Functor Matriz where
+       fmap f (M n m xs) = M n m (map (map f) xs)
+
+      instance Show m => Show (Matriz m) where
+	show (M _ _ [])  = "[]"
+	show m@(M _ _ _) = printMatriz m
+
+      instance Num a =>  Num (Matriz a) where
+	(+) (M m n xs) (M m' n' ys)
+	  | m /= m' = M 0 0 []
+	  | n /= n' = M 0 0 []
+	  | otherwise = M m n (soma xs ys)
+
+	fromInteger = undefined
+
+	signum (M m n _)
+	  | m /= n    = M 0 0 []
+	  | otherwise = M m n (take m (take m <$> sign))
+
+	abs (M m n xs)    = M m n (map (map abs) xs)
+
+	negate (M m n xs) = M m n (map (map negate) xs)
+
+	(*) a@(M _ n _) b@(M m' _ _)
+	  | n /= m' = M 0 0 []
+	  | otherwise = multiplica a b
+    #+end_src
+
+    Já a soma e a multiplicação, ao contrário da implementação com ~Arrays~, recebem apenas os valores
+    da ~Matriz~, que são uma lista bidimensional!
+
+    A ~soma~ é tão simples quanto compor a função ~zipW~, passando como argumento os valores da ~Matriz A~ e ~Matriz B~
+    (veja na instância da classe de tipo ~Num~).
+
+    Na função ~multiplica~, uso outro algoritmo: crio a transposta de ~B~ e mapeio os valores e ~A~
+    aplicando uma função que mapeia cada coluna fazendo a multiplicação de cada coluna da transposta de ~B~
+    e depois somo todos os valores.
+
+    Isoo significa que tenho dois loop:
+
+    1. aplica uma função em cada coluna de ~A~
+    2. para cada coluna de ~A~, mapeio as colunas da transposta de ~B~
+    3. uso a ~zipW~ para multiplicar, a partir de uma ~closure~ as linhas de ~A~ e ~B~
+    4. por fim, somo a lista multiplicada
+
+    *closure*: uma função que encapsula o escopo acima dela, ou seja, ela "lembra" do estado anterior.
+    #+begin_src haskell
+      soma :: Num a => [[a]] -> [[a]] -> [[a]]
+      soma = (zipW . zipW) (+)
+
+      multiplica :: Num a => Matriz a -> Matriz a -> Matriz a
+      multiplica (M m _ xs) b@(M _ n _) = M m n resultado
+	where (M _ _ tys) = transpose b
+		dot x y     = sum $ zipW (*) x y
+	      resultado   = map (\col -> map (dot col) tys) xs
+    #+end_src
+**** Funções extras
+     Basicamente as mesmas funções da implementação com ~Arrays~, porém modificadas para aceitar a
+     Estrutura de Dados ~Matriz~
+     #+begin_src haskell
+       transpose :: Num a => Matriz a -> Matriz a
+       transpose (M m n [])           = M m n []
+       transpose (M m n ([]:xss))     = transpose (M m n xss)
+       transpose (M m n ((x:xs):xss)) = M m n (hd:ys)
+	 where hd         = (x : [h | (h:_) <- xss])
+	       (M _ _ ys) = transpose (M m n (xs : [t | (_:t) <- xss]))
+
+       printMatriz :: Show a => Matriz a -> String
+       printMatriz m = concat
+	  [ "┌ ", unwords (replicate (colunas m) blank), " ┐\n"
+	  , unlines
+	  [ "│ " ++ unwords (fmap (\j -> fill $ strings ! (i,j)) [1..colunas m]) ++ " │" | i <- [1..linhas m] ]
+	  , "└ ", unwords (replicate (colunas m) blank), " ┘"
+	  ]
+	where strings@(M _ _ v) = fmap show m
+	      widest            = maximum $ fmap length v
+		fill str          = replicate (widest - length str) ' ' ++ str
+	      blank             = fill ""
+     #+end_src
+**** Funções de ajuda
+     Tirando a ~zipW~, temos novas funções de apoio!
+
+     1. ~sign~ -> cria uma lista inifita na qual representa uma ~Matriz Identidade~
+     2. ~(!)~ -> crio um novo operador, para acessar o elemento da posição ~(i, j)~
+	de uma lista bidimensional
+     3. ~encode~ -> um pequeno cálculo para tornar o uso do operador ~(!!)~ mais eguro, sem exeções
+     #+begin_src haskell
+       sign :: Num a => [[a]]
+       sign = (1:repeat 0) : fmap (0:) sign
+
+       (!) :: Matriz a -> (Int,Int) -> a
+       (!) (M _ n xs) (i, j) = v !! (encode n (i, j))
+	 where v = concat xs
+
+       encode :: Int -> (Int,Int) -> Int
+       encode m (i,j) = (i - 1) * m + j - 1
+
+       zipW :: (a -> b -> c) -> [a] -> [b] -> [c]
+       zipW _ [] _          = []
+	 zipW _ _ []          = []
+       zipW f (x:xs) (y:ys) = f x y : zipW f xs ys
+     #+end_src
+** Medidores
+   Funções para medir o tempo de cada operação!
+
+   Funciona da seguinte maneira:
+
+   1. crio um novo "cronômetro" com a função ~start~, que devolve uma ~Ref~ envolvida pela Mônada
+      ~IO~.
+   2. para cada "checkpoint", ou seja, cada momento que eu preciso delimitar e gravar o tempo,
+      uso a função ~timerc~.
+   3. depois, uso a ~getVals~ - passando o resultado de ~start~ - que retorna todos os valores gravados
+      a partir de ~timerc~
+   4. passo o resultado de ~getVals~ para o ~timert~ que formata e devolve todos os checkpoints com o tempo
+      calculado.
+   #+begin_src haskell
+     start :: IO (IORef [a])
+     start = newIORef []
+
+     getVals :: IORef a -> IO a
+     getVals = readIORef
+
+     timert :: [(String, T.UTCTime)] -> [String]
+     timert (_:[]) = error "1???"
+     timert ([]) = error "2???"
+     timert ((s,x):b@(s',y):z) = ((pure $ mconcat [s, " -> ", s', ": ", show (T.diffUTCTime y x)]) ++) $ case z of
+				[] -> []
+				zz -> timert (b : zz)
+
+     timerc :: IORef [(String, T.UTCTime)] -> String -> IO ()
+     timerc vr s = do
+       vvv <- readIORef vr
+       vvv' <- timerb s vvv
+       writeIORef vr vvv'
+   #+end_src
+** Resultados
+   Aqui apresento as tabelas com os resultados de tempo e número de operações para cada implementação
+*** Array
+    | *Tamanho /n/* | *Soma de Matrizes* |          | *Multiplicação de Matrizes* |          |
+    |-------------+------------------+----------+---------------------------+----------|
+    |             |       /Tempo (ms)/ | /N° Oper./ |               /Tempo (ms) | /N° Oper./ |
+    |         100 |         3.246232 | 4x\10^4  |                 14.046627 | 1x\10^5  |
+    |         300 |         29.37836 | 36x\10^4 |                542.895129 | 9x\10^5  |
+    |         500 |         53.60583 | 1x\10^6  |               3395.400889 | 25x\10^5 |
+    |        1000 |        124.81103 | 4x\10^6  |              34491.314519 | 1x\10^7  |
+
+    Na ~soma~ eu realizo essas operações:
+    1. extrair elementos da ~Matriz A~
+    2. extrair elementos da ~Matriz B~
+    3. somar os elementos
+    4. criar ~Matriz C~
+
+    Já na ~multiplicação~ eu realizo 10 operações:
+    1. os limites de ~A~
+    2. os limites de ~B~
+    3. as linhas de ~A~
+    4. as colunas de ~A~
+    5. as colunas de ~B~
+    6. a soma dos resultados
+    7. acesso por index ~Matriz A~
+    8. acesso por index ~Matriz B~
+    9. multiplição
+    10. criação da nova ~Matriz C~
+*** Lista
+    | *Tamanho /n/* | *Soma de Matrizes* |          | *Multiplicação de Matrizes* |          |
+    |-------------+------------------+----------+---------------------------+----------|
+    |             | /Tempo (ms)/       | /N° Oper./ | /Tempo (ms)               | /N° Oper./ |
+    |         100 | 123x\10^2        | 2x\10^4  | 223x\10^2                 |    20200 |
+    |         300 | + de 123x\10^5   | 18x\10^4 | inviável                  |   180600 |
+    |         500 | inviável         | 5x\10^5  | inviável                  |   501000 |
+    |        1000 | inviável         | 2x\10^6  | inviável                  |  2002000 |
+
+    Percebemos que apenas pelo fato de usarmos uma Estrutura de Dados como uma Lista Encadeada,
+    o tempo exigido chega a ser incalculável!
+
+    Mesmo que na ~soma~ o número de operações seja menor do que em ~Arrays~, o acesso a cada
+    elemento é mais demorado, pois os elementos no são gravados continuamente na memória!
+
+    Já na ~multiplicação~, mesmo eu realizando a transposta de cada lista, o número de operações também é menor,
+    entretanto, sofre da mesma desvantagem de acesso das Listas Enmcadeadas!
