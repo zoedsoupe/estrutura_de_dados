@@ -4,6 +4,14 @@ import System.IO (hFlush, stdout)
 import System.Exit (exitSuccess)
 import System.Console.Pretty (Pretty(..), Color(..), Style(..), style, color)
 
+evens :: [a] -> [a]
+evens (x:xs) = x:odds xs
+evens _ = []
+
+odds :: [a] -> [a]
+odds (_:xs) = evens xs
+odds _ = []
+
 exit :: IO ()
 exit = do
   putStrLn $ toSuccess "Até mais!!!"

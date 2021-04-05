@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 09b3249fee1d274676a2c9fd26c5ffddecc18bc3a788b863a3ec00ca82bc1da9
+-- hash: 2c8693a9805bb3d1c78fea7c1de12b773a4c750518d6a777ff5634d7f5ce7236
 
 name:           estrutura-dados
 version:        0.2.1.0
@@ -32,6 +32,7 @@ library
       LE1.Data.TAD
       LE1.Matriz.Array
       LE1.Matriz.Lista
+      LE1.Matriz.Medidores
   other-modules:
       Paths_estrutura_dados
   hs-source-dirs:
@@ -48,6 +49,7 @@ library
     , table-layout
     , temporary
     , text
+    , time
     , unix-compat
   default-language: Haskell2010
 
@@ -59,6 +61,7 @@ executable estrutura-dados-exe
       Helpers.Clientes
       Helpers.ConjuntoInt
       Helpers.Data
+      Helpers.Matriz
       Menu
       Paths_estrutura_dados
   hs-source-dirs:
@@ -77,6 +80,7 @@ executable estrutura-dados-exe
     , table-layout
     , temporary
     , text
+    , time
     , unix-compat
   default-language: Haskell2010
 
@@ -105,5 +109,6 @@ test-suite estrutura-dados-test
     , table-layout
     , temporary
     , text
+    , time
     , unix-compat
   default-language: Haskell2010
