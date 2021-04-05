@@ -15,6 +15,8 @@ prox :: Double -> Double -> Double
 prox n x0 = (x0 + n / x0) / 2
 
 step :: Double -> [Double] -> Double
+step _ []  = 0
+step _ [_] = 0
 step eps (x0:t@(x1:_))
   | abs(x0 - x1) < eps = x1
   | otherwise          = step eps t
