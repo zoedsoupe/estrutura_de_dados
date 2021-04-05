@@ -6,7 +6,7 @@ Este documento se refere aos exercícios da LE1, segunda lista, que pode ser enc
 
 ** AVISO
    Para questões de comparações práticas, implementei os mesmos algoritmos nas suas versões usando
-   Listas Encadeadas e outra usando Unboxed Arrays, que básicamente são Arrays como em C, porém imutáveis!
+   Listas Encadeadas e outra usando Unboxed Arrays, que basicamente são Arrays como em C, porém imutáveis!
 
    Em ~Haskell~ temos dois tipos de Arrays:
    1. Boxed Arrays
@@ -57,7 +57,9 @@ Este documento se refere aos exercícios da LE1, segunda lista, que pode ser enc
     os limites mínimos e máximos e uma lista e devolve um ~UArray~ que nesse caso é uma ~Matriz~.
 
     Como esse ~Array~ tem duas dimensões, o limite mínimo e máximo são ~Pares~, arranjados da seguinte
-    forma: ~((minLinhas, minColunas), (maxLinhas, maxColunas))~
+    forma:
+
+    ~((minLinhas, minColunas), (maxLinhas, maxColunas))~
     #+begin_src haskell
       fromList :: Int -> Int -> [Elem] -> Matriz
       fromList i j = listArray ((0, 0),(i-1, j-1))
@@ -80,7 +82,7 @@ Este documento se refere aos exercícios da LE1, segunda lista, que pode ser enc
     #+end_src
 
    Soma de ~Matrizes~! Caso os limites sejam diferentes, eu devolvo um ~Array~ vazio, caso contrário
-   crio um novo ~Array~, porém somo todos os elementos da ~Matriz A~ e ~Matriz B~
+   crio um novo ~Array~, porém somo cada elemento da ~Matriz A~ com seu correspondente na ~Matriz B~, gerando uma ~Matriz C~
    #+begin_src haskell
      somaMatriz :: Matriz -> Matriz -> Matriz
      somaMatriz a b
@@ -100,8 +102,8 @@ Este documento se refere aos exercícios da LE1, segunda lista, que pode ser enc
 
    Depois, crio uma compreensão de listas de duas dimensões (os elementos de Array são representados por uma lista,
    porém internamente eles são otimizados para agir como ~Arrays~) e para cada liinha de ~A~ e colunas de ~B~
-   eu realizo a soma de todos os elementos de ~A~ na posição ~(linhaA, colunaA)~ com todos os elementos
-   de ~B~ na posição ~(colunaA, colunaB)~.
+   eu realizo a soma da multiplicação de cada elemento de ~A~ na posição ~(linhaA, colunaA)~ com seu
+   correspondente elementos em ~B~ na posição ~(colunaA, colunaB)~.
    #+begin_src haskell
      multiplicaMatriz :: Matriz -> Matriz -> Matriz
      multiplicaMatriz a b
@@ -179,14 +181,14 @@ Este documento se refere aos exercícios da LE1, segunda lista, que pode ser enc
      #+begin_src haskell
        zipW :: (a -> b -> c) -> [a] -> [b] -> [c]
        zipW _ [] _          = []
-	 zipW _ _ []          = []
+       zipW _ _ []          = []
        zipW f (x:xs) (y:ys) = f x y : zipW f xs ys
      #+end_src
 
 *** Lista
     Já para a implementação de Lista eu criei uma nova Estrutura dados (Pública) que
-    representa uma ~Matriz~! O Construtor ~M~ possui linhase colunas do tipo ~Int~ e os
-    valores representação como uma lista de duas dimensões do tipo fornecido. Note que
+    representa uma ~Matriz~! O Construtor ~M~ possui linhas e colunas do tipo ~Int~ e os
+    valores são representados como uma lista de duas dimensões do tipo fornecido. Note que
     em ~Haskell~, as funções ~linhas~, ~colunas~ e ~valores~ são automaticamente implementadas!
 
     Essa ~Matriz~ também deriva das classes de tipo ~Eq~ e ~Ord~, ou seja, cada ~Matriz~ pode ser
@@ -210,8 +212,8 @@ Este documento se refere aos exercícios da LE1, segunda lista, que pode ser enc
        Essa instância permite que eu use ~fmap~ diretamente numa ~Matriz~ ao invés de eu ter
        que pegar os valores dela e mapear.
 
-    3. Geralmente n~ devemos usar a instância da classe de tipos ~Show~, porém, como os valores
-       são representador por uma lista, decidi implementar essa instância.
+    3. Geralmente não devemos usar a instância da classe de tipos ~Show~, porém, como os valores
+       são representados por uma lista, decidi implementar essa instância.
 
     4. A instância princicpal! A classe de tipo ~Num~ permite que eu use os
        operadores ~(+)~, ~(*)~ entre outras funções! É nessa instância que defino as
@@ -220,8 +222,8 @@ Este documento se refere aos exercícios da LE1, segunda lista, que pode ser enc
        Também defino as funções ~abs~, ~negate~, que possuem a mesma finalidade que a ~absMatriz~
        e ~negateMatriz~ na implementação com ~Arrays~.
 
-       Já função ~signum~ retorna 1 caso o número seja positivo, -1 se for negatuivo e 0 se o argumento
-       for 0. Implemntei ela para caso receba uma ~Matriz mXn~ ela retorne uma ~Matriz Identidade~ de
+       Já função ~signum~ retorna 1 caso o número seja positivo, -1 se for negativo e 0 se o argumento
+       for 0. Implementei ela para caso receba uma ~Matriz mXn~ ela retorne uma ~Matriz Identidade~ de
        ~m~ linhas e ~n~ colunas, a partir de uma lista infinita.
     #+begin_src haskell
       instance Foldable Matriz where
@@ -263,11 +265,11 @@ Este documento se refere aos exercícios da LE1, segunda lista, que pode ser enc
     A ~soma~ é tão simples quanto compor a função ~zipW~, passando como argumento os valores da ~Matriz A~ e ~Matriz B~
     (veja na instância da classe de tipo ~Num~).
 
-    Na função ~multiplica~, uso outro algoritmo: crio a transposta de ~B~ e mapeio os valores e ~A~
+    Na função ~multiplica~, uso outro algoritmo: crio a transposta de ~B~ e mapeio os valores de ~A~
     aplicando uma função que mapeia cada coluna fazendo a multiplicação de cada coluna da transposta de ~B~
     e depois somo todos os valores.
 
-    Isoo significa que tenho dois loop:
+    Isso significa que tenho dois loop:
 
     1. aplica uma função em cada coluna de ~A~
     2. para cada coluna de ~A~, mapeio as colunas da transposta de ~B~
@@ -311,10 +313,9 @@ Este documento se refere aos exercícios da LE1, segunda lista, que pode ser enc
 **** Funções de ajuda
      Tirando a ~zipW~, temos novas funções de apoio!
 
-     1. ~sign~ -> cria uma lista inifita na qual representa uma ~Matriz Identidade~
-     2. ~(!)~ -> crio um novo operador, para acessar o elemento da posição ~(i, j)~
-	de uma lista bidimensional
-     3. ~encode~ -> um pequeno cálculo para tornar o uso do operador ~(!!)~ mais eguro, sem exeções
+     1. ~sign~ -> cria uma lista infinita na qual representa uma ~Matriz Identidade~
+     2. ~(!)~ -> crio um novo operador, para acessar o elemento da posição ~(i, j)~ de uma lista bidimensional
+     3. ~encode~ -> um pequeno cálculo para tornar o uso do operador ~(!!)~ mais seguro, sem exeções
      #+begin_src haskell
        sign :: Num a => [[a]]
        sign = (1:repeat 0) : fmap (0:) sign
@@ -341,7 +342,7 @@ Este documento se refere aos exercícios da LE1, segunda lista, que pode ser enc
    2. para cada "checkpoint", ou seja, cada momento que eu preciso delimitar e gravar o tempo,
       uso a função ~timerc~.
    3. depois, uso a ~getVals~ - passando o resultado de ~start~ - que retorna todos os valores gravados
-      a partir de ~timerc~
+      a partir de ~timerc~.
    4. passo o resultado de ~getVals~ para o ~timert~ que formata e devolve todos os checkpoints com o tempo
       calculado.
    #+begin_src haskell
@@ -408,4 +409,4 @@ Este documento se refere aos exercícios da LE1, segunda lista, que pode ser enc
     elemento é mais demorado, pois os elementos no são gravados continuamente na memória!
 
     Já na ~multiplicação~, mesmo eu realizando a transposta de cada lista, o número de operações também é menor,
-    entretanto, sofre da mesma desvantagem de acesso das Listas Enmcadeadas!
+    entretanto, sofre da mesma desvantagem de acesso das Listas Encadeadas!
