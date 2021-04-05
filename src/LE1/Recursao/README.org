@@ -10,7 +10,7 @@ Este documento se refere aos exercícios da LE1, segunda lista, que pode ser enc
 
    Essa é a fórmula:
    #+caption: Fórmula da raiz quadrada de Newton-Raphson
-   [[./assets/sqrt_form.png]]
+   [[../../../assets/sqrt_form.png]]
 
    Onde:
    - /num/: é o número cuja raiz quadrada queremos calcular;
