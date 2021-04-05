@@ -1,0 +1,54 @@
+#+title: Recursão
+#+author: Matheus de Souza Pessanha
+#+email: matheus_pessanha2001@outlook.com
+
+Este documento se refere aos exercícios da LE1, segunda lista, que pode ser encontrado [[../../../docs/listas_exercicios/EDI_Atividade_Semana3.org][neste documento]].
+
+** Raiz Quadrada pelo método de Newton-Raphson
+   /Isaac Newton/ e /Joseph Raphson/ definiram um algoritmo para achar a raiz quadrada de qualquer
+   número, a paritir de uma aproximação inicial e uma tolerância (passo) para fazer o cálculo!
+
+   Essa é a fórmula:
+   #+caption: Fórmula da raiz quadrada de Newton-Raphson
+   [[./assets/sqrt_form.png]]
+
+   Onde:
+   - /num/: é o número cuja raiz quadrada queremos calcular;
+   - /ans/: é uma aproximação inicial da raiz quadrada;
+   - /tol/: é a tolerância permitida para a raiz quadrada.
+
+*** Implementação
+    Primeiro, valido as entradas:
+
+    Caso o número, a aproximação ou a tolerância forem menores que 0, retorno -1.
+    Caso contrário, calculo as possíveis aproximações a paritir da incial, devolvendo uma lista infinita.
+
+    Depois disso, mando a tolerância e as aproximações para a função ~step~, que faz o seguinte:
+    Extraindo a seguinda aproximação (~x1~) da lista infinita, caso o valor absoluto da primeira
+    aproximação (~x0~) seja menor que a tolerância, retorno a segunda aproximação. Do contrário,
+    chamo recursivamente a função ~step~ com a tolerância inicial, passando todas as aproximações
+    retirando a primeira da lista
+    #+begin_src haskell
+      module LE1.Recursao.Raiz (nSqrt) where
+
+      nSqrt :: Double -> Double -> Double -> Double
+      nSqrt n a i
+	| n < 0     = -1
+	| a < 0     = -1
+	| i == 0    = -1
+	| i < 0     = -1
+	| otherwise = step i (approximations a n)
+
+      approximations :: Double -> Double -> [Double]
+      approximations x0 n = iterate (prox n) x0
+
+      prox :: Double -> Double -> Double
+      prox n x0 = (x0 + n / x0) / 2
+
+      step :: Double -> [Double] -> Double
+      step _ []  = 0
+      step _ [_] = 0
+      step eps (x0:t@(x1:_))
+	| abs(x0 - x1) < eps = x1
+	| otherwise          = step eps t
+    #+end_src
