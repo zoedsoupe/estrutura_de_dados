@@ -370,10 +370,10 @@ Este documento se refere aos exercícios da LE1, segunda lista, que pode ser enc
     | *Tamanho /n/* | *Soma de Matrizes* |          | *Multiplicação de Matrizes* |          |
     |-------------+------------------+----------+---------------------------+----------|
     |             |       /Tempo (ms)/ | /N° Oper./ |               /Tempo (ms) | /N° Oper./ |
-    |         100 |         3.246232 | 4x\10^4  |                 14.046627 | 1x\10^5  |
-    |         300 |         29.37836 | 36x\10^4 |                542.895129 | 9x\10^5  |
-    |         500 |         53.60583 | 1x\10^6  |               3395.400889 | 25x\10^5 |
-    |        1000 |        124.81103 | 4x\10^6  |              34491.314519 | 1x\10^7  |
+    |         100 |         3.246232 |   4x10^4 |                 14.046627 |   1x10^5 |
+    |         300 |         29.37836 |  36x10^4 |                542.895129 |   9x10^5 |
+    |         500 |         53.60583 |   1x10^6 |               3395.400889 |  25x10^5 |
+    |        1000 |        124.81103 |   4x10^6 |              34491.314519 |   1x10^7 |
 
     Na ~soma~ eu realizo essas operações:
     1. extrair elementos da ~Matriz A~
@@ -396,10 +396,10 @@ Este documento se refere aos exercícios da LE1, segunda lista, que pode ser enc
     | *Tamanho /n/* | *Soma de Matrizes* |          | *Multiplicação de Matrizes* |          |
     |-------------+------------------+----------+---------------------------+----------|
     |             | /Tempo (ms)/       | /N° Oper./ | /Tempo (ms)               | /N° Oper./ |
-    |         100 | 123x\10^2        | 2x\10^4  | 223x\10^2                 |    20200 |
-    |         300 | + de 123x\10^5   | 18x\10^4 | inviável                  |   180600 |
-    |         500 | inviável         | 5x\10^5  | inviável                  |   501000 |
-    |        1000 | inviável         | 2x\10^6  | inviável                  |  2002000 |
+    |         100 | 123x10^2         |   2x10^4 | 223x10^2                  |    20200 |
+    |         300 | + de 123x10^5    |  18x10^4 | inviável                  |   180600 |
+    |         500 | inviável         |   5x10^5 | inviável                  |   501000 |
+    |        1000 | inviável         |   2x10^6 | inviável                  |  2002000 |
 
     Percebemos que apenas pelo fato de usarmos uma Estrutura de Dados como uma Lista Encadeada,
     o tempo exigido chega a ser incalculável!
