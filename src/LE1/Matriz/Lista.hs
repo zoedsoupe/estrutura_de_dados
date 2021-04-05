@@ -7,6 +7,11 @@ data Matriz a = M { linhas  :: Int
                   , valores :: [[a]]
                   } deriving (Eq, Ord)
 
+instance Foldable Matriz where
+  length (M _ _ xs) = length $ concat xs
+  foldMap = undefined
+  foldr   = undefined
+
 instance Functor Matriz where
  fmap f (M n m xs) = M n m (map (map f) xs)
 
