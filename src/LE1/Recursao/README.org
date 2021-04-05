@@ -52,3 +52,28 @@ Este documento se refere aos exercícios da LE1, segunda lista, que pode ser enc
 	| abs(x0 - x1) < eps = x1
 	| otherwise          = step eps t
     #+end_src
+
+** Combinaçào
+   A combinação /n/ para /k/ é dada por:
+   #+caption: Fórmula de Combinação N para K
+   [[../../../assets/combination.png]]
+
+*** Implementação
+    O módulo possui apenas uma função: ~combina/2~
+
+    Temos algumas *guard clauses*:
+    1. se /k/ for igual a 0, retorno 1
+    2. se /n/ for igual a /k/, retorno 1
+    3. se /k/ <= 0, retorno 0
+    4. se /n/ <= k, retorno 0
+
+    Caso contrário, faço a recursão
+    #+begin_src haskell
+      module LE1.Recursao.Combinacao where
+
+      combina :: Integral a => a -> a -> a
+      combina n k | k == 0         = 1
+		  | n == k         = 1
+      combina n k | k > 0 && n > k = (combina (n - 1) k) + (combina (n - 1) (k - 1))
+      combina _ _                  = 0
+    #+end_src
