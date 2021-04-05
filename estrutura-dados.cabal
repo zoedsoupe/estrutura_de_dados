@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 8eb7d373bff0dfba092d6574dae68a318533a776bfc8d2b6ee2de815c78d55e2
+-- hash: cc4ff19ca086f1cd4aa09abd598089414a67604ea6590177d1e874791afb59af
 
 name:           estrutura-dados
 version:        0.2.1.0
@@ -96,6 +96,7 @@ test-suite estrutura-dados-test
       LE1.Data.TADSpec
       LE1.Matriz.ArraySpec
       LE1.Matriz.ListaSpec
+      LE1.Recursao.CombinacaoSpec
       LE1.Recursao.RaizSpec
       Paths_estrutura_dados
   hs-source-dirs:
