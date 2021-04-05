@@ -15,42 +15,15 @@ introMatriz = do
 medeLista :: IO ()
 medeLista = do
   let (a20, b20) = (L.matriz 20 20, L.matriz 20 20) :: (L.Matriz Int, L.Matriz Int)
-      (a30, b30) = (L.matriz 30 30, L.matriz 30 30) :: (L.Matriz Int, L.Matriz Int)
-      (a40, b40) = (L.matriz 40 40, L.matriz 40 40) :: (L.Matriz Int, L.Matriz Int)
-      (a50, b50) = (L.matriz 50 50, L.matriz 50 50) :: (L.Matriz Int, L.Matriz Int)
   start' <- start
   putStrLn $ toInfo "somando matrizes com 20 elementos..."
   timerc start' "soma matriz lista 20"
   print $ a20 + b20
   timerc start' "fim soma lista 20"
-  putStrLn $ toInfo "somando matrizes com 30 elementos..."  
-  timerc start' "soma matriz lista 30"
-  print $ a30 + b30
-  timerc start' "fim soma lista 30"
-  putStrLn $ toInfo "somando matrizes com 40 elementos..."  
-  timerc start' "soma matriz lista 40"
-  print $ a40 + b40
-  timerc start' "fim soma lista 40"
-  putStrLn $ toInfo "somando matrizes com 50 elementos..."  
-  timerc start' "soma matriz lista 50"
-  print $ a50 + b50
-  timerc start' "fim soma lista 50"
   putStrLn $ toInfo "multiplicando matrizes com 20 elementos..."
   timerc start' "mult matriz lista 20"
   print $ a20 * b20
   timerc start' "fim mult lista 20"
-  putStrLn $ toInfo "multiplicando matrizes com 30 elementos..."  
-  timerc start' "mult matriz lista 30"
-  print $ a30 * b30
-  timerc start' "fim mult lista 30"
-  putStrLn $ toInfo "multiplicando matrizes com 40 elementos..."
-  timerc start' "mult matriz lista 40"
-  print $ a40 * b40
-  timerc start' "fim mult lista 40"
-  putStrLn $ toInfo "multiplicando matrizes com 50 elementos..."
-  timerc start' "mult matriz lista 50"
-  print $ a50 * b50
-  timerc start' "fim mult lista 50"    
   end <- getVals start'
   forM_ (evens $ timert end) (putStrLn . toSuccess)
 
