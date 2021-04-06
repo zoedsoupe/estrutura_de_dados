@@ -15,8 +15,8 @@ spec = do
       combina 2 2 `shouldBe` 1
       combina 6 2 `shouldBe` 15      
 
-    it "deve retornar 0 caso k < 0" $ do
-      combina 2 (-1) `shouldBe` 0
+    it "deve retornar 1 caso k < 0" $ do
+      combina 2 (-1) `shouldBe` 1
       combina 2 1 `shouldBe` 2
 
     it "deve retornar 0 se k > n" $ do

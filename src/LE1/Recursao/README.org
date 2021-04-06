@@ -59,21 +59,81 @@ Este documento se refere aos exercícios da LE1, segunda lista, que pode ser enc
    [[../../../assets/combination.png]]
 
 *** Implementação
-    O módulo possui apenas uma função: ~combina/2~
+    A implementação original de combinação tem ~O(2^n)~, que não é nem um pouco perfomático...
 
-    Temos algumas *guard clauses*:
-    1. se /k/ for igual a 0, retorno 1
-    2. se /n/ for igual a /k/, retorno 1
-    3. se /k/ <= 0, retorno 0
-    4. se /n/ <= k, retorno 0
+    Já a minha implementação possui, no pior dos casos ~O(min(k, n - k))~
 
-    Caso contrário, faço a recursão
+    A função pública - ~combina/2~ - apenas repassa os argumentos para a função
+    principal - ~combina'/2~ - que funciona como uma closure, já que acessa, ou "lembra",
+    os argumentos do escopo acima dela.
+
+    Primeiro, verifico se /k/ é maior do que /k0/, se for, retorno o acumulador.
+    Caso contrário, chamo recursivamente a função ~combina'/2~, modificando o
+    acumulador (resultado) e o /k/.
+
+    Para entender melhor como eu cheguei nisso, aqui está meu passo a passo:
+
+    Minha primeira tentativa foi a seguinte:
     #+begin_src haskell
-      module LE1.Recursao.Combinacao where
-
       combina :: Integral a => a -> a -> a
       combina n k | k == 0         = 1
 		  | n == k         = 1
       combina n k | k > 0 && n > k = (combina (n - 1) k) + (combina (n - 1) (k - 1))
       combina _ _                  = 0
+    #+end_src
+    Isso é pura ineficiência...
+
+    Logo, a princípio, cheguei nessa conclusão:
+    #+begin_src haskell
+      combina n k = product [n-k+1 .. n] `div` product [1 .. k]
+    #+end_src
+    O problema é que essa função não é recursiva... e não é eficiente se /n/ for grande e /k/ for
+    mediano. Pois as multiplicações ficariam gigantes.
+
+    Foi quando eu separei a função dessa maneira, e percebi algumas recorrências:
+    #+begin_src haskell
+      combina :: Integer -> Integer -> Integer
+      combina n k
+	-- validações
+	| k > n || k < 0 = 0
+	| otherwise = combina' n k'
+	where
+	  -- C(n, k) e C(n, n - k) são iguais,
+	  -- logo, escolho o que seja menor
+	  k' = min k (n-k)
+
+      -- se chegar aqui, assumo que 0 <= k <= n
+      combina' _n 0 = 1
+      combina' n k
+	= -- repetindo a primeira tentativa
+	product [n-k+1 .. n] `div` product [1 .. k]
+	= -- se eu expandir um pouco mais...
+	(n-k+1) * product [n-k+2 .. n] `div` (product [1 .. k-1] * k)
+	= -- reorganizando e usando divisão temporariamente
+	((n-k+1)/k) * (product [n-(k-1)+1 .. n] / product [1 .. k-1]
+	= -- essa é a definição matemática da primeira conclusão
+	((n-k+1)/k) * combina' n (k-1)
+	= -- reorganizando novamente e agora usando divisão inteira
+	((n-k+1) * combina' n (k-1)) `quot` k
+    #+end_src
+
+    Ok, colocando tudo junto:
+    #+begin_src haskell
+      combina' _n 0 = 1
+      combina' n k = ((n-k+1) * combina' n (k-1)) `quot` k
+    #+end_src
+
+    Ela funciona, mas não possui otimização de cauda, ou seja, vai sofrer do mal da call stack :/
+
+    Para solucionar isso, ao invés de decrementar de /k/ até 0, podemos incrementar o /k/, até
+    que ele seja maior que o /k/ original, ou seja:
+        #+begin_src haskell
+      module LE1.Recursao.Combinacao (combina) where
+
+      combina :: Integral a => a -> a -> a
+      combina n k0 = combina' 1 1
+	where
+	  combina' acc k
+	    | k > k0    = seq n acc
+	    | otherwise = combina' ((n - k + 1) * acc `quot` k) (k + 1)
     #+end_src
