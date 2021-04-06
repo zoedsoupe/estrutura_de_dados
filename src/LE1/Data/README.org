@@ -7,20 +7,20 @@ Este documento se refere ao exercício 3 da LE1, que pode ser encontrado [[../..
 ** Interface Pública
    Essas são as funções expostas por esse módulo
    #+begin_src haskell
-     module LE1.Data.TAD
-       ( imprimeData
-       , converteData
-       , somaDias
-       , toTuple
-       , isVazia
-       , vazia
-       , isInvalida
-       , fromTuple
-       , mes
-       , ano
-       , dia
-       , show
-       ) where
+module LE1.Data.TAD
+  ( imprimeData
+  , converteData
+  , somaDias
+  , toTuple
+  , isVazia
+  , vazia
+  , isInvalida
+  , fromTuple
+  , mes
+  , ano
+  , dia
+  , show
+  ) where
    #+end_src
 
    Note que não haverá implementação explicíta das funções =dia=, =mes= e =ano=, pois as mesmas são definidas
@@ -59,28 +59,28 @@ Este documento se refere ao exercício 3 da LE1, que pode ser encontrado [[../..
     Essa Mônada é responsável por encapsular outros valores e representar que uma operação de =Input/Output=
     pode ser executada de forma segura, sem atrapalhar a lógica e andamento do restante do algoritmo.
     #+begin_src haskell
-      imprimeData :: (Int, Int, Int) -> IO String
-      imprimeData (d, m ,a) = (case data' of
-				 Invalida -> return "Invalida"
-				 Vazia    -> return "Estrutura vazia"
-				 Data {}  -> return dataValida)
-				   where data'      = criaData (d, m, a)
-					 dataValida =  (printf "%d/%d/%d" d m a) :: String
+imprimeData :: (Int, Int, Int) -> IO String
+imprimeData (d, m ,a) = (case data' of
+		          Invalida -> return "Invalida"
+		          Vazia    -> return "Estrutura vazia"
+		          Data {}  -> return dataValida)
+			   where data'      = criaData (d, m, a)
+			         dataValida =  (printf "%d/%d/%d" d m a) :: String
     #+end_src
 
     Dado uma =String= no formato =dd/mm/AAAA=, tento criar uma =Data= validada e retorno essa estrutura.
     Uso fortemente a estrutura de controle =case ... of= que, por correspondência de valores, retorna
     determinado valor caso o argumento dê =match= com uma das opções
     #+begin_src haskell
-      converteData :: String -> Data -> Data
-      converteData [] d           = d
-      converteData _ (Data _ _ _) = Invalida
-      converteData _ Invalida     = Invalida
-      converteData d Vazia        = (case criaData (d', m, a) of
-				       Invalida -> Invalida
-				       Vazia    -> Vazia
-				       Data {}  -> Data {dia = d', mes = m, ano = a})
-					 where d':m:a:_ = map (\x -> read x :: Int) (separa (=='/') d)
+converteData :: String -> Data -> Data
+converteData [] d           = d
+converteData _ (Data _ _ _) = Invalida
+converteData _ Invalida     = Invalida
+converteData d Vazia        = (case criaData (d', m, a) of
+				 Invalida -> Invalida
+				 Vazia    -> Vazia
+				 Data {}  -> Data {dia = d', mes = m, ano = a})
+				   where d':m:a:_ = map (\x -> read x :: Int) (separa (=='/') d)
     #+end_src
 
     Defino a função de somar dias de uma =Data= recursivamente.
@@ -99,52 +99,52 @@ Este documento se refere ao exercício 3 da LE1, que pode ser encontrado [[../..
         se o mes == 12, aumento o ano, senão aumento o mes e x = x - dias restantes do mes
     4. caso genérico -> retorno uma =Data= com dias somados a x
     #+begin_src haskell
-      somaDias :: Data -> Int -> Data
-      somaDias data' 0 = data'
-      somaDias (Data 1 1 y) d'
-	      | d' < 0         = Invalida
-	      | d' >= tamAno y = somaDias (Data 1 1 (y + 1)) (d' - tamAno y)
-      somaDias data'@(Data d m y) d'
-	      | d' < 0                 = Invalida
-	      | d' >= faltaEmAno data' = somaDias (Data 1 1 (y + 1)) (d' - faltaEmAno data')
-	      | d' >= faltaEmMes data' = somaDias (if m == 12 then Data 1 1 (y + 1) else Data 1 (m + 1) y) (d' - faltaEmMes data')
-	      | otherwise              = Data (d + d') m y
-      somaDias Invalida _ = Invalida
-	    somaDias Vazia d    = somaDias (Data 1 1 2021) d
+somaDias :: Data -> Int -> Data
+somaDias data' 0 = data'
+somaDias (Data 1 1 y) d'
+	| d' < 0         = Invalida
+	| d' >= tamAno y = somaDias (Data 1 1 (y + 1)) (d' - tamAno y)
+somaDias data'@(Data d m y) d'
+	| d' < 0                 = Invalida
+	| d' >= faltaEmAno data' = somaDias (Data 1 1 (y + 1)) (d' - faltaEmAno data')
+	| d' >= faltaEmMes data' = somaDias (if m == 12 then Data 1 1 (y + 1) else Data 1 (m + 1) y) (d' - faltaEmMes data')
+	| otherwise              = Data (d + d') m y
+somaDias Invalida _ = Invalida
+somaDias Vazia d    = somaDias (Data 1 1 2021) d
     #+end_src
 
 *** Funções de ajuda
     Funções básicas para ter compatibilidade entre a estrutura de dados =Tupla= e fazer algumas verificações
     #+begin_src haskell
-      vazia :: Data
-      vazia = Vazia
+vazia :: Data
+vazia = Vazia
 
-      isInvalida :: Data -> Bool
-      isInvalida Invalida = True
-      isInvalida _        = False
+isInvalida :: Data -> Bool
+isInvalida Invalida = True
+isInvalida _        = False
 
-      isVazia :: Data -> Bool
-      isVazia Vazia = True
-      isVazia _     = False
+isVazia :: Data -> Bool
+isVazia Vazia = True
+isVazia _     = False
 
-      toTuple :: Data -> Maybe (Int, Int, Int)
-	    toTuple (Data d m a) = Just (d, m, a)
-      toTuple _            = Nothing
+toTuple :: Data -> Maybe (Int, Int, Int)
+toTuple (Data d m a) = Just (d, m, a)
+toTuple _            = Nothing
 
-      fromTuple :: (Int, Int, Int) -> Data
-      fromTuple d = criaData d
+fromTuple :: (Int, Int, Int) -> Data
+fromTuple d = criaData d
     #+end_src
 
     Apenas crio um =TAD Data= válido, caso os argumentos passem nas validações definidas por mim. Caso contrário
     retorno uma =Data= inválida
     #+begin_src haskell
-      criaData :: (Int, Int, Int) -> Data
-      criaData (d, m, a)
-	      | d < 1 || d > 31      = Invalida
-	      | m < 1 || m > 12      = Invalida
-	      | a < 1920 || a > 2021 = Invalida
-	      | m == 2 && d > 29     = Invalida
-	      | otherwise            = Data {dia = d, mes = m, ano = a}
+criaData :: (Int, Int, Int) -> Data
+criaData (d, m, a)
+	| d < 1 || d > 31      = Invalida
+	| m < 1 || m > 12      = Invalida
+	| a < 1920 || a > 2021 = Invalida
+	| m == 2 && d > 29     = Invalida
+	| otherwise            = Data {dia = d, mes = m, ano = a}
     #+end_src
 
     Funções para fazer pequenas contas com dias.
@@ -163,33 +163,33 @@ Este documento se refere ao exercício 3 da LE1, que pode ser encontrado [[../..
     Finalmente, diminuo do tamanho total (em dias) de um ano, os dias que já passaram, obtendo
     quantos dias ainda faltam para aquele ano acabar
     #+begin_src haskell
-      anoBissexto :: Int -> Bool
-      anoBissexto n = (mod) n 4 == 0 && ((mod) n 100 /= 0 || (mod) n 400 == 0)
+anoBissexto :: Int -> Bool
+anoBissexto n = (mod) n 4 == 0 && ((mod) n 100 /= 0 || (mod) n 400 == 0)
 
-      tamAno :: Int -> Int
-      tamAno n = if anoBissexto n then 366 else 365
+tamAno :: Int -> Int
+tamAno n = if anoBissexto n then 366 else 365
 
-      -- De forma "imperativa", pego quantos dias tem um mês
-      tamMes :: Int -> Int -> Int
-      tamMes a' m' = meses !! (m' - 1) where
-	      meses   = if anoBissexto a' then meses'' else meses'
-	      meses'  = [31,28,31,30,31,30,31,31,30,31,30,31]
-	      meses'' = [31,29,31,30,31,30,31,31,30,31,30,31]
+-- De forma "imperativa", pego quantos dias tem um mês
+tamMes :: Int -> Int -> Int
+tamMes a' m' = meses !! (m' - 1) where
+	meses   = if anoBissexto a' then meses'' else meses'
+	meses'  = [31,28,31,30,31,30,31,31,30,31,30,31]
+	meses'' = [31,29,31,30,31,30,31,31,30,31,30,31]
 
-      faltaEmMes :: Data -> Int
-      faltaEmMes Invalida     = -1
-      faltaEmMes Vazia        = 0
-      faltaEmMes (Data d m y) = tamMes y m - d + 1
+faltaEmMes :: Data -> Int
+faltaEmMes Invalida     = -1
+faltaEmMes Vazia        = 0
+faltaEmMes (Data d m y) = tamMes y m - d + 1
 
-      diasInicioAno :: Data -> Int
-      diasInicioAno Invalida     = -1
-      diasInicioAno Vazia        = 0
-      diasInicioAno (Data d m y) = mesesAnterioriores + d - 1 where
-	      mesesAnterioriores = sum [tamMes y m' | m' <- deleta m [1..m]]
+diasInicioAno :: Data -> Int
+diasInicioAno Invalida     = -1
+diasInicioAno Vazia        = 0
+diasInicioAno (Data d m y) = mesesAnterioriores + d - 1 where
+	mesesAnterioriores = sum [tamMes y m' | m' <- deleta m [1..m]]
 
-      faltaEmAno :: Data -> Int
-      faltaEmAno data' = tamAno (ano data') - inicio
-	      where inicio = diasInicioAno data'
+faltaEmAno :: Data -> Int
+faltaEmAno data' = tamAno (ano data') - inicio
+	where inicio = diasInicioAno data'
     #+end_src
 
     Funções para manipular listas.
@@ -199,12 +199,12 @@ Este documento se refere ao exercício 3 da LE1, que pode ser encontrado [[../..
 
     A segunda apenas remove um dado elemento de uma lista, retornando outra lista sem tal elemento
     #+begin_src haskell
-      separa :: (Char -> Bool) -> String -> [String]
-      separa p s = case dropWhile p s of
-		    "" -> []
-		    s' -> w : separa p s''
-		      where (w, s'') = break p s'
+separa :: (Char -> Bool) -> String -> [String]
+separa p s = case dropWhile p s of
+	      "" -> []
+	      s' -> w : separa p s''
+		where (w, s'') = break p s'
 
-      deleta :: Eq a => a -> [a] -> [a]
-      deleta deleted xs = [ x | x <- xs, x /= deleted ]
+deleta :: Eq a => a -> [a] -> [a]
+deleta deleted xs = [ x | x <- xs, x /= deleted ]
     #+end_src
