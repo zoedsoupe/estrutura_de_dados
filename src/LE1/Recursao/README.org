@@ -29,31 +29,31 @@ Este documento se refere aos exercícios da LE1, segunda lista, que pode ser enc
     chamo recursivamente a função ~step~ com a tolerância inicial, passando todas as aproximações
     retirando a primeira da lista
     #+begin_src haskell
-      module LE1.Recursao.Raiz (nSqrt) where
+module LE1.Recursao.Raiz (nSqrt) where
 
-      nSqrt :: Double -> Double -> Double -> Double
-      nSqrt n a i
-	| n < 0     = -1
-	| a < 0     = -1
-	| i == 0    = -1
-	| i < 0     = -1
-	| otherwise = step i (approximations a n)
+nSqrt :: Double -> Double -> Double -> Double
+nSqrt n a i
+  | n < 0     = -1
+  | a < 0     = -1
+  | i == 0    = -1
+  | i < 0     = -1
+  | otherwise = step i (approximations a n)
 
-      approximations :: Double -> Double -> [Double]
-      approximations x0 n = iterate (prox n) x0
+approximations :: Double -> Double -> [Double]
+approximations x0 n = iterate (prox n) x0
 
-      prox :: Double -> Double -> Double
-      prox n x0 = (x0 + n / x0) / 2
+prox :: Double -> Double -> Double
+prox n x0 = (x0 + n / x0) / 2
 
-      step :: Double -> [Double] -> Double
-      step _ []  = 0
-      step _ [_] = 0
-      step eps (x0:t@(x1:_))
-	| abs(x0 - x1) < eps = x1
-	| otherwise          = step eps t
+step :: Double -> [Double] -> Double
+step _ []  = 0
+step _ [_] = 0
+step eps (x0:t@(x1:_))
+  | abs(x0 - x1) < eps = x1
+  | otherwise          = step eps t
     #+end_src
 
-** Combinaçào
+** Combinação
    A combinação /n/ para /k/ é dada por:
    #+caption: Fórmula de Combinação N para K
    [[../../../assets/combination.png]]
@@ -75,52 +75,52 @@ Este documento se refere aos exercícios da LE1, segunda lista, que pode ser enc
 
     Minha primeira tentativa foi a seguinte:
     #+begin_src haskell
-      combina :: Integral a => a -> a -> a
-      combina n k | k == 0         = 1
-		              | n == k         = 1
-      combina n k | k > 0 && n > k = (combina (n - 1) k) + (combina (n - 1) (k - 1))
-      combina _ _                  = 0
+combina :: Integral a => a -> a -> a
+combina n k | k == 0         = 1
+            | n == k         = 1
+combina n k | k > 0 && n > k = (combina (n - 1) k) + (combina (n - 1) (k - 1))
+combina _ _                  = 0
     #+end_src
     Isso é pura ineficiência...
 
     Logo, a princípio, cheguei nessa conclusão:
     #+begin_src haskell
-      combina n k = product [n-k+1 .. n] `div` product [1 .. k]
+combina n k = product [n-k+1 .. n] `div` product [1 .. k]
     #+end_src
     O problema é que essa função não é recursiva... e não é eficiente se /n/ for grande e /k/ for
     mediano. Pois as multiplicações ficariam gigantes.
 
     Foi quando eu separei a função dessa maneira, e percebi algumas recorrências:
     #+begin_src haskell
-      combina :: Integer -> Integer -> Integer
-      combina n k
-	-- validações
-	| k > n || k < 0 = 0
-	| otherwise = combina' n k'
-	where
-	  -- C(n, k) e C(n, n - k) são iguais,
-	  -- logo, escolho o que seja menor
-	  k' = min k (n-k)
+combina :: Integer -> Integer -> Integer
+combina n k
+  -- validações
+  | k > n || k < 0 = 0
+  | otherwise = combina' n k'
+  where
+    -- C(n, k) e C(n, n - k) são iguais,
+    -- logo, escolho o que seja menor
+    k' = min k (n-k)
 
-      -- se chegar aqui, assumo que 0 <= k <= n
-      combina' _n 0 = 1
-      combina' n k
-	= -- repetindo a primeira tentativa
-	product [n-k+1 .. n] `div` product [1 .. k]
-	= -- se eu expandir um pouco mais...
-	(n-k+1) * product [n-k+2 .. n] `div` (product [1 .. k-1] * k)
-	= -- reorganizando e usando divisão de ponto flutuante temporariamente
-	((n-k+1)/k) * (product [n-(k-1)+1 .. n] / product [1 .. k-1]
-	= -- essa é a definição matemática da primeira conclusão
-	((n-k+1)/k) * combina' n (k-1)
-	= -- reorganizando novamente e agora usando divisão inteira
-	((n-k+1) * combina' n (k-1)) `quot` k
+    -- se chegar aqui, assumo que 0 <= k <= n
+    combina' _n 0 = 1
+    combina' n k
+    = -- repetindo a primeira tentativa
+    product [n-k+1 .. n] `div` product [1 .. k]
+    = -- se eu expandir um pouco mais...
+    (n-k+1) * product [n-k+2 .. n] `div` (product [1 .. k-1] * k)
+    = -- reorganizando e usando divisão de ponto flutuante temporariamente
+    ((n-k+1)/k) * (product [n-(k-1)+1 .. n] / product [1 .. k-1]
+    = -- essa é a definição matemática da primeira conclusão
+    ((n-k+1)/k) * combina' n (k-1)
+    = -- reorganizando novamente e agora usando divisão inteira
+    ((n-k+1) * combina' n (k-1)) `quot` k
     #+end_src
 
     Ok, colocando tudo junto:
     #+begin_src haskell
-      combina' _n 0 = 1
-      combina' n k = ((n-k+1) * combina' n (k-1)) `quot` k
+combina' _n 0 = 1
+combina' n k = ((n-k+1) * combina' n (k-1)) `quot` k
     #+end_src
 
     Ela funciona, mas não possui otimização de cauda, ou seja, vai sofrer do mal da call stack :/
@@ -128,12 +128,12 @@ Este documento se refere aos exercícios da LE1, segunda lista, que pode ser enc
     Para solucionar isso, ao invés de decrementar de /k/ até 0, podemos incrementar o /k/, até
     que ele seja maior que o /k/ original, ou seja:
         #+begin_src haskell
-      module LE1.Recursao.Combinacao (combina) where
+module LE1.Recursao.Combinacao (combina) where
 
-      combina :: Integral a => a -> a -> a
-      combina n k0 = combina' 1 1
-	where
-	  combina' acc k
-	    | k > k0    = seq n acc
-	    | otherwise = combina' ((n - k + 1) * acc `quot` k) (k + 1)
+combina :: Integral a => a -> a -> a
+combina n k0 = combina' 1 1
+  where
+    combina' acc k
+      | k > k0    = seq n acc
+      | otherwise = combina' ((n - k + 1) * acc `quot` k) (k + 1)
     #+end_src
