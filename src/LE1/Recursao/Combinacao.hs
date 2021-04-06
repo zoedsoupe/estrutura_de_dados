@@ -1,15 +1,8 @@
 module LE1.Recursao.Combinacao (combina) where
 
-combina :: Int -> Int -> Integer
-combina n k
-  | k > n || k < 0 = 0
-  | otherwise      = constroi n !! n !! k
-
-passo :: [Integer] -> [Integer]
-passo xs = 1 : zipWith (+) xs (drop 1 xs) ++ [1]
-
-constroi :: Int -> [[Integer]]
-constroi n0 = go (n0 + 1) [1]
+combina :: Integral a => a -> a -> a
+combina n k0 = combina' 1 1
   where
-    go 0 _ = []
-    go n linha = linha : go (n - 1) (passo linha)
+    combina' acc k
+      | k > k0    = seq n acc
+      | otherwise = combina' ((n - k + 1) * acc `quot` k) (k + 1)
