@@ -1,8 +1,8 @@
-module LE1.Exercicio2Spec where
+module LE1.ConjuntoInt.TADSpec where
 
 import Test.Hspec
 
-import LE1.Exercicio2
+import LE1.ConjuntoInt.TAD
 
 spec :: Spec
 spec = do

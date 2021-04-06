@@ -1,4 +1,4 @@
-module LE1.Exercicio3
+module LE1.Data.TAD
   ( imprimeData
   , converteData
   , somaDias
@@ -22,11 +22,6 @@ type Dia = Int
 type Mes = Int
 type Ano = Int
 
-{- | Um TAD Data no qual possui 3 contrutores:
-
-     1 - Invalida
-     2 - Vazia
-     3 - Uma Data com dia, mes e ano -}
 data Data = Invalida | Vazia |  Data { dia :: Dia
                                      , mes :: Mes
                                      , ano :: Ano
@@ -58,14 +53,6 @@ toTuple _            = Nothing
 fromTuple :: (Int, Int, Int) -> Data
 fromTuple d = criaData d
 
-{- | Dado uma 3-Tupla (tripla) com dia, mes e ano,
-     retorno uma string envolvida por uma Mônada IO,
-     que significa que essa string tem efeitos colaterais
-
-     No caso, de ser impressa na tela
-
-     Caso a data seja inválida, ou vazia, retorno
-     a represdentação em string desse construtor -}
 imprimeData :: (Int, Int, Int) -> IO String
 imprimeData (d, m ,a) = (case data' of
                            Invalida -> return "Invalida"
@@ -74,8 +61,6 @@ imprimeData (d, m ,a) = (case data' of
                              where data'      = criaData (d, m, a)
                                    dataValida =  (printf "%d/%d/%d" d m a) :: String
 
-{- | Dado uma string que possua uma data válida,
-     retorno o TAD Data correspondente -}
 converteData :: String -> Data -> Data
 converteData [] d           = d
 converteData _ (Data _ _ _) = Invalida
@@ -86,26 +71,6 @@ converteData d Vazia        = (case criaData (d', m, a) of
                                  Data {}  -> Data {dia = d', mes = m, ano = a})
                                    where d':m:a:_ = map (\x -> read x :: Int) (separa (=='/') d)
 
-{- | Somo os dias de forma recursiva
-
-     O caso base é quando os dias a serem somados são 0
-
-     Se o dia e mes da data forem 1 e os dias a serem
-     somados forem maior que o tamanho do ano da data,
-     aumento o ano e chamo novamente a função com os dias
-     a serem somados menos o tamnho do ano da data
-
-     Para qualquer outra data, faço a seguinte verificação:
-
-     Sendo x os dias a serem somados, temos que
-
-     1 - se x é negativo? -> Data Invalida
-     2 - se x >= os dias restantes do ano -> ano + 1 e
-         x = x - tamanho do ano
-     3 - se x >= os dias restantes no mes ->
-           se o mes == 12, aumento o ano, senão aumento o mes e
-           x = x - dias restantes do mes
-     4 - caso genérico -> retorno uma data com dias somados a x -}
 somaDias :: Data -> Int -> Data
 somaDias data' 0 = data'
 somaDias (Data 1 1 y) d'
@@ -148,9 +113,6 @@ faltaEmMes Invalida     = -1
 faltaEmMes Vazia        = 0
 faltaEmMes (Data d m y) = tamMes y m - d + 1
 
-{- | Calcula há quantos dias o ano começou,
-     fazendo a soma de todos os dias dos meses
-     passados + os dias do mes atual - 1 -}
 diasInicioAno :: Data -> Int
 diasInicioAno Invalida     = -1
 diasInicioAno Vazia        = 0
@@ -161,16 +123,11 @@ faltaEmAno :: Data -> Int
 faltaEmAno data' = tamAno (ano data') - inicio
   where inicio = diasInicioAno data'
 
-{- | Dado uma função como (=='-') e uma String,
-     retorno uma lista de String separada por '-' -}
 separa :: (Char -> Bool) -> String -> [String]
 separa p s = case dropWhile p s of
               "" -> []
               s' -> w : separa p s''
                 where (w, s'') = break p s'  
 
-{- | Dado uma lista de elementos,
-     deleta o elemento "deleted"
-     e retorna a nova lista -}
 deleta :: Eq a => a -> [a] -> [a]
 deleta deleted xs = [ x | x <- xs, x /= deleted ]

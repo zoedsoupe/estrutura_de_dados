@@ -1,0 +1,139 @@
+#+title: Recursão
+#+author: Matheus de Souza Pessanha
+#+email: matheus_pessanha2001@outlook.com
+
+Este documento se refere aos exercícios da LE1, segunda lista, que pode ser encontrado [[../../../docs/listas_exercicios/EDI_Atividade_Semana3.org][neste documento]].
+
+** Raiz Quadrada pelo método de Newton-Raphson
+   /Isaac Newton/ e /Joseph Raphson/ definiram um algoritmo para achar a raiz quadrada de qualquer
+   número, a paritir de uma aproximação inicial e uma tolerância (passo) para fazer o cálculo!
+
+   Essa é a fórmula:
+   #+caption: Fórmula da raiz quadrada de Newton-Raphson
+   [[../../../assets/sqrt_form.png]]
+
+   Onde:
+   - /num/: é o número cuja raiz quadrada queremos calcular;
+   - /ans/: é uma aproximação inicial da raiz quadrada;
+   - /tol/: é a tolerância permitida para a raiz quadrada.
+
+*** Implementação
+    Primeiro, valido as entradas:
+
+    Caso o número, a aproximação ou a tolerância forem menores que 0, retorno -1.
+    Caso contrário, calculo as possíveis aproximações a paritir da incial, devolvendo uma lista infinita.
+
+    Depois disso, mando a tolerância e as aproximações para a função ~step~, que faz o seguinte:
+    Extraindo a seguinda aproximação (~x1~) da lista infinita, caso o valor absoluto da primeira
+    aproximação (~x0~) seja menor que a tolerância, retorno a segunda aproximação. Do contrário,
+    chamo recursivamente a função ~step~ com a tolerância inicial, passando todas as aproximações
+    retirando a primeira da lista
+    #+begin_src haskell
+module LE1.Recursao.Raiz (nSqrt) where
+
+nSqrt :: Double -> Double -> Double -> Double
+nSqrt n a i
+  | n < 0     = -1
+  | a < 0     = -1
+  | i == 0    = -1
+  | i < 0     = -1
+  | otherwise = step i (approximations a n)
+
+approximations :: Double -> Double -> [Double]
+approximations x0 n = iterate (prox n) x0
+
+prox :: Double -> Double -> Double
+prox n x0 = (x0 + n / x0) / 2
+
+step :: Double -> [Double] -> Double
+step _ []  = 0
+step _ [_] = 0
+step eps (x0:t@(x1:_))
+  | abs(x0 - x1) < eps = x1
+  | otherwise          = step eps t
+    #+end_src
+
+** Combinação
+   A combinação /n/ para /k/ é dada por:
+   #+caption: Fórmula de Combinação N para K
+   [[../../../assets/combination.png]]
+
+*** Implementação
+    A implementação original de combinação tem ~O(2^n)~, que não é nem um pouco perfomático...
+
+    Já a minha implementação possui, no pior dos casos ~O(min(k, n - k))~
+
+    A função pública - ~combina/2~ - apenas repassa os argumentos para a função
+    principal - ~combina'/2~ - que funciona como uma closure, já que acessa, ou "lembra",
+    os argumentos do escopo acima dela.
+
+    Primeiro, verifico se /k/ é maior do que /k0/, se for, retorno o acumulador.
+    Caso contrário, chamo recursivamente a função ~combina'/2~, modificando o
+    acumulador (resultado) e o /k/.
+
+    Para entender melhor como eu cheguei nisso, aqui está meu passo a passo:
+
+    Minha primeira tentativa foi a seguinte:
+    #+begin_src haskell
+combina :: Integral a => a -> a -> a
+combina n k | k == 0         = 1
+            | n == k         = 1
+combina n k | k > 0 && n > k = (combina (n - 1) k) + (combina (n - 1) (k - 1))
+combina _ _                  = 0
+    #+end_src
+    Isso é pura ineficiência...
+
+    Logo, a princípio, cheguei nessa conclusão:
+    #+begin_src haskell
+combina n k = product [n-k+1 .. n] `div` product [1 .. k]
+    #+end_src
+    O problema é que essa função não é recursiva... e não é eficiente se /n/ for grande e /k/ for
+    mediano. Pois as multiplicações ficariam gigantes.
+
+    Foi quando eu separei a função dessa maneira, e percebi algumas recorrências:
+    #+begin_src haskell
+combina :: Integer -> Integer -> Integer
+combina n k
+  -- validações
+  | k > n || k < 0 = 0
+  | otherwise = combina' n k'
+  where
+    -- C(n, k) e C(n, n - k) são iguais,
+    -- logo, escolho o que seja menor
+    k' = min k (n-k)
+
+    -- se chegar aqui, assumo que 0 <= k <= n
+    combina' _n 0 = 1
+    combina' n k
+    = -- repetindo a primeira tentativa
+    product [n-k+1 .. n] `div` product [1 .. k]
+    = -- se eu expandir um pouco mais...
+    (n-k+1) * product [n-k+2 .. n] `div` (product [1 .. k-1] * k)
+    = -- reorganizando e usando divisão de ponto flutuante temporariamente
+    ((n-k+1)/k) * (product [n-(k-1)+1 .. n] / product [1 .. k-1]
+    = -- essa é a definição matemática da primeira conclusão
+    ((n-k+1)/k) * combina' n (k-1)
+    = -- reorganizando novamente e agora usando divisão inteira
+    ((n-k+1) * combina' n (k-1)) `quot` k
+    #+end_src
+
+    Ok, colocando tudo junto:
+    #+begin_src haskell
+combina' _n 0 = 1
+combina' n k = ((n-k+1) * combina' n (k-1)) `quot` k
+    #+end_src
+
+    Ela funciona, mas não possui otimização de cauda, ou seja, vai sofrer do mal da call stack :/
+
+    Para solucionar isso, ao invés de decrementar de /k/ até 0, podemos incrementar o /k/, até
+    que ele seja maior que o /k/ original, ou seja:
+        #+begin_src haskell
+module LE1.Recursao.Combinacao (combina) where
+
+combina :: Integral a => a -> a -> a
+combina n k0 = combina' 1 1
+  where
+    combina' acc k
+      | k > k0    = seq n acc
+      | otherwise = combina' ((n - k + 1) * acc `quot` k) (k + 1)
+    #+end_src

@@ -5,10 +5,13 @@ import Helpers (toBold, toFailure, exit)
 {- | Imports das funcionalidades/estruturas -}
 
 -- | TADs
-import Helpers.Cilindro
-import Helpers.ConjuntoInt
 import Helpers.Data
+import Helpers.Cilindro
 import Helpers.Clientes
+import Helpers.ConjuntoInt
+
+-- | Outros
+import Helpers.Matriz
 
 menu :: IO ()
 menu = do
@@ -21,6 +24,7 @@ menu = do
   menu
     where concatNums (i, (s, _)) = case s of
                                      "TADs"       -> toBold s
+                                     "Outros"     -> toBold s
                                      "Estruturas" -> toBold s
                                      "Algoritmos" -> toBold s
                                      _            -> show i ++ ") " ++ s 
@@ -42,6 +46,8 @@ choices = zip [0.. ]
   , ("Clientes", runClientes)
   , ("Estruturas", menu)
   , ("Algoritmos", menu)
+  , ("Outros", menu)
+  , ("Matrizes", runMatriz)
   , ("Sair", exit)
   ]
 

@@ -30,6 +30,8 @@ dependencies:
 - pretty-terminal
 - table-layout
 - random
+- array
+- time
 
 library:
   source-dirs: src
