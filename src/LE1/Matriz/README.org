@@ -43,10 +43,10 @@ Este documento se refere aos exercícios da LE1, segunda lista, que pode ser enc
     Cada Array em ~Haskell~ possui um limite mínimo e máxixo de posições,
     representados por uma ~2-Tupla~ ou ~Par~. Nesse caso é uma tupla de Inteiros.
     #+begin_src haskell
-      type Elem = Int
-      type Arr = UArray
+type Elem = Int
+type Arr = UArray
 
-      type Matriz = Arr (Int, Int) Elem
+type Matriz = Arr (Int, Int) Elem
     #+end_src
 
     Para criar uma ~Matriz~, criei duas funções:
@@ -61,8 +61,8 @@ Este documento se refere aos exercícios da LE1, segunda lista, que pode ser enc
 
     ~((minLinhas, minColunas), (maxLinhas, maxColunas))~
     #+begin_src haskell
-      fromList :: Int -> Int -> [Elem] -> Matriz
-      fromList i j = listArray ((0, 0),(i-1, j-1))
+fromList :: Int -> Int -> [Elem] -> Matriz
+fromList i j = listArray ((0, 0),(i-1, j-1))
     #+end_src
 
     Já a função ~matriz~, devolve uma ~Matriz~ com os valores aleatoriamente gerados. Porém,
@@ -73,23 +73,23 @@ Este documento se refere aos exercícios da LE1, segunda lista, que pode ser enc
     Para solucionar isso eu poderia fazer com que essa função recebesse uma ~seed~ diferente a cada
     chamada (passando por parâmetro), mas achei desnecessário para fins de testes.
     #+begin_src haskell
-      matriz :: Int -> Int -> Matriz
-      matriz m n = fromList m n values'
-	where format _ 0 _    = []
-	      format m' n' xs = (take m' xs) : format m' (n'-1) (drop m' xs)
-	      values          = format m n (take (m*n) (randomRs (3, 10) (mkStdGen (m*n))))
-	      values'         = concat values
+matriz :: Int -> Int -> Matriz
+matriz m n = fromList m n values'
+  where format _ 0 _    = []
+	format m' n' xs = (take m' xs) : format m' (n'-1) (drop m' xs)
+	values          = format m n (take (m*n) (randomRs (3, 10) (mkStdGen (m*n))))
+	values'         = concat values
     #+end_src
 
    Soma de ~Matrizes~! Caso os limites sejam diferentes, eu devolvo um ~Array~ vazio, caso contrário
    crio um novo ~Array~, porém somo cada elemento da ~Matriz A~ com seu correspondente na ~Matriz B~, gerando uma ~Matriz C~
    #+begin_src haskell
-     somaMatriz :: Matriz -> Matriz -> Matriz
-     somaMatriz a b
-       | bounds a /= bounds b = array ((0,0),(-1,0)) []
-       | otherwise            = listArray (bounds a) $ zipW (+) xs ys
-       where xs = elems a
-	     ys = elems b
+somaMatriz :: Matriz -> Matriz -> Matriz
+somaMatriz a b
+  | bounds a /= bounds b = array ((0,0),(-1,0)) []
+  | otherwise            = listArray (bounds a) $ zipW (+) xs ys
+  where xs = elems a
+        ys = elems b
    #+end_src
 
    Multiplicação de ~Matrizes~! Essa foi um pouco mais complicada, porém, vamos lá:
@@ -105,24 +105,24 @@ Este documento se refere aos exercícios da LE1, segunda lista, que pode ser enc
    eu realizo a soma da multiplicação de cada elemento de ~A~ na posição ~(linhaA, colunaA)~ com seu
    correspondente elementos em ~B~ na posição ~(colunaA, colunaB)~.
    #+begin_src haskell
-     multiplicaMatriz :: Matriz -> Matriz -> Matriz
-     multiplicaMatriz a b
-       | y0' /= x1'   = array ((0,0),(-1,0)) []
-       | otherwise    = array ((0, 0), (x0', y1')) resultado
-	 where ((x0, y0), (x0', y0')) = bounds a
-	       ((_, y1), (x1', y1'))  = bounds b
-	       linhasA                = range (x0, x0')
-	       colunasA               = range (y0, y0')
-	       colunasB               = range (y1, y1')
-	       resultado              =
-		 [ ((la, cb),
-		    sum
-		    [ a ! (la, ca) * b ! (ca, cb)
-		    | ca <- colunasA
-		    ])
-		 | la <- linhasA
-		 , cb <- colunasB
-		 ]
+multiplicaMatriz :: Matriz -> Matriz -> Matriz
+multiplicaMatriz a b
+  | y0' /= x1'   = array ((0,0),(-1,0)) []
+  | otherwise    = array ((0, 0), (x0', y1')) resultado
+    where ((x0, y0), (x0', y0')) = bounds a
+	  ((_, y1), (x1', y1'))  = bounds b
+	  linhasA                = range (x0, x0')
+	  colunasA               = range (y0, y0')
+	  colunasB               = range (y1, y1')
+	  resultado              =
+	    [ ((la, cb),
+	       sum
+	       [ a ! (la, ca) * b ! (ca, cb)
+	       | ca <- colunasA
+	       ])
+	    | la <- linhasA
+	    , cb <- colunasB
+	    ]
    #+end_src
 
 **** Funções extras
@@ -136,53 +136,53 @@ Este documento se refere aos exercícios da LE1, segunda lista, que pode ser enc
      5. Criar a transposta de uma ~Matriz~
      6. Imprimir uma ~Matriz~ formatada
      #+begin_src haskell
-       absMatriz :: Matriz -> Matriz
-       absMatriz a = listArray (bounds a) $ map (abs) xs
-	 where xs = elems a
+absMatriz :: Matriz -> Matriz
+absMatriz a = listArray (bounds a) $ map (abs) xs
+  where xs = elems a
 
-       negateMatriz :: Matriz -> Matriz
-       negateMatriz a = listArray (bounds a) $ map (negate) xs
-	 where xs = elems a
+negateMatriz :: Matriz -> Matriz
+negateMatriz a = listArray (bounds a) $ map (negate) xs
+  where xs = elems a
 
-       linhas :: Matriz -> Int
-       linhas m = numLinhas + 1
-	 where (_, (numLinhas, _)) = bounds m
+linhas :: Matriz -> Int
+linhas m = numLinhas + 1
+  where (_, (numLinhas, _)) = bounds m
 
-       colunas :: Matriz -> Int
-       colunas m = numColunas + 1
-	 where (_, (_, numColunas)) = bounds m
+colunas :: Matriz -> Int
+colunas m = numColunas + 1
+  where (_, (_, numColunas)) = bounds m
 
-       transpose :: Matriz -> Matriz
-       transpose a = array (bounds a)
-	 [ ((linha, coluna), a ! (coluna, linha))
-	 | linha  <- [sl..el]
-	 , coluna <- [sc..ec]
-	 ]
-	 where ((sl, sc), (el, ec)) = bounds a
+transpose :: Matriz -> Matriz
+transpose a = array (bounds a)
+  [ ((linha, coluna), a ! (coluna, linha))
+  | linha  <- [sl..el]
+  , coluna <- [sc..ec]
+  ]
+  where ((sl, sc), (el, ec)) = bounds a
 
-       printMatriz :: Matriz -> IO ()
-       printMatriz m = putStrLn $ concat
-	  [ "┌ ", unwords (replicate (colunas m) blank), " ┐\n"
-	  , unlines
-	  [ "│ " ++ unwords (map (\j -> fill . show $ m ! (i,j)) [0..cols]) ++ " │" | i <- [0..lin] ]
-	  , "└ ", unwords (replicate (colunas m) blank), " ┘"
-	  ]
-	where xs                   = elems m
-	      strings              = map (show) xs
-	      widest               = maximum $ map (length) strings
-	      fill str             = replicate (widest - length str) ' ' ++ str
-	      blank                = fill ""
-		cols                 = (colunas m) - 1
-	      lin                  = (linhas m ) - 1
+printMatriz :: Matriz -> IO ()
+printMatriz m = putStrLn $ concat
+   [ "┌ ", unwords (replicate (colunas m) blank), " ┐\n"
+   , unlines
+   [ "│ " ++ unwords (map (\j -> fill . show $ m ! (i,j)) [0..cols]) ++ " │" | i <- [0..lin] ]
+   , "└ ", unwords (replicate (colunas m) blank), " ┘"
+   ]
+ where xs                   = elems m
+       strings              = map (show) xs
+       widest               = maximum $ map (length) strings
+       fill str             = replicate (widest - length str) ' ' ++ str
+       blank                = fill ""
+       cols                 = (colunas m) - 1
+       lin                  = (linhas m ) - 1
      #+end_src
 **** Funções de ajuda
      Minha própria implementação da função ~zipWith~, que aplica uma função
      ao mesmo tempo que junta duas listas!
      #+begin_src haskell
-       zipW :: (a -> b -> c) -> [a] -> [b] -> [c]
-       zipW _ [] _          = []
-       zipW _ _ []          = []
-       zipW f (x:xs) (y:ys) = f x y : zipW f xs ys
+zipW :: (a -> b -> c) -> [a] -> [b] -> [c]
+zipW _ [] _          = []
+zipW _ _ []          = []
+zipW f (x:xs) (y:ys) = f x y : zipW f xs ys
      #+end_src
 
 *** Lista
@@ -194,10 +194,10 @@ Este documento se refere aos exercícios da LE1, segunda lista, que pode ser enc
     Essa ~Matriz~ também deriva das classes de tipo ~Eq~ e ~Ord~, ou seja, cada ~Matriz~ pode ser
     comparada com outras!
     #+begin_src haskell
-      data Matriz a = M { linhas  :: Int
-			, colunas :: Int
-			, valores :: [[a]]
-			} deriving (Eq, Ord)
+data Matriz a = M { linhas  :: Int
+		  , colunas :: Int
+		  , valores :: [[a]]
+		  } deriving (Eq, Ord)
     #+end_src
 
     Também defino algumas instâncias de outras classes de tipo:
@@ -226,37 +226,37 @@ Este documento se refere aos exercícios da LE1, segunda lista, que pode ser enc
        for 0. Implementei ela para caso receba uma ~Matriz mXn~ ela retorne uma ~Matriz Identidade~ de
        ~m~ linhas e ~n~ colunas, a partir de uma lista infinita.
     #+begin_src haskell
-      instance Foldable Matriz where
-	length (M _ _ xs) = length $ concat xs
-	foldMap = undefined
-	foldr   = undefined
+instance Foldable Matriz where
+  length (M _ _ xs) = length $ concat xs
+  foldMap           = undefined
+  foldr             = undefined
 
-      instance Functor Matriz where
-       fmap f (M n m xs) = M n m (map (map f) xs)
+instance Functor Matriz where
+ fmap f (M n m xs) = M n m (map (map f) xs)
 
-      instance Show m => Show (Matriz m) where
-	show (M _ _ [])  = "[]"
-	show m@(M _ _ _) = printMatriz m
+instance Show m => Show (Matriz m) where
+  show (M _ _ [])  = "[]"
+  show m@(M _ _ _) = printMatriz m
 
-      instance Num a =>  Num (Matriz a) where
-	(+) (M m n xs) (M m' n' ys)
-	  | m /= m' = M 0 0 []
-	  | n /= n' = M 0 0 []
-	  | otherwise = M m n (soma xs ys)
+instance Num a =>  Num (Matriz a) where
+  (+) (M m n xs) (M m' n' ys)
+    | m /= m'   = M 0 0 []
+    | n /= n'   = M 0 0 []
+    | otherwise = M m n (soma xs ys)
 
-	fromInteger = undefined
+  fromInteger = undefined
 
-	signum (M m n _)
-	  | m /= n    = M 0 0 []
-	  | otherwise = M m n (take m (take m <$> sign))
+  signum (M m n _)
+    | m /= n    = M 0 0 []
+    | otherwise = M m n (take m (take m <$> sign))
 
-	abs (M m n xs)    = M m n (map (map abs) xs)
+  abs (M m n xs) = M m n (map (map abs) xs)
 
-	negate (M m n xs) = M m n (map (map negate) xs)
+  negate (M m n xs) = M m n (map (map negate) xs)
 
-	(*) a@(M _ n _) b@(M m' _ _)
-	  | n /= m' = M 0 0 []
-	  | otherwise = multiplica a b
+  (*) a@(M _ n _) b@(M m' _ _)
+    | n /= m'   = M 0 0 []
+    | otherwise = multiplica a b
     #+end_src
 
     Já a soma e a multiplicação, ao contrário da implementação com ~Arrays~, recebem apenas os valores
@@ -278,37 +278,37 @@ Este documento se refere aos exercícios da LE1, segunda lista, que pode ser enc
 
     *closure*: uma função que encapsula o escopo acima dela, ou seja, ela "lembra" do estado anterior.
     #+begin_src haskell
-      soma :: Num a => [[a]] -> [[a]] -> [[a]]
-      soma = (zipW . zipW) (+)
+soma :: Num a => [[a]] -> [[a]] -> [[a]]
+soma = (zipW . zipW) (+)
 
-      multiplica :: Num a => Matriz a -> Matriz a -> Matriz a
-      multiplica (M m _ xs) b@(M _ n _) = M m n resultado
-	where (M _ _ tys) = transpose b
-		dot x y     = sum $ zipW (*) x y
-	      resultado   = map (\col -> map (dot col) tys) xs
+multiplica :: Num a => Matriz a -> Matriz a -> Matriz a
+multiplica (M m _ xs) b@(M _ n _) = M m n resultado
+  where (M _ _ tys) = transpose b
+	dot x y     = sum $ zipW (*) x y
+	resultado   = map (\col -> map (dot col) tys) xs
     #+end_src
 **** Funções extras
      Basicamente as mesmas funções da implementação com ~Arrays~, porém modificadas para aceitar a
      Estrutura de Dados ~Matriz~
      #+begin_src haskell
-       transpose :: Num a => Matriz a -> Matriz a
-       transpose (M m n [])           = M m n []
-       transpose (M m n ([]:xss))     = transpose (M m n xss)
-       transpose (M m n ((x:xs):xss)) = M m n (hd:ys)
-	 where hd         = (x : [h | (h:_) <- xss])
-	       (M _ _ ys) = transpose (M m n (xs : [t | (_:t) <- xss]))
+transpose :: Num a => Matriz a -> Matriz a
+transpose (M m n [])           = M m n []
+transpose (M m n ([]:xss))     = transpose (M m n xss)
+transpose (M m n ((x:xs):xss)) = M m n (hd:ys)
+  where hd         = (x : [h | (h:_) <- xss])
+	(M _ _ ys) = transpose (M m n (xs : [t | (_:t) <- xss]))
 
-       printMatriz :: Show a => Matriz a -> String
-       printMatriz m = concat
-	  [ "┌ ", unwords (replicate (colunas m) blank), " ┐\n"
-	  , unlines
-	  [ "│ " ++ unwords (fmap (\j -> fill $ strings ! (i,j)) [1..colunas m]) ++ " │" | i <- [1..linhas m] ]
-	  , "└ ", unwords (replicate (colunas m) blank), " ┘"
-	  ]
-	where strings@(M _ _ v) = fmap show m
-	      widest            = maximum $ fmap length v
-		fill str          = replicate (widest - length str) ' ' ++ str
-	      blank             = fill ""
+printMatriz :: Show a => Matriz a -> String
+printMatriz m = concat
+   [ "┌ ", unwords (replicate (colunas m) blank), " ┐\n"
+   , unlines
+   [ "│ " ++ unwords (fmap (\j -> fill $ strings ! (i,j)) [1..colunas m]) ++ " │" | i <- [1..linhas m] ]
+   , "└ ", unwords (replicate (colunas m) blank), " ┘"
+   ]
+  where strings@(M _ _ v) = fmap show m
+        widest            = maximum $ fmap length v
+	fill str          = replicate (widest - length str) ' ' ++ str
+        blank             = fill ""
      #+end_src
 **** Funções de ajuda
      Tirando a ~zipW~, temos novas funções de apoio!
@@ -317,20 +317,20 @@ Este documento se refere aos exercícios da LE1, segunda lista, que pode ser enc
      2. ~(!)~ -> crio um novo operador, para acessar o elemento da posição ~(i, j)~ de uma lista bidimensional
      3. ~encode~ -> um pequeno cálculo para tornar o uso do operador ~(!!)~ mais seguro, sem exeções
      #+begin_src haskell
-       sign :: Num a => [[a]]
-       sign = (1:repeat 0) : fmap (0:) sign
+sign :: Num a => [[a]]
+sign = (1:repeat 0) : fmap (0:) sign
 
-       (!) :: Matriz a -> (Int,Int) -> a
-       (!) (M _ n xs) (i, j) = v !! (encode n (i, j))
-	 where v = concat xs
+(!) :: Matriz a -> (Int,Int) -> a
+(!) (M _ n xs) (i, j) = v !! (encode n (i, j))
+  where v = concat xs
 
-       encode :: Int -> (Int,Int) -> Int
-       encode m (i,j) = (i - 1) * m + j - 1
+encode :: Int -> (Int,Int) -> Int
+encode m (i,j) = (i - 1) * m + j - 1
 
-       zipW :: (a -> b -> c) -> [a] -> [b] -> [c]
-       zipW _ [] _          = []
-	 zipW _ _ []          = []
-       zipW f (x:xs) (y:ys) = f x y : zipW f xs ys
+zipW :: (a -> b -> c) -> [a] -> [b] -> [c]
+zipW _ [] _          = []
+  zipW _ _ []          = []
+zipW f (x:xs) (y:ys) = f x y : zipW f xs ys
      #+end_src
 ** Medidores
    Funções para medir o tempo de cada operação!
@@ -346,24 +346,24 @@ Este documento se refere aos exercícios da LE1, segunda lista, que pode ser enc
    4. passo o resultado de ~getVals~ para o ~timert~ que formata e devolve todos os checkpoints com o tempo
       calculado.
    #+begin_src haskell
-     start :: IO (IORef [a])
-     start = newIORef []
+start :: IO (IORef [a])
+start = newIORef []
 
-     getVals :: IORef a -> IO a
-     getVals = readIORef
+getVals :: IORef a -> IO a
+getVals = readIORef
 
-     timert :: [(String, T.UTCTime)] -> [String]
-     timert (_:[]) = error "1???"
-     timert ([]) = error "2???"
-     timert ((s,x):b@(s',y):z) = ((pure $ mconcat [s, " -> ", s', ": ", show (T.diffUTCTime y x)]) ++) $ case z of
-				[] -> []
-				zz -> timert (b : zz)
+timert :: [(String, T.UTCTime)] -> [String]
+timert (_:[]) = error "1???"
+timert ([]) = error "2???"
+timert ((s,x):b@(s',y):z) = ((pure $ mconcat [s, " -> ", s', ": ", show (T.diffUTCTime y x)]) ++) $ case z of
+			   [] -> []
+			   zz -> timert (b : zz)
 
-     timerc :: IORef [(String, T.UTCTime)] -> String -> IO ()
-     timerc vr s = do
-       vvv <- readIORef vr
-       vvv' <- timerb s vvv
-       writeIORef vr vvv'
+timerc :: IORef [(String, T.UTCTime)] -> String -> IO ()
+timerc vr s = do
+  vvv  <- readIORef vr
+  vvv' <- timerb s vvv
+  writeIORef vr vvv'
    #+end_src
 ** Resultados
    Aqui apresento as tabelas com os resultados de tempo e número de operações para cada implementação
