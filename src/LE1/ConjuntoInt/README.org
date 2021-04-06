@@ -1,0 +1,174 @@
+#+title: TAD Conjunto Inteiros
+#+author: Matheus de Souza Pessanha
+#+email: matheus_pessanha2001@outlook.com
+
+Este documento se refere ao exercício 2 da LE1, que pode ser encontrado [[../../../docs/listas_exercicios/EDI_Atividade_Semana1.org][neste documento]].
+
+** Interface Pública
+   Essas são as possíveis funções que outros módulos e aplicações podem acessar:
+   #+begin_src haskell
+module LE1.ConjuntoInt.TAD
+  ( criaConjunto
+  , insereItem
+  , removeItem
+  , pertence
+  , minEl
+  , uniao
+  , igual
+  , isVazio
+  , contem
+  , fromList
+  , show
+  ) where
+   #+end_src
+
+** Implementação
+   Primeiro, defino o =TAD= e seus construtores de tipos:
+   #+begin_src haskell
+data Conjunto a = Conjunto [a] deriving (Eq, Read, Ord)
+   #+end_src
+
+   Um =Conjunto= nada mais é que uma lista do tipo =a=.
+   Este =TAD= permite ser comparado por igualdade ou desigualdade por causa da classe de tipo =Eq=, ex:
+   ={1,2,3} ≡ {1,2,3}= ou ={1,2,3} ≠ {4,5,6}=;
+   Ele também pode ser lido/analisado a partir de uma string, por meio da classe de tipo =Read=. ex:
+   =read "[1,2,3]" :: Conjunto Int=;
+   E por último, também pode ser comparado por ordem de grandeza:
+   ={1,2,3} ≥ {3,2}= ou ={3,2} ≤ {1,2,3}=
+
+   Após a definição do =TAD=, crio algumas instâncias nas classes de tipo =Show=, =Semigroup= e =Monoid=:
+   #+begin_src haskell
+instance Semigroup (Conjunto a) where
+  (<>) (Conjunto xs) (Conjunto ys) = Conjunto (xs ++ ys)
+
+instance Monoid (Conjunto a) where
+  mempty = Conjunto []
+
+instance Show a => Show (Conjunto a) where
+  show (Conjunto []) = "∅"
+  show (Conjunto xs) = "{" ++ intercalate ", " (map (show) xs) ++ "}"
+   #+end_src
+
+   Em Álgebra Abstrata, existem alguns linhagens:
+   =Magma=, um conjunto que possui um operador binário que precisa ser fechado:
+   =∀ a, b ∈ M : a • b ∈ M=
+   Exemplo: =Bool= e o operador =&&=
+
+   Já um =Semigroup= é um =Magma= que obedece a lei da associatividade:
+   =∀ a, b, c ∈ S : a · (b · c) = (a · b) · c=
+   Exemplo: =String= e o operador =(<>)=
+ 
+   Com uma instância da classe de tipo =Semigroup=, posso usar o operador =(<>)= com Conjuntos.
+
+   Um =Monoid= é um =Semigroup= com a restrição de que deve existir um elemento neutro no conjunto
+   que quando combinado com qualquer elemento do conjunto, resulte no mesmo elemento:
+   =e ∈ M : ∀ a ∈ M, a · e = e · a = a=
+   Exemplo: =Integer=, operador =(+)= e o elemento neutro =0=
+
+   No caso do =Conjunto=, o elemento neutro seria um conjunto vazio.
+
+   Também crio uma instância da classe de tipo =Show=, me permitindo customizar a impressão
+   de um =Conjunto= na tela.
+
+*** Funções principais
+    Essas foram as funções exigidas pelo exercício:
+
+    Apenas retorno um =Conjunto= vazio, seguindo a instância da classe de tipo =Monoid=
+    #+begin_src haskell
+criaConjunto :: Conjunto Integer
+criaConjunto = mempty
+    #+end_src
+
+    Insiro um elemento no =Conjunto=. Por questões de performance, escolho apenas fazer a operação
+    de "prepend" na lista, ou seja, apontar o cabeçalho dela para o novo elemento. Um elemento
+    só poderá ser inserido no =Conjunto= caso ele não exista no mesmo, caso contrário, devolvo
+    o mesmo =Conjunto= usado como argumento
+    #+begin_src haskell
+insereItem :: Integer -> Conjunto Integer -> Conjunto Integer
+insereItem x a@(Conjunto ys)
+	| not $ pertence x a = Conjunto (x:ys)
+	| otherwise          = a
+    #+end_src
+
+    Para remover um elemento de um =Conjunto=, primeiro verifico se é um =Conjunto= vazio.
+    Caso seja, apenas retorno ele mesmo. A partir disso, filtro todos os elementos de um
+    =Conjunto= que são diferentes do elemento usado como argumento
+    #+begin_src haskell
+removeItem :: Integer -> Conjunto Integer -> Conjunto Integer
+removeItem _ a@(Conjunto []) = a
+removeItem x (Conjunto ys)   = Conjunto (filter (/= x) ys)
+    #+end_src
+
+    Para verificar se um elemento existe num =Conjunto=, itero sobre ele, afirmando que pelo menos um
+    dos elementos precisa ser igual ao argumento
+    #+begin_src haskell
+pertence :: Integer -> Conjunto Integer -> Bool
+pertence x (Conjunto xs) = any (== x) xs
+    #+end_src
+
+    Como achar o menor elemento de um =Conjunto=? Uma das formas é iterar sobre ele, criar um "acumulador"
+    que inicia com o valor do primeiro elemento do =Conjunto= e a cada "loop", verifico se o elemento atual
+    é menor do que o acumulador. Se isso for verdade, esse elemento será o novo acumulador! Caso contrário
+    o acumulador continua o mesmo.
+    #+begin_src haskell
+minEl :: Conjunto Integer -> Integer
+minEl (Conjunto xs) = foldl1 (\acc x -> if x < acc then x else acc) xs
+    #+end_src
+
+    A união de A e B é definida pela junção de todos os elementos de =A= e =B=, ignorando os repetidos.
+    Para isso, uso a função =nub= que remove os elementos duplicados de uma lista e também
+    utilizo a função de =remover= como parâmetro da função =foldl=, que percorre um Traversal
+    que neste caso é uma lista, da esquerda para a direita reduzindo a um acumulador que nessa
+    implementação, é uma outra lista. No final, concateno o =Conjunto A= com os elementos restantes,
+    não repetidos de =B=
+    #+begin_src haskell
+uniao :: Conjunto Integer -> Conjunto Integer -> Conjunto Integer
+uniao xs (Conjunto [])              = xs
+uniao (Conjunto []) ys              = ys
+uniao a@(Conjunto xs) (Conjunto ys) =
+	(a <> (case xs of
+		      []      -> nubbed
+		      (x:xs') -> foldl (flip removeItem) (removeItem x nubbed) xs'))
+	where nubbed = Conjunto (nub ys)
+    #+end_src
+
+    Por definição um =Conjunto= só será igual a outro se ambos se conterem. Ou seja:
+    =A ⊃ B= && =B ⊃ A=
+    #+begin_src haskell
+igual :: Conjunto Integer -> Conjunto Integer -> Bool
+igual a b = contem a b && contem b a
+    #+end_src
+
+    Por correspondência de valor, verifico se é um =Conjunto= vazio ou não
+    #+begin_src haskell
+isVazio :: Conjunto Integer -> Bool
+isVazio (Conjunto []) = True
+isVazio _             = False
+    #+end_src
+
+*** Funções de ajuda
+    Essa função é necessária para o =TAD Conjunto= ter compatibilidade com a estrutura de dados "lista"
+    #+begin_src haskell
+fromList :: [Integer] -> Conjunto Integer
+fromList xs = Conjunto xs
+    #+end_src
+
+    Função que utiliza o =foldl= com o acumulador sendo uma lista vazia e com isso, removo
+    elementos duplicados de uma lista
+    #+begin_src haskell
+nub :: Eq a => [a] -> [a]
+nub = foldl (\seen x -> if elem x seen
+			then seen
+			else seen ++ [x]) []
+    #+end_src
+
+    Recursivamente checo se cada elemento do =Conjunto A= pertence a um =Conjunto B=.
+    Caso seja verdade em todos os casos, significa que =A= contém =B=
+    #+begin_src haskell
+contem :: Conjunto Integer -> Conjunto Integer -> Bool
+contem (Conjunto []) _                  = True
+contem (Conjunto (x:xs)) b@(Conjunto _) = pertence x b && contem (Conjunto xs) b
+    #+end_src
+
+** Referências
+   - [[https://gist.github.com/cscalfani/b0a263cf1d33d5d75ca746d8][Monoids in Haskell]]

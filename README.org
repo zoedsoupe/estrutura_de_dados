@@ -20,6 +20,8 @@ Colocarei aqui minhas soluções e testes tanto para a primeira parte da matéri
 
 Decidi fazer todos os trabalhos e exercícios com a linguagem =Haskell=!
 
+** Introdução ao Haskell
+   Caso você nunca tenha visto nada sobre =Haskell=, leia [[./INTRODUCAO.org][este arquivo]].
 ** Como contribuir?
    Por favor, siga as instruções de contribuição [[./CONTRIBUTING.org][deste arquivo]].
 ** Material
@@ -42,7 +44,9 @@ Em construção...
 
 ** Exercícios
 *** LE1
-1. [[./src/LE1/Exercicio1.hs][Cilindro]]
-2. [[./src/LE1/Exercicio2.hs][Conjunto de Inteiros]]
-3. [[./src/LE1/Exercicio3.hs][Data]]
-4. [[./src/LE1/Exercicio4.hs][Clientes]]
+1. [[./src/LE1/Cilindro/README.org][Cilindro]]
+2. [[./src/LE1/ConjuntoInt/README.org][Conjunto de Inteiros]]
+3. [[./src/LE1/Data/README.org][Data]]
+4. [[./src/LE1/Clientes/README.org][Clientes]]
+5. [[./src/LE1/Matriz/README.org][Matrizes]]
+6. [[./src/LE1/Recursao/README.org][Recursão]]

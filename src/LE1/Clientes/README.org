@@ -1,0 +1,214 @@
+#+title: TAD Conjunto Inteiros
+#+author: Matheus de Souza Pessanha
+#+email: matheus_pessanha2001@outlook.com
+
+Este documento se refere ao exercício 4 da LE1, que pode ser encontrado [[../../../docs/listas_exercicios/EDI_Atividade_Semana1.org][neste documento]].
+
+** Interface Pública
+   Funções expostas por esse TAD
+   #+begin_src haskell
+module LE1.Clientes.TAD
+  ( criaCliente
+  , getCliente
+  , carregaClientes
+  , salvaCliente
+  , salvaClientes
+  , excluirCliente
+  , numClientes
+  , vazio
+  , isVazio
+  , isInvalido
+  , clientes
+  , toList
+  ) where
+   #+end_src
+
+** Implementação
+   Primeiro, a representação do =TAD Cliente= e um apelido para um lista de =Clientes=
+   #+begin_src haskell
+data Cliente = Invalido | Vazio | Cliente { codigo :: Integer
+					  , nome :: B.ByteString
+					  , endereco :: B.ByteString
+					  , telefone :: B.ByteString
+					  , dt_primeira_compra :: B.ByteString
+					  , dt_ultima_compra :: B.ByteString
+					  , valor_ultima_compra :: Decimal
+					  } deriving (Show, Eq)
+
+type Clientes = [Cliente]
+   #+end_src
+
+   Para os campos que são de fato uma =String=, utilizo o tipo =ByteString= em sua versão =Lazy=.
+
+   Um =ByteString= é a representação de cada byte num =Array= que é o conteúdo. É =Lazy= pois cada byte, ou
+   melhor cada =chunk= ou =naco= de bytes só é computado quando necessário.
+
+   Para efeito de testes, escolhi organizar os dados de um =Cliente= em arquivos =CSV=
+
+*** Funções principais
+    O exercício sugere a implementação de três funções:
+
+    A primeira é para inserir um =Cliente= num arquivo. Também implementei uma para salvar diversos
+    =Clientes= de uma vez em um arquivo, um por linha.
+
+    Cada função recebe um =Cliente= ou uma lista deles e um =FilePath= que é apenas
+    um apelido para o tipo =String=.
+
+    Eu simplesmente "encodo", ou, empacoto e converto todos os campos para um único
+    =ByteString=, separado por vírgulas. Deopis, acrescento as novas linhas no arquivo caso ele exista
+    ou crio outro caso ele não exista.
+
+    Note que na função =salvaClientes= eu uso a função =mapM_=, que, assim como a =map=, aplica uma função
+    em cada elemento de uma lista. Porém, nesse caso, é uma lista de operações =IO=, que é uma
+    Mônada. Portanto, utilizo a versão =mapM_= que permite iterar uma lista de valores envolvidos por
+    uma Mônada, aplicar a função desejada em cada elemento, ou nesse caso, apenas executar a tarefa =IO=,
+    e ainda descartar a nova lista gerada por essa operação, pois não me importo com ela
+    #+begin_src haskell
+salvaCliente :: Cliente -> FilePath -> IO ()
+salvaCliente c path = do
+	nl       <- return $ B.pack "\n"
+	conteudo <- return $ B.concat (nl:(converteCliente c):[])
+	B.appendFile path conteudo
+
+salvaClientes :: Clientes -> FilePath -> IO ()
+salvaClientes [] _    = putStrLn "Lista vazia"
+salvaClientes xs path = mapM_ (\x -> salvaCliente x path) xs >> putStrLn "Os Clientes foram salvos!"
+    #+end_src
+
+    Para consultar um =Cliente=, você precisa carregar os =Clientes= de um arquivo, e dado um índice,
+    recuperar o valor da lista. Porém o operador ~(!!)~ não é seguro, uma vez que dado um índice maior
+    que o tamanho da lista ou menor do que =0=, será lançada uma exeção.
+
+    Para evitar isso, faço uma simples conta onde se o índice dado for negativo, converto o índice
+    para ser acessível na lista:
+
+    Tendo índice == x,
+
+    Se x < 0 -> troco o sinal e retorno o cliente na posição (-x)
+
+    Se x > tamanho lista -> retorno o Cliente na posição do resto do índice pelo tamanho da lista
+    #+begin_src haskell
+getCliente :: IO Clientes -> Int -> IO Cliente
+getCliente c_io idx = do
+	num <- numClientes c_io
+	c   <- c_io
+	if idx > num || idx < 0
+	  then return $ c !! (mod (negate idx) num)
+	  else return $ c !! idx
+    #+end_src
+
+    Já para excluir um =Cliente=, dado uma lista de =Clientes=, um índice e um =FilePath=, recupero o cliente
+    com a função =getCliente= (atente-se à conta de "offset"), removo-o da lista e sobrescrevo um arquivo
+    já existente ou crio outro caso não exista
+    #+begin_src haskell
+excluirCliente :: IO Clientes -> Int -> FilePath -> IO Cliente
+excluirCliente cs idx path = do
+	cs'      <- cs
+	cl       <- getCliente cs idx
+	cl'      <- return cl
+	cs''     <- return $ filter (/= cl') cs'
+	conteudo <- return . B.unlines $ map (converteCliente) cs''
+	_        <- B.writeFile path conteudo
+	return cl
+    #+end_src
+
+*** Funções de ajuda
+    Primeiro, defino algumas funções para lidar com um =Cliente= inválido ou vazio
+    e algumas outras para compatibilidade com listas
+    #+begin_src haskell
+vazio :: Cliente
+vazio = Vazio
+
+isVazio :: Cliente -> Bool
+isVazio Vazio = True
+isVazio _     = False
+
+isInvalido :: Cliente -> Bool
+isInvalido Invalido = True
+isInvalido _        = False
+
+toList :: Cliente -> [String]
+toList Vazio                           = ["Cliente Vazio"]
+toList Invalido                        = ["Cliente Inválido"]
+toList (Cliente c n e t dt_p dt_u v_u) = list
+	where c'     = show c
+	      n'     = B.unpack n
+	      e'     = B.unpack e
+	      t'     = B.unpack t
+	      dt_p'  = B.unpack dt_p
+	      dt_u'  = B.unpack dt_u
+	      v_u'   = show v_u
+	      list = [c', n', e', t', dt_p', dt_u', v_u']
+    #+end_src
+
+     Dado os seguintes parâmetros, em ordem: código, nome, endereço, telefone,
+     data primeira compra, data última compra e valor da última compra, retorno um =Cliente=
+    #+begin_src haskell
+criaCliente :: (Integer, String, String, String, String, String, Decimal) -> Cliente
+criaCliente (c, n, e, t, dt_p, dt_u, v_u) = Cliente c n' e' t' dt_p' dt_u' v_u
+	where n'    = B.pack n
+	      e'    = B.pack e
+	      t'    = B.pack t
+	      dt_p' = B.pack dt_p
+	      dt_u' = B.pack dt_u
+    #+end_src
+
+    Dado um =FilePath=, leio o conteúdo deste arquivo e converto cada linha para um =Cliente=
+    #+begin_src haskell
+carregaClientes :: FilePath -> IO Clientes
+carregaClientes path = do
+	conteudo <- leArquivo path
+	case conteudo of
+	  [[]] -> return []
+	  _    -> do
+	    clientes' <- return $ filter (/= Invalido) (map (leCliente) conteudo)
+	    return clientes'
+    #+end_src
+
+    Converto um =TAD Cliente= para uma representação de um único =ByteString=, separado por vírgulas
+    #+begin_src haskell
+converteCliente :: Cliente -> B.ByteString
+converteCliente Invalido = B.pack ""
+converteCliente Vazio    = B.intercalate (B.pack ",") cliente
+	where (c:n:t:e:dt_p:dt_u:v_u:_) = packBist $ map (\_ -> "") ['a' .. 'g']
+	      cliente = c:n:t:e:dt_p:dt_u:v_u:[]
+converteCliente (Cliente c n t e dt_p dt_u v_u) = cliente'
+	where cod      = B.pack $ show c
+	      va       = B.pack $ show v_u
+	      cliente  = cod:n:t:e:dt_p:dt_u:va:[]
+	      cliente' = B.intercalate (B.pack ",") cliente
+    #+end_src
+
+    Dado uma lista de =ByteString=, tento converter cada linha em um =Cliente= válido.
+    Caso contrário, retorno um =Cliente= inválido
+    #+begin_src haskell
+leCliente :: [B.ByteString] -> Cliente
+leCliente (x:_)
+	| x == B.empty = Invalido
+leCliente (c:n:t:e:dt_p:dt_u:v_u:_) = Cliente cod n e t dt_p dt_u va_u
+	where cod  = read (B.unpack c) :: Integer
+	      va_u = read (B.unpack v_u) :: Decimal
+leCliente _ = Invalido
+    #+end_src
+
+    Delimito que apenas arquivos =CSV= podem ser lidos, separo todo o conteúdo em linhas
+    e depois separo cada linha em campos pelo delimitador de vírgula, retornando
+    um lista bidimensional envolvida por uma Mônada =IO=
+    #+begin_src haskell
+leArquivo :: FilePath -> IO [[B.ByteString]]
+leArquivo caminho = do
+	status <- getFileStatus caminho
+	if isDirectory status
+	  then return [[]]
+	  else if not $ isInfixOf ".csv" caminho
+		then return [[]]
+		else do
+	conteudo <- B.readFile caminho
+	return [B.split ',' l | l <- B.lines conteudo]
+    #+end_src
+
+    Converto uma lista de =String= para uma lista de =ByteString=
+    #+begin_src haskell
+packBist :: [String] -> [B.ByteString]
+packBist xs = map (B.pack) xs
+    #+end_src

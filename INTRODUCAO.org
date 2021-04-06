@@ -1,0 +1,369 @@
+#+title: Uma Pequena introdução ao Haskell
+#+author: Matheus de Souza Pessanha
+#+email: matheus_pessanha2001@outlook.com
+
+Este documento tem a finaliade de explicar de forma introdutória
+o /modo operantis/ e a sintaxe da linguagem de programação =Haskell=.
+
+Note que não irei abordar por completo a linguagem, pois também estou no processo
+de aprendizado, portanto, tocarei apenas os assuntos necessários para
+que os códigos presentes aqui no repositório sejam minimamente entendidos.
+
+** Tutoriais e livros especializados:
+   Caso queira de fato se aprofundar e estudar mais sobre a linguagem e
+   as teorias por trás dela, posso indicar essas fontes:
+
+   1. [[http://learnyouahaskell.com/chapters][Learn You a Haskell for Great Good!]] -> Uma apresentação light, com vários exemplos, mas sem exercícios. Possui uma [[http://haskell.tailorfontela.com.br/chapters][versão em português]]
+   2. [[https://github.com/bitemyapp/learnhaskell][Learn Haskell]] -> Versão mais aprofundada, com muitos exercícios práticos! [[https://github.com/bitemyapp/learnhaskell/blob/master/guide-pt.md][Versão em português]]
+   3. [[https://hoogle.haskell.org/][Hoogle]] -> Uma enciclopédia para =Haskell=! Pode procurar pela tipagem das funções, seus nomes ou operadores.
+   4. [[https://hackage.haskell.org/][Hackage]] -> Repositório dos pacotes/libs para =Haskell=. Reúne também toda a documentação das implementações nativas da linguagem
+   5. [[https://t.me/haskellbr][Haskell Brasil]] -> Grupo do Telegram para discutir ou pedir ajuda sobre a linguagem
+
+** Introdução
+   Antes de tudo é bom frizar, repetir, insistir, redizer, reiterar, repisar e amiudar que =Haskell= é
+   uma linguagem funcional. Não só isso, ela é uma linguagem *PURAMENTE FUNCIONAL*.
+
+   Isso significa, que caso você só tenha visto linguagens como =Python=, =JavaScript=, =Java=, =C= e compania,
+   você terá que lidar com um paradigma diferente; uma outra maneira de pensar! Isso não deve ser
+   tomado como uma dificuldade e sim um aviso, pois sua mentalidade está programada (literalmente) para
+   pensar em algoritmos /imperativos/.
+
+   Pois bem, então, no que consiste a programanção funcional?
+   1. Imutabilidade
+   2. Funções como cidadãs de primeira classe
+   3. Funções puras
+   4. Transparência referêncial
+   5. Recursão
+
+*** O que é =Haskell=?
+    Uma linguagem declarativa, puramente funcional, =lazy= por definição,
+    estaticamente tipada, compilada e concorrente.
+
+    Site oficial: https://www.haskell.org/
+
+    Ser estaticamente tipada significa que toda expressão na linguagem possui um tipo que
+    é determinado em tempo de compilação. Ou seja, todos os tipos inferidos devem
+    ser corretamente combinados, caso contrário o compilador irá rejeitar o programa.
+
+    Você não precisa declarar a tipagem das expressões de forma explícita! O compilador
+    já faz esse processo de forma automática e bidirecional. Porém, é uma boa prática escrever
+    as notações de tipos para melhor documentação, melhor legibilidade ou forçar
+    o compilador a inferir a tipagem desejada.
+
+    Ser =lazy= significa que nenhuma função computa o valor de seus argumentos, a menos
+    que seja necessário. Isso cria a possibilidade de gerenciamento de estruturas de dados
+    infinitas ou a habilidade de de escrever estruturas de controle de fluxo (=if/else=) apenas
+    escrevendo funções normais.
+
+    Exemplo: =take 10 [1..]=
+
+    Isso me retorna 10 elementos de uma lista infinita!
+
+**** Tipos
+     Como esse assunto é uma das fundações da linguagem, não será possível compreender todo o escopo
+     disso logo de cara, porém, vamos aos tipos básicos:
+
+     - =Char= -> um caractere
+     - =Int= -> inteiros, com limite
+     - =Integer= -> inteiros sem limites
+     - =Float= -> números com ponto flutuante com precisão única
+     - =Double= -> números com ponto flutuante com precisão dobrada
+     - =Bool= -> representação booleana (=True= ou =False=)
+
+     Vale dizer que existe o tipo =String=, mas na verdade ele é apenas um apelido
+     para uma lista de =Char=: =[Char]=.
+
+     Funções também possuem tipos!
+     - =Char -> Char= -> uma função que recebe um argumento =Char= e devolve outro do mesmo tipo
+
+***** Variáveis de tipos
+      Qual seria a tipagem da função =head=, que retorna o primeiro elemento de uma lista?
+      #+begin_src haskell
+	head :: [a] -> a
+      #+end_src
+
+      Hmmm... Ok, mas o que é =a=?
+      É uma variável de tipo! Isso significa que qualquer tipo
+      pode substituir =a=! É como se fosse a ideia de "Generics" em
+      =Java=, =C#= ou =TypeScript=!
+
+      A variável de tipo pode ter qualquer nome, mas para fins de legibilidade e
+      simplicidade, geralmente definimos como a, b, c, d...
+***** Classes de tipos
+      Uma classe de tipo é como uma interface que define algum comportamento.
+      Se um tipo faz parte de uma dada classe de tipo, isso significa que ele
+      suporta aquela ação definida pela classe de tipo.
+
+      Muitas pessoas vindas de linguagens =OOP= (Orientadas a Objetos) confundem as
+      classes de tipos achando que são a mesma coisa que "classes" como em =Ruby=.
+      Porém, a máxima comparação que você pode fazer é que classes de tipos são
+      *parecidas* com interfaces em =TypeScript= por exemplo.
+
+      Bem, vamos ver a tipagem da função ~(/=)~:
+      #+begin_src haskell
+	(/=) :: Eq a => a -> a -> Bool
+      #+end_src
+
+      Mais para frente explico como os operadores são, na verdade, funções em =Haskell=.
+
+      A =Eq= classe define dois comportamentos, que na verdade apenas um precisa ser implementado:
+      ~(==), (/==)~. Os operadores de igualdade e desigualdade. Se um tipo faz parte da classe de tipo =Eq=, ele
+      pode ter igualdade ou desigualdade.
+
+      Outras classes de tipos:
+      - =Ord= -> para tipos que podem ser comparados (=5 > 6=, ~"xxx" < "yyyyyy"~)
+      - =Show= -> representa os tipos membros em forma de =String=
+      - =Read= -> contrário de =Show=, recebe uma =String= e devolve um tipo membro
+      - =Enum= -> tipos que podem ser enumerados (=['a'..'g']=, =[10 .. 90]=)
+      - =Bounded= -> tipos membros possuem um valor "máximo" e "minimo", como =Int=
+      - =Num= -> os tipos membros agem como números, inclui todos eles
+      - =Integral= -> inclui apenas os números inteiros como =Integer= e =Int=
+      - =Floating= -> inclui os tipos =Float= e =Double=
+
+*** Imutabilidade
+    No paradigma funcional, variáveis são imutáveis! Ou seja,
+    uma vez definidas, "declaradas" ou inicializadas, elas não poderão
+    assumir outro valor durante a execução do programa.
+
+    Por consequência, isso possui várias vantagens:
+    - Efeitos colaterais "não visíveis" são evitados
+    - Torna-se simples fazer cache de valores
+    - Programação em múltiplas threads se torna mais segura
+    - Caso haja algum erro, fica mais fácil de debuggar
+
+    Obviamente essas vantagens vêm traz uma desvantagem: o consumo
+    de memória se torna consideravelmente maior, uma vez que é necessário
+    duplicar e recriar diversas vezes o mesmo valor na memória.
+
+    Entretanto, se projetado de forma consciente, principalmente nos dias
+    de hoje onde temos uma relativa abundância de memória, isso pode não
+    ser um problema.
+
+**** Exemplos
+     Possuo um array =[1,2,3]= definido como =x=.
+
+     Quero adicionar um elemento à esse array.
+
+     Numa linguagem imperativa, você faria:
+     #+begin_src python
+       x = [1,2,3]
+
+       // [1, 2, 3]
+       print(x)
+
+       x.append(8)
+
+       // [1, 2, 3, 8]
+       print(x)
+     #+end_src
+
+     Ou:
+     #+begin_src c
+       void print(int* x, size_t size) {
+	 printf("[");
+	 for (size_t i = 0; i < size; i++)
+	   printf("%d ", x[i]);
+	 printf("]\n");
+       }
+
+       int x[4] = {1, 2, 3};
+
+       size_t size = sizeof(x) / sizeof(int);
+
+       // [1, 2, 3]
+       print(&x);
+
+       x[3] = 8;
+
+       // [1, 2, 3, 8]
+       print(&x);
+     #+end_src
+
+     Em =Haskell=, você faria:
+     #+begin_src haskell
+       xs = [1, 2, 3]
+
+       // [1, 2, 3]
+       print xs
+
+       ys = 8:xs
+
+       // [1, 2, 3]
+       print xs
+
+       // [1, 2, 3, 8]
+       print ys
+     #+end_src
+
+     A primeira grande diferença aqui é:
+     *Em linguagens funcionais, a estruturas de dados mais utilizada é uma lista encadeada, não um array*.
+
+     Uma lista encadeada é dividida em 4 segmentos:
+     - =head= -> o primeiro elemento da lista (cabeçalho);
+     - =init= -> todos os elementos da lista, menos o último (arranjo);
+     - =tail= -> todos os elementos da lista, menos o primeiro (cauda);
+     - =last= -> último elemento da lista;
+
+     A segunda é que ao invés de modificarmos a variável =xs=, criamos uma =ys=, onde adicionamos
+     o elemento "8" como a cabeça da nova lista!
+
+     Importante reiteirar que caso você defina uma variael =x= e tente redefinir ela em =Haskell=, você
+     receberá um erro :)
+
+*** Funções como cidadãs de primeira classe
+    Isso significa que funções são tratadas como valor, como estrutura, assim
+    como números literais, listas.
+
+    Isso permite que funções sejam passadas como argumento, possam ser retornadas
+    de outras funções ou mesmo possam ser atribuídas à variáveis.
+
+    Com isso, introduzimos o conceito de =HOF=, ou *High Order Functions*,
+    funções de alta ordem. Essas são as funções que recebem outras funções ou
+    retornam uma outra função.
+
+    A esse caso de uma função que retorna outra função que deriva o contexto
+    da função =HOF=, damos o nome de *closure*.
+
+**** Exemplos:
+     #+begin_src haskell
+       soma = (+)
+
+       res = soma 4 5
+     #+end_src
+
+     Pois bem, definimos uma variável =soma=, que recebe a função de adição!
+
+     *É importante notar que operadores em Haskell também são funções.*
+
+     Isso significa que podemos usar nossa função =soma= na representação infixa:
+     #+begin_src haskell
+     res' = 4 `soma` 5
+     #+end_src
+
+     Agora vamos ver uma =HOF=:
+     #+begin_src haskell
+       xs = [1, 2, 3]
+
+       res'' = map (show) xs
+     #+end_src
+
+     Primeira observação: colocamos um apóstrofo no nome de uma variável quando
+     queremos dizer que ela representa um valor existente, mas que foi modificado! Quanto
+     mais apostófos, mais modificações (não mutação) a variável sofreu, mas tenha o bom senso...
+
+     Bem, a função =map= (=map :: (a -> b) -> [a] -> [b]=) recebe outra função como primeiro parâmetro e aplica ela em cada elemento
+     da lista, retornando uma outra lista de outro tipo! Neste caso, aplico a função =show=, que transforma um valor em =String=,
+     desde que o tipo do valor seja membro da classe de tipo =Show=.
+
+     Já uma closure, poderia ser assim:
+     #+begin_src haskell
+       f x = (\y -> x + y)
+
+       soma5 = f 5
+
+       -- res''' == 15
+       res''' = soma5 10
+     #+end_src
+
+     Ok, bastante coisa aconteceu ai...
+
+     Primeiro definimos =f=, que recebe um argumento =x= e devolve uma função anônima, ou
+     uma função =lambda=. Ela é anônima pois depois que é executada, é descartada da memória.
+
+     Depois, definimos uma nova função =soma5=, que a é a função =f= chamada com o argumento =5=.
+     Isso siginifica q =f= retornou uma função, mesmo que =lambda=, dessa maneira:
+     =(\y -> 5 + y)=.
+
+     Portando, quando executamos a =soma5=, agora com o argumento =10=, o resultado será =15=, pois a
+     função "lembra" qual foi o último argumento. Ela guarda o contexto.
+*** Funções puras e Transparência Referencial
+    Uma função é pura quando ela não depende, ou melhor, não afeta o
+    escopo ao redor dela.
+
+    #+begin_src haskell
+      double x = (*) x 2
+    #+end_src
+
+    Essa função é pura, pois ela não afeta nenhum escopo externo, muito menos afeta algum estado fora
+    do escopo dela.
+
+    Outra regra que uma função pura deve seguir é que se ela for chamada com o mesmo argumento, sempre
+    deverá retornar o mesmo resultado. A isso damos o nome de *Transparência Referencial*.
+
+    Exemplo, mesmo que você chame a função =double= N vezes com o argumento =2=, ela sempre retornará =4=.
+
+    Em =Haskell=, funções puras são levadas ainda mais longe: mesmo operações de =IO= são formadas por funções puras,
+    sendo apenas uma descrição do que fazer. Não existem =statements=.
+
+    #+begin_src haskell
+      "Name: " ++ getLine
+    #+end_src
+
+    Essa concatenação de strings dará erro de tipo, pois ~"Name: "~ é do tipo =String= e
+    =getLine= retorna um valor do tipo =IO String=.
+
+
+*** Sintaxes
+    Aqui listarei algumas sintaxes que serão necessárias para entender o código desse repositório:
+
+**** Pattern Matching
+    Imagine que tenho uma lista =[1,2,3]=, e quero fazer uma função para somar os elementos.
+
+    #+begin_src haskell
+      soma :: [a] -> [a]
+      soma []     = []
+      soma (x:xs) = x + (soma xs)
+    #+end_src
+
+    Interessante... Houve duas definições da mesma função, além de ser um algoritmo recursivo...
+
+    Bem, na primeira cláusula, dizemos que, caso a função =soma= receba uma lista vazia,
+    será devolvida uma lista vazia. Esse é o caso base da recursão.
+
+    Agora, caso ela receba uma lista com elementos, usamos a correspôndencia de valores novamente
+    para tentar dar um =match=. Divido a lista na sua cabeça e na sua cauda, atribuindo respectivamente às
+    variáveis =x= e =xs=.
+
+    Uma lista, como =[1,2,3]= não é nada mais nada menos do que: ~(1:(2:(3:[])))~.
+**** Guard clauses
+     Entenda como a substituição de vários =if/else=, porém, acoplados
+     direto na definição da função:
+
+     #+begin_src haskell
+       max' :: (Ord a) => a -> a -> a
+       max' x y
+	 | x > y     = x
+	 | otherwise = y
+     #+end_src
+
+     Uma função para retornar o maior entre dois números!
+
+     A função pode ser lida assim:
+
+     Dado os argumentos =x= e =y=, que possuem o tipo =a=, que é membro da classe de tipo
+     =Ord=. Verifico se =x= é maior que =y=, caso seja, retorno =x=, em qualquer outro caso
+     (otherwise), retorno =y=
+
+
+**** Where
+     Podemos usar a cláusula =where= para evitar repetições em definições
+     de funções e varáveis, melhorando a legibilidade do código.
+
+     #+begin_src haskell
+       iniciais :: String -> String -> String
+       iniciais primeiroNome ultimoNome = [f] ++ ". " ++ [l] ++ "."
+	   where (f:_) = primeiroNome
+		 (l:_) = ultimoNome
+     #+end_src
+
+     Em primeiro lugar, temos uma função que recebe dois argumentos do
+     tipo =String= e devolve uma outra =String=.
+
+     Depois, definimos um =where=, onde, por =pattern matching= (correspôndencia de valores),
+     pegamos apenas os primeiros elementos de cada nome, uma vez que =String= significa =[Char]=.
+
+     E por fim, concatenamos esses carecteres com pontos.
+
+     Podemos definir varáveis, extrair valores de outras varáveis por meio da
+     correspôndencia de valores ou até definir outras funções dentro de uma cláusula =where=, que
+     será acessível a todo o escopo daquela função.

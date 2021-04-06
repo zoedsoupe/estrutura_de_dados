@@ -2,7 +2,7 @@ module Helpers.Clientes (runClientes) where
 
 import Helpers (toInfo, toSuccess, yellow, promptLine)
 import Data.Decimal (Decimal)
-import qualified LE1.Exercicio4 as Clientes
+import qualified LE1.Clientes.TAD as Clientes
 import System.Console.Pretty (Color(Magenta), color)
 import Text.Layout.Table (HeaderSpec, ColSpec, tableString, def, numCol, unicodeRoundS, rowG, titlesH)
 
