@@ -1,6 +1,7 @@
 {-# LANGUAGE BangPatterns #-}
 module Helpers.Matriz (runMatriz) where
 
+import Control.DeepSeq
 import LE1.Matriz.Medidores
 import Control.Monad (forM_)
 import qualified LE1.Matriz.Lista as L
@@ -21,36 +22,36 @@ medeLista = do
   start' <- start
   putStrLn $ toInfo "somando matrizes com 100 elementos..."
   timerc start' "soma matriz lista 100"
-  pure $ a100 + b100
-  timerc start' "fim soma lista 100"
+  (a100 + b100) `deepseq`
+    timerc start' "fim soma lista 100"
   putStrLn $ toInfo "somando matrizes com 300 elementos..."
   timerc start' "soma matriz lista 300"
-  pure $ a300 + b300
-  timerc start' "fim soma lista 300"
+  (a300 + b300) `deepseq`
+    timerc start' "fim soma lista 300"
   putStrLn $ toInfo "somando matrizes com 500 elementos..."
   timerc start' "soma matriz lista 500"
-  pure $ a500 + b500
-  timerc start' "fim soma lista 500"  
+  (a500 + b500) `deepseq`
+    timerc start' "fim soma lista 500"  
   putStrLn $ toInfo "somando matrizes com 1000 elementos..."
   timerc start' "soma matriz lista 1000"
-  pure $ a1000 + b1000
-  timerc start' "fim soma lista 1000"
+  (a1000 + b1000) `deepseq`
+    timerc start' "fim soma lista 1000"
   putStrLn $ toInfo "multiplicando matrizes com 100 elementos..."
   timerc start' "mult matriz lista 100"
-  pure $ a100 * a100
-  timerc start' "fim mult lista 100"
+  (a100 * a100) `deepseq`
+    timerc start' "fim mult lista 100"
   putStrLn $ toInfo "multiplicando matrizes com 300 elementos..."
   timerc start' "mult matriz lista 300"
-  pure $ a300 * a300
-  timerc start' "fim mult lista 300"
+  (a300 * a300) `deepseq`
+    timerc start' "fim mult lista 300"
   putStrLn $ toInfo "multiplicando matrizes com 500 elementos..."
   timerc start' "mult matriz lista 500"
-  pure $ a500 * a500
-  timerc start' "fim mult lista 500"
+  (a500 * a500) `deepseq`
+    timerc start' "fim mult lista 500"
   putStrLn $ toInfo "multiplicando matrizes com 1000 elementos..."
   timerc start' "mult matriz lista 1000"
-  pure $ a1000 * a1000
-  timerc start' "fim mult lista 1000"  
+  (a1000 * a1000) `deepseq`
+    timerc start' "fim mult lista 1000"  
   end <- getVals start'
   forM_ (evens $ timert end) (putStrLn . toSuccess)
 
