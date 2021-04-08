@@ -31,7 +31,7 @@ instance Show a => Show (Conjunto a) where
 -- Inrterface Pública
 
 fromList :: [Integer] -> Conjunto Integer
-fromList xs = Conjunto xs
+fromList xs = Conjunto (nub xs)
 
 criaConjunto :: Conjunto Integer
 criaConjunto = mempty
