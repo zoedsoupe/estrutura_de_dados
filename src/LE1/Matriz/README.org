@@ -195,9 +195,9 @@ zipW f (x:xs) (y:ys) = f x y : zipW f xs ys
     comparada com outras!
     #+begin_src haskell
 data Matriz a = M { linhas  :: Int
-		  , colunas :: Int
-		  , valores :: [[a]]
-		  } deriving (Eq, Ord)
+                  , colunas :: Int
+                  , valores :: [[a]]
+                  } deriving (Eq, Ord, Show, Generic, Generic1, NFData, NFData1)
     #+end_src
 
     Também defino algumas instâncias de outras classes de tipo:
@@ -225,6 +225,91 @@ data Matriz a = M { linhas  :: Int
        Já função ~signum~ retorna 1 caso o número seja positivo, -1 se for negativo e 0 se o argumento
        for 0. Implementei ela para caso receba uma ~Matriz mXn~ ela retorne uma ~Matriz Identidade~ de
        ~m~ linhas e ~n~ colunas, a partir de uma lista infinita.
+
+    5. Além das instâncias, derivo da classe de tipo =Generic=, de forma simplória, implementa uma
+       instância genérica que possui duas funções:
+       #+begin_src haskell
+class Generic a where
+  -- Codifica a representação do tipo abstrato do usuário
+  type Rep a :: * -> *
+  -- Converte do tipo abstrato para a representação
+  from  :: a -> (Rep a) x
+  -- Converte da representação para o tipo abstrato
+  to    :: (Rep a) x -> a
+       #+end_src
+       Programação genérica em =Haskell= é muito mais profundo do que isso, e apenas utilizei pela
+       facilidade que ela traz. Ainda preciso me aprofundar nisso.
+
+       E a =Generic1=, é a variação que aceita parâmetros de tipos no ADT do usuário.
+
+       Explicarei o porquê de precisar dela no decorrer deste documento.
+
+    6. Também derivo da classe de tipo =NFData= tem a função de implementar a função =rnf=, que significa
+       /Reduce a value to Normal Form/. Aqui vai uma breve explicação: =Haskell= é uma linguagem lazy, e, na prática, isso acontece:
+       #+begin_src c
+#include <stdio.h>
+
+int soma(int x, int y) {
+  return x + y;
+}
+
+int main() {
+  int cinco = soma(1 + 1, 1 + 2);
+  int sete = soma(1 + 2, 1 + 3);
+
+  printf("Cinco: %d\n", five);
+  return 0;
+}
+       #+end_src
+       Neste trecho de código, o seguinte acontece:
+       - Antes da função =soma= ser chamada, o programa computa o resultado de =1 + 1= e =1 + 2=
+
+       - Depois, chamamos a função com =2= e =3= como argumentos e =5= é devolvido, inserindo o valor no endereço de
+	 memória em que a variável =cinco= aponta.
+
+       - Fazemos o mesmo procedimento para a variável =sete=
+
+       - Imprimimos na tela apenas a variável =cinco=
+
+	      Vamos ver o mesmo códigom em =Haskell=:
+	      #+begin_src haskell
+soma :: Int -> Int -> Int
+soma x y = x + y
+
+main :: IO ()
+main = do
+  let cinco = soma (1 + 1) (1 + 2)
+      sete = soma (1 + 2) (1 + 3)
+
+  putStrLn $ "Cinco: " ++ show cinco
+	      #+end_src
+	      Aqui acontece o seguinte:
+       - Ao invés de computar =1 + 1= e =1 + 2=, o compilador vai alocar na memória uma referência ou "promesa" dessa computação
+	 passar ela para a função =soma=
+       - A variável =cinco= guarda uma promesa da computação de =soma= que guarda as promessas das duas computações anteriores
+       - Quando finalmente imprimimos a variável =cinco=, ela é computada, o que desencadeia a computação da função =soma=, que
+	 por consequência, computa =1 + 1= e =1 + 2=
+       - Por curiosidade, a variável =sete= não é computada em momento algum, então ela é descartada (:
+
+       Só que esse comportamento /laziness/ ou "preguiçoso" me atrapalhou na hora de fazer as medições de tempo na soma e multiplicação
+       das matrizes... Então precisei forçar a computação dos valores. Mas como todo conhecimento sempre tem suas dependências, vamos
+       para mais uma explicação:
+
+       Em =Haskell=, podemos usar a função =seq :: a -> b -> b=, que recebe dois argumentos e devolve o segundo, porém ela força a computação
+       dos dois. No caso, =b= só será computado se =a= também for! Mas tem um porém: o =seq= só computa o valor em *WHNF* /Weak Head Normal Form/.
+       Exemplos práticos:
+       #+begin_src haskell
+-- | só irá computar o cabeçalho da lista (1)
+two = [1,2,3] `seq` 2
+
+-- | Apenas irá computar a Mônada Maybe e remover o Just, o undefined não será computado...
+maybeError = Just undefined `seq` 2
+       #+end_src
+       Por isso existe o =deepseq=, que irá forçar a computação, recursivamente da estrutura.
+
+       Derivando a classe de tipo =NFData=, a função =rnf= é implementada automaticamente para meu ADT =Matriz=, e a =NFData1=,
+       tem a mesma finalidade que a =Generic1=: aceitar parâmetros de tipos!
+
     #+begin_src haskell
 instance Foldable Matriz where
   length (M _ _ xs) = length $ concat xs
@@ -371,10 +456,10 @@ timerc vr s = do
     | *Tamanho /n/* | *Soma de Matrizes* |          | *Multiplicação de Matrizes* |          |
     |-------------+------------------+----------+---------------------------+----------|
     |             |       /Tempo (ms)/ | /N° Oper./ |               /Tempo (ms) | /N° Oper./ |
-    |         100 |         3.246232 |   4x10^4 |                 14.046627 |   1x10^5 |
-    |         300 |         29.37836 |  36x10^4 |                542.895129 |   9x10^5 |
-    |         500 |         53.60583 |   1x10^6 |               3395.400889 |  25x10^5 |
-    |        1000 |        124.81103 |   4x10^6 |              34491.314519 |   1x10^7 |
+    |         100 |           3.2462 |   4x10^4 |                   14.0466 |   1x10^5 |
+    |         300 |          29.3783 |  36x10^4 |                  542.8951 |   9x10^5 |
+    |         500 |          53.6058 |   1x10^6 |                 2854.7191 |  25x10^5 |
+    |        1000 |         124.8110 |   4x10^6 |                29771.6901 |   1x10^7 |
 
     Na ~soma~ eu realizo essas operações:
     1. extrair elementos da ~Matriz A~
@@ -396,11 +481,11 @@ timerc vr s = do
 *** Lista
     | *Tamanho /n/* | *Soma de Matrizes* |          | *Multiplicação de Matrizes* |          |
     |-------------+------------------+----------+---------------------------+----------|
-    |             | /Tempo (ms)/       | /N° Oper./ | /Tempo (ms)               | /N° Oper./ |
-    |         100 | 123x10^2         |   2x10^4 | 223x10^2                  |    20200 |
-    |         300 | + de 123x10^5    |  18x10^4 | inviável                  |   180600 |
-    |         500 | inviável         |   5x10^5 | inviável                  |   501000 |
-    |        1000 | inviável         |   2x10^6 | inviável                  |  2002000 |
+    |             |       /Tempo (ms)/ | /N° Oper./ |               /Tempo (ms) | /N° Oper./ |
+    |         100 |          14.1199 |   2x10^4 |                   58.7417 |    20200 |
+    |         300 |          63.2772 |  18x10^4 |                 1007.2398 |   180600 |
+    |         500 |         153.6067 |   5x10^5 |                 4938.1908 |   501000 |
+    |        1000 |         590.9047 |   2x10^6 |                43807.4136 |  2002000 |
 
     Percebemos que apenas pelo fato de usarmos uma Estrutura de Dados como uma Lista Encadeada,
     o tempo exigido chega a ser incalculável!
@@ -410,3 +495,7 @@ timerc vr s = do
 
     Já na ~multiplicação~, mesmo eu realizando a transposta de cada lista, o número de operações também é menor,
     entretanto, sofre da mesma desvantagem de acesso das Listas Encadeadas!
+
+** Referências
+   - [[https://wiki.haskell.org/GHC.Generics][GHC Generics]]
+   - [[https://www.fpcomplete.com/haskell/tutorial/all-about-strictness/][All about stricness]]
