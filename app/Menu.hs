@@ -12,6 +12,7 @@ import Helpers.ConjuntoInt
 
 -- | Outros
 import Helpers.Matriz
+import Helpers.Recursao
 
 menu :: IO ()
 menu = do
@@ -46,6 +47,7 @@ choices = zip [0.. ]
   , ("Clientes", runClientes)
   , ("Estruturas", menu)
   , ("Algoritmos", menu)
+  , ("Recursão", runRecursao)
   , ("Outros", menu)
   , ("Matrizes", runMatriz)
   , ("Sair", exit)
