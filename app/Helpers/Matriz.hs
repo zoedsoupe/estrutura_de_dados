@@ -14,16 +14,43 @@ introMatriz = do
 
 medeLista :: IO ()
 medeLista = do
-  let (a20, b20) = (L.matriz 20 20, L.matriz 20 20) :: (L.Matriz Int, L.Matriz Int)
+  let (a100, b100)   = (L.matriz 100 100, L.matriz 100 100)     :: (L.Matriz Int, L.Matriz Int)
+  let (a300, b300)   = (L.matriz 300 300, L.matriz 300 300)     :: (L.Matriz Int, L.Matriz Int)
+  let (a500, b500)   = (L.matriz 500 500, L.matriz 500 500)     :: (L.Matriz Int, L.Matriz Int)
+  let (a1000, b1000) = (L.matriz 1000 1000, L.matriz 1000 1000) :: (L.Matriz Int, L.Matriz Int)
   start' <- start
-  putStrLn $ toInfo "somando matrizes com 20 elementos..."
-  timerc start' "soma matriz lista 20"
-  print $ a20 + b20
-  timerc start' "fim soma lista 20"
-  putStrLn $ toInfo "multiplicando matrizes com 20 elementos..."
-  timerc start' "mult matriz lista 20"
-  print $ a20 * b20
-  timerc start' "fim mult lista 20"
+  putStrLn $ toInfo "somando matrizes com 100 elementos..."
+  timerc start' "soma matriz lista 100"
+  pure $ a100 + b100
+  timerc start' "fim soma lista 100"
+  putStrLn $ toInfo "somando matrizes com 300 elementos..."
+  timerc start' "soma matriz lista 300"
+  pure $ a300 + b300
+  timerc start' "fim soma lista 300"
+  putStrLn $ toInfo "somando matrizes com 500 elementos..."
+  timerc start' "soma matriz lista 500"
+  pure $ a500 + b500
+  timerc start' "fim soma lista 500"  
+  putStrLn $ toInfo "somando matrizes com 1000 elementos..."
+  timerc start' "soma matriz lista 1000"
+  pure $ a1000 + b1000
+  timerc start' "fim soma lista 1000"
+  putStrLn $ toInfo "multiplicando matrizes com 100 elementos..."
+  timerc start' "mult matriz lista 100"
+  pure $ a100 * a100
+  timerc start' "fim mult lista 100"
+  putStrLn $ toInfo "multiplicando matrizes com 300 elementos..."
+  timerc start' "mult matriz lista 300"
+  pure $ a300 * a300
+  timerc start' "fim mult lista 300"
+  putStrLn $ toInfo "multiplicando matrizes com 500 elementos..."
+  timerc start' "mult matriz lista 500"
+  pure $ a500 * a500
+  timerc start' "fim mult lista 500"
+  putStrLn $ toInfo "multiplicando matrizes com 1000 elementos..."
+  timerc start' "mult matriz lista 1000"
+  pure $ a1000 * a1000
+  timerc start' "fim mult lista 1000"  
   end <- getVals start'
   forM_ (evens $ timert end) (putStrLn . toSuccess)
 
@@ -74,15 +101,15 @@ runLista = do
   putStrLn $ toInfo "Iniciando demonstração Matriz Lista!\n"
   putStrLn $ toInfo "Criando Matriz exemplo A 5x5.."
   let a = L.matriz 5 5 :: (L.Matriz Int)
-  print a
+  L.printMatriz a
   putStrLn $ toInfo "Transposta de A:"
-  print $ L.transpose a
+  L.printMatriz $ L.transpose a
   putStrLn $ toInfo "Negação de A:"
-  print $ negate a
+  L.printMatriz $ negate a
   putStrLn $ toInfo "Soma A + A:"
-  print $ a + a
+  L.printMatriz $ a + a
   putStrLn $ toInfo "Multiplicação A + A:"
-  print $ a * a
+  L.printMatriz $ a * a
   putStrLn $ (toBold . toInfo) "\nIniciando teste de carga Matriz Lista!"
   medeLista
   putStrLn $ toSuccess "Fim demo Matriz Lista!\n"

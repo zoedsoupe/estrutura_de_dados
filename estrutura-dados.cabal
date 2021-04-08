@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: cc4ff19ca086f1cd4aa09abd598089414a67604ea6590177d1e874791afb59af
+-- hash: b020a9b67665c7bfbdb7e7c0ab1abfc87be2d54627340cb012f08b69f7d6c908
 
 name:           estrutura-dados
 version:        0.2.1.0
@@ -44,6 +44,7 @@ library
     , array
     , base >=4.7 && <5
     , bytestring
+    , deepseq
     , directory
     , hspec
     , pretty-terminal
@@ -74,6 +75,7 @@ executable estrutura-dados-exe
     , array
     , base >=4.7 && <5
     , bytestring
+    , deepseq
     , directory
     , estrutura-dados
     , hspec
@@ -107,6 +109,7 @@ test-suite estrutura-dados-test
     , array
     , base >=4.7 && <5
     , bytestring
+    , deepseq
     , directory
     , estrutura-dados
     , hspec

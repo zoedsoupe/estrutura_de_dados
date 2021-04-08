@@ -1,11 +1,14 @@
+{-# LANGUAGE DeriveGeneric, DeriveAnyClass #-}
 module LE1.Matriz.Lista where
 
+import Control.DeepSeq
+import GHC.Generics (Generic, Generic1)
 import System.Random (Random, randomRs, mkStdGen)
 
 data Matriz a = M { linhas  :: Int
                   , colunas :: Int
                   , valores :: [[a]]
-                  } deriving (Eq, Ord)
+                  } deriving (Eq, Ord, Show, Generic, Generic1, NFData, NFData1)
 
 instance Foldable Matriz where
   length (M _ _ xs) = length $ concat xs
@@ -14,10 +17,6 @@ instance Foldable Matriz where
 
 instance Functor Matriz where
  fmap f (M n m xs) = M n m (map (map f) xs)
-
-instance Show m => Show (Matriz m) where
-  show (M _ _ [])  = "[]"
-  show m@(M _ _ _) = printMatriz m
 
 instance Num a =>  Num (Matriz a) where
   (+) (M m n xs) (M m' n' ys)
@@ -52,8 +51,8 @@ transpose (M m n ((x:xs):xss)) = M m n (hd:ys)
   where hd         = (x : [h | (h:_) <- xss])
         (M _ _ ys) = transpose (M m n (xs : [t | (_:t) <- xss]))
 
-printMatriz :: Show a => Matriz a -> String
-printMatriz m = concat
+printMatriz :: Show a => Matriz a -> IO ()
+printMatriz m = putStrLn $ concat
    [ "┌ ", unwords (replicate (colunas m) blank), " ┐\n"
    , unlines
    [ "│ " ++ unwords (fmap (\j -> fill $ strings ! (i,j)) [1..colunas m]) ++ " │" | i <- [1..linhas m] ]
