@@ -4,10 +4,10 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: e047d4cd0456c3725bd1f27880365391287ea50c4caa3bb7caf6b66c5bd02ad1
+-- hash: a3273562e4503fc195b9f9abe282d99132e86f6e77c91f98bbe39f70df116dab
 
 name:           estrutura-dados
-version:        0.2.1.0
+version:        0.3.0.0
 description:    Please see the README on GitHub at <https://github.com/Mdsp9070/estrutura_de_dados#readme>
 homepage:       https://github.com/Mdsp9070/estrutura_de_dados#readme
 bug-reports:    https://github.com/Mdsp9070/estrutura_de_dados/issues
