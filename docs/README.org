@@ -9,12 +9,17 @@ Neste pasta, serão encontrados todo o material de apoio indicado e também as l
 3. [[./apresentacoes/EDI_aula03.pdf][Aula 03 - Eficiência de Algoritmos]]
 4. [[./apresentacoes/EDI_aula04.pdf][Aula 04 - Recursão]]
 5. [[./apresentacoes/EDI_aula05.pdf][Aula 05 - Eficiência de Algoritmos Recursivos]]
+6. [[./apresentacoes/EDI_aula06.pdf][Aula 06 - Pilhas: Implementação Direta]]
+7. [[./apresentacoes/EDI_aula07.pdf][Aula 07 - Pilhas: Implementação TAD]]
+8. [[./apresentacoes/EDI_aula08.pdf][Aula 08 - Pilhas: Aplicações - Parte 1]]
+9. [[./apresentacoes/EDI_aula09.pdf][Aula 09 - Pilhas: Aplicações - Parte 2]]
+10. [[./apresentacoes/EDI_aula10.pdf][Aula 10 - Pilhas: Aplicações - Parte 3]]
+11. [[./apresentacoes/EDI_aula11.pdf][Aula 11 - Filas: Implementação TAD]]
 
 ** Listas
 
-1. [[./listas_exercicios/EDI_Atividade_Semana1.org][EDI_Atividade_Semana1]]
-2. [[./listas_exercicios/EDI_Atividade_Semana2.org][EDI_Atividade_Semana2]]
-3. [[./listas_exercicios/EDI_Atividade_Semana3.org][EDI_Atividade_Semana3]]
+1. [[./listas_exercicios/EDI_Atividade_LE1.org][EDI_Atividade_LE1]]
+2. [[./listas_exercicios/EDI_Atividade_LE2.org][EDI_Atividade_LE2]]
 
 ** Vídeos
 
