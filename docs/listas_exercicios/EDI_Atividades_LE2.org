@@ -2,17 +2,19 @@
 
 Universidade Estadual do Norte Fluminense Darcy Ribeiro
 
-*Curso: *Ciência de Computação* Data: *15/04/2021
+*Curso:* Ciência de Computação
 
-*Atividade: *Módulo 2 -- LE2* Período: 3*º* *
+*Data:* 15/04/2021
 
-*Disciplina: *Estrutura de Dados I
+*Atividade:* Módulo 2 -- LE2
 
-*Professor: *Fermín Alfredo Tang* Turno: *Diurno
+*Disciplina:* Estrutura de Dados I
 
-*Nome do aluno: Matrícula:*
+*Professor:* Fermín Alfredo Tang
 
-*Atividades para LE2*
+*Turno:* Diurno
+
+** Atividades para LE2
 
 *Considerando os conceitos sobre Pilha:*
 
@@ -20,10 +22,12 @@ Universidade Estadual do Norte Fluminense Darcy Ribeiro
    *usando* o método de divisões sucessivas e *uma pilha*. Obs. Lembrar
    que caso o resto da divisão for 10, 11, 12, 13, 14 ou 15, o digito
    correspondente deverá ser A, B, C, D, E ou F.
+
 2. Um palíndromo é uma /string/ que pode ser lida para frente e para
    trás com o mesmo resultado. Por exemplo, as seguintes frases são
    palíndromos:
 
+#+begin_quote
 A base do teto desaba.
 
 A diva em Argel alegra-me a vida.
@@ -31,6 +35,7 @@ A diva em Argel alegra-me a vida.
 Adias a data da saída.
 
 Socorram-me, subi no ônibus em Marrocos.
+#+end_quote
 
 Observe que nos palíndromos se deve ignorar o espaçamento, a pontuação,
 e as diferenças entre letras maiúsculas e minúsculas.
@@ -41,14 +46,15 @@ recuperar eles formando uma nova /string/. Depois comparar a nova
 /string/ com a /string/ original. Teste a sua função com os exemplos
 mostrados acima.
 
-1. Modifique o programa de casamento de parênteses para considerar o
+3. Modifique o programa de casamento de parênteses para considerar o
    casamento de { }, [ ] e ( ). O programa deverá verificar a
    correspondência entre o símbolo de abertura e seu correspondente de
    fechamento. Identifique e reporte os tipos de erro possíveis caso
    existam, indicando a linha, ou uma mensagem indicando que o casamento
    é perfeito. Teste o seu programa com arquivos de texto, com erros e
    sem erros.
-2. Escreva um programa para encontrar todas as soluções para o problema
+
+4. Escreva um programa para encontrar todas as soluções para o problema
    das 8 rainhas. Observe que não basta apenas uma configuração viável,
    queremos descobrir todas elas. O programa deve ser capaz de continuar
    a busca após a primeira configuração válida. Contar o número de

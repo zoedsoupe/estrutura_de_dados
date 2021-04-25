@@ -1,0 +1,127 @@
+*UENF*
+
+Universidade Estadual do Norte Fluminense Darcy Ribeiro
+
+*Curso:* Ciência de Computação
+
+*Data:* 10/03/2021
+
+*Atividade:* Semana 1 
+
+*Disciplina:* Estrutura de Dados I
+
+*Professor:* Fermín Alfredo Tang
+
+*Turno:* Diurno
+
+** Questões para a LE1
+
+1. Desenvolva e implemente um TAD que represente um cilindro. Inclua as
+   funções de inicializações necessárias e as operações que retornem a
+   sua altura e o raio, a sua área e o seu volume. Para cada função,
+   explique brevemente a ideia adotada. Teste o TAD com exemplos. Teste
+   o TAD com uma aplicação.
+
+2. Desenvolva e implemente um TAD que represente um conjunto de
+   inteiros. Para isso, utilize um vetor de inteiros. O TAD deverá
+   conter as seguintes funções:
+
+- Criar um conjunto vazio;
+- Inserir um elemento no conjunto;
+- Remover um elemento no conjunto;
+- Testar se um número pertence ao conjunto;
+- Menor valor do conjunto;
+- União de dois conjuntos;
+- Testar se os dois conjuntos são iguais;
+- Testar se o conjunto é vazio;
+
+Para cada função, explique brevemente a ideia adotada. Teste o TAD com
+uma aplicação.
+
+3. Especifique um TAD que seja capaz de armazenar uma data composta por
+   dia, mês e ano e implemente o seguinte conjunto de operações para
+   manipular esse tipo Data:
+
+   - Uma função que recebe como parâmetro o dia, o mês, e o ano;
+      verifica se a data for válida e converte ela em uma /string/ no
+      formato DD/MM/AAAA.
+   - Uma função que recebe como parâmetro uma data de tipo /string/
+      (formato DD/MM/AAAA) e uma estrutura do tipo Data. Armazena os
+      dados da /string/ na estrutura.
+   - Uma função que recebe como parâmetro uma estrutura do tipo Data e
+      um número de dias, e retorna a estrutura modificada com soma da
+      data original mais o número de dias recebido.
+
+Teste o TAD com uma aplicação.
+
+4. Os dados relativos aos clientes de uma empresa estão armazenados em
+   um arquivo. Para cada cliente são registrados um código, nome, o
+   endereço, o telefone, a data em que fez sua primeira compra na
+   empresa, a data da última compra e o valor da última compra.
+   Especifique o TAD Clientes para armazenar os dados dos clientes e as
+   operações necessárias para inserir, consultar e excluir esses dados.
+   Implemente uma aplicação que utilize o tipo Clientes.
+
+*** Considerando os conceitos de eficiência de algoritmos realize as
+seguintes tarefas:
+
+5. Implemente os algoritmos de Soma de Matrizes nxn (quadradas) e
+   Multiplicação de matrizes nxn (quadradas). Os dados das matrizes de
+   entrada podem ser preenchidos de forma aleatória ou usando alguma
+   regra de geradora.
+
+6. Implemente código para medir o desempenho desses algoritmos,
+   considerando:
+
+- O tempo de execução de cada algoritmo em milissegundos;
+- O número de operações realizadas (somas + multiplicações) por cada
+  algoritmo.
+
+7. Realize experimentos para pelo menos três tamanhos de n. Na escolha
+   dos tamanhos considere que o tamanho deve ser grande o suficiente
+   para permitir a medição de tempo, mas não tanto que possa estourar
+   a memória. Explore isso. Construa uma tabela resumindo os seus
+   resultados.
+
+8. Responda se os seus resultados corroboram as funções O() teóricas
+   de cada algoritmo.
+
+| *Tamanho /n/* | *Soma de Matrizes* |  | *Multiplicação de Matrizes*             |            |
+|---------------+--------------------+-----------------------------+--------------+------------|
+|               | /Tempo (ms)/       | /N° Oper./                  | /Tempo (ms)/ | /N° Oper./ |
+| 100           |                    |                             |              |            |
+| 300           |                    |                             |              |            |
+| 500           |                    |                             |              |            |
+| ...           |                    |                             |              |            |
+| 1.000         |                    |                             |              |            |
+
+
+9. Um dos métodos para calcular a raiz quadrada de um número é o
+   método de Newton. A fórmula para o método de newton é mostrada a
+   seguir:
+
+  [[../../assets/sqrt_form.png]]
+
+  Onde: 
+  - /num/: é o número cuja raiz quadrada queremos calcular;
+  - /ans/: é uma aproximação inicial da raiz quadrada;
+  - /tol/: é a tolerância permitida para a raiz quadrada.
+
+  Implemente um algoritmo recursivo que utilize o método de Newton para
+  calcular a raiz quadrada de um número. Verifique o seu algoritmo nos
+  seguintes casos:
+
+  /squareRoot(5, 2, 0.01)/,
+  /squareRoot(4, 2, 0.01)/
+
+10. A combinação de /n/ objetos tomados /k/ de cada vez, pode ser
+    calculada de maneira recursiva usando a seguinte formula de
+    recorrência:
+
+  [[../../assets/combination.png]]
+
+  Esta fórmula pode ser usada para calcular o número de combinações
+  possíveis, /k/ de /n/ objetos. Implemente um algoritmo recursivo para
+  calcular a combinação de $n$ objetos tomados $k$ de cada vez.
+  Verifique o seu algoritmo, para /C(49,\ 6)/ que corresponde a um total
+  de $13.983.816$ combinações diferentes.
