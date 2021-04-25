@@ -18,8 +18,8 @@ Neste pasta, serão encontrados todo o material de apoio indicado e também as l
 
 ** Listas
 
-1. [[./listas_exercicios/EDI_Atividade_LE1.org][EDI_Atividade_LE1]]
-2. [[./listas_exercicios/EDI_Atividade_LE2.org][EDI_Atividade_LE2]]
+1. [[./listas_exercicios/EDI_Atividades_LE1.org][EDI_Atividade_LE1]]
+2. [[./listas_exercicios/EDI_Atividades_LE2.org][EDI_Atividade_LE2]]
 
 ** Vídeos
 
