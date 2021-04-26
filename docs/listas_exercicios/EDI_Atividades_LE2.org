@@ -1,6 +1,5 @@
-*UENF*
-
-Universidade Estadual do Norte Fluminense Darcy Ribeiro
+** UENF
+*** Universidade Estadual do Norte Fluminense Darcy Ribeiro
 
 *Curso:* Ciência de Computação
 
@@ -12,11 +11,9 @@ Universidade Estadual do Norte Fluminense Darcy Ribeiro
 
 *Professor:* Fermín Alfredo Tang
 
-*Turno:* Diurno
+*** Atividades para LE2
 
-** Atividades para LE2
-
-*Considerando os conceitos sobre Pilha:*
+**** Considerando os conceitos sobre Pilha:
 
 1. Escreva um programa que converta um número decimal em hexadecimal,
    *usando* o método de divisões sucessivas e *uma pilha*. Obs. Lembrar
@@ -27,24 +24,24 @@ Universidade Estadual do Norte Fluminense Darcy Ribeiro
    trás com o mesmo resultado. Por exemplo, as seguintes frases são
    palíndromos:
 
-#+begin_quote
-A base do teto desaba.
+  #+begin_quote
+  A base do teto desaba.
 
-A diva em Argel alegra-me a vida.
+  A diva em Argel alegra-me a vida.
 
-Adias a data da saída.
+  Adias a data da saída.
 
-Socorram-me, subi no ônibus em Marrocos.
-#+end_quote
+  Socorram-me, subi no ônibus em Marrocos.
+  #+end_quote
 
-Observe que nos palíndromos se deve ignorar o espaçamento, a pontuação,
-e as diferenças entre letras maiúsculas e minúsculas.
+  Observe que nos palíndromos se deve ignorar o espaçamento, a pontuação,
+  e as diferenças entre letras maiúsculas e minúsculas.
 
-Escreva uma função para testar se uma /string/ é um palíndromo *usando
-uma pilha*. A ideia é armazenar os caracteres da /string/ na pilha e
-recuperar eles formando uma nova /string/. Depois comparar a nova
-/string/ com a /string/ original. Teste a sua função com os exemplos
-mostrados acima.
+  Escreva uma função para testar se uma /string/ é um palíndromo *usando
+  uma pilha*. A ideia é armazenar os caracteres da /string/ na pilha e
+  recuperar eles formando uma nova /string/. Depois comparar a nova
+  /string/ com a /string/ original. Teste a sua função com os exemplos
+  mostrados acima.
 
 3. Modifique o programa de casamento de parênteses para considerar o
    casamento de { }, [ ] e ( ). O programa deverá verificar a
