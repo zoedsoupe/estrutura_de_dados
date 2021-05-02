@@ -53,7 +53,3 @@ Em construção...
 
 ** Testes
   Todos os testes podem ser achados na sua respectiva pasta dentro do diretório [[./test][test]].
-
-  Além do CI (Continous Integration), disponibilizo aqui um gif demonstrando os testes:
-  #+caption: GIF para mostrar os testes rodando
-  [[./assets/testes.gif]]
