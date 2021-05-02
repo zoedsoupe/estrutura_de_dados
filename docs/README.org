@@ -16,6 +16,7 @@ Neste pasta, serão encontrados todo o material de apoio indicado e também as l
 10. [[./apresentacoes/EDI_aula10.pdf][Aula 10 - Pilhas: Aplicações - Parte 3]]
 11. [[./apresentacoes/EDI_aula11.pdf][Aula 11 - Filas: Implementação TAD]]
 12. [[./apresentacoes/EDI_aula12.pdf][Aula 12 - Filas: Aplicações]]
+13. [[./apresentacoes/EDI_aula13.pdf][Aula 13 - Filas: Estáticas vs Dinâmicas]]
 
 ** Listas
 
