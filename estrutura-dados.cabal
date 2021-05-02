@@ -1,10 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.33.0.
+-- This file has been generated from package.yaml by hpack version 0.34.4.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: a3273562e4503fc195b9f9abe282d99132e86f6e77c91f98bbe39f70df116dab
+-- hash: 755509bb270284aec8487039b6adea64ccb3b431e11149e64a38d349b0e37137
 
 name:           estrutura-dados
 version:        0.3.0.0
@@ -35,6 +35,7 @@ library
       LE1.Matriz.Medidores
       LE1.Recursao.Combinacao
       LE1.Recursao.Raiz
+      LE2.Stack.TAD
   other-modules:
       Paths_estrutura_dados
   hs-source-dirs:
@@ -101,6 +102,7 @@ test-suite estrutura-dados-test
       LE1.Matriz.ListaSpec
       LE1.Recursao.CombinacaoSpec
       LE1.Recursao.RaizSpec
+      LE2.Stack.TADSpec
       Paths_estrutura_dados
   hs-source-dirs:
       test

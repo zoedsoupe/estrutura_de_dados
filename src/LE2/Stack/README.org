@@ -1,0 +1,73 @@
+#+title: TAD Stack
+#+author: Matheus de Souza Pessanha
+#+email: matheus_pessanha2001@outlook.com
+
+Este documento se refere a implementação de uma =Pilha= como um =TAD= como mencionado na [[../../../docs/apresentacoes/EDI_aula07.pdf][Aula 07]].
+
+** Interface Pública
+Como definimos um =TAD=, expomos apenas as funções públicas:
+#+begin_src haskell
+module LE2.Stack.TAD
+  ( new
+  , push
+  , pop
+  , isEmpty
+  , size
+  ) where
+#+end_src
+
+** Implementação
+Primeiramente defino o contrutor do =TAD Stack=, que recebe um inteiro representando o tamanho total da =Pilha=,
+e um parâmetro de tipo que representa o tipo da =Pilha=. Note que a estrutura interna deste =TAD= é implementada com
+listas do =Haskell=, que são =Listas Encadeadas=!
+
+Depois, criamos uma instância da =Stack= na classe de tipo =Semigroup=, a qual nos permite usar o operador de
+concatenação =(<>)= assim como em listas.
+
+Por último crio uma instância da =Stack= na classe de tipos =Monoid= que nos permite criar versões vazias de nossas
+estruturas.
+
+#+begin_src haskell
+data Stack a = S Integer [a] deriving (Read, Show)
+
+instance Semigroup (Stack a) where
+  (<>) (S sz1 xs) (S sz2 ys) = S (sz1 + sz2) (xs <> ys)
+
+instance Monoid (Stack a) where
+  mempty = S 0 []
+#+end_src
+
+*** Funções principais
+A primeira função define uma =Stack= vazia, utilizando a função =mempty= da classe de tipo =Monoid=.
+
+Já a =push=, insere um elemento na lista. Lembre-se que uma =Stack= é uma estrutura =LIFO=, ou seja,
+/Last in, first out/. Quando adicionamos um elemento numa =Stack=, internamente estamos apontando o cabeçalho
+(=head=) da lista para esse novo elemento. Também aumento o tamanho da estrutura em um.
+
+A função =pop= retorna uma mônada =Maybe=, onde caso a =Stack= passado como parâmetro esteja vazia, retorno
+=Nothing= e no caso contrário retorno uma =tupla= onde o primeiro elemento é a nova =Stack=, e o segundo elemento é
+o item que foi removido. Como dito anteriormente, uma =Stack= é uma estrutura =LIFO=. Nesse caso, a nova =Stack=
+na verdade é a =Stack= antiga, com seu tamnho menos um e retornando a cauda (=tail=) dos itens originais. Já o item
+removido é de fato o cabeçalho da lista.
+
+Também implemento uma função para verificar se uma =Stack= é vazia e por último a função =size= retorna o tamnho
+atual de uma =Stack=.
+
+#+begin_src haskell
+new :: Stack a
+new = mempty
+
+push :: Stack a -> a -> Stack a
+push (S sz xs) x = S (succ sz) (x:xs)
+
+pop :: Stack a -> Maybe (Stack a, a)
+pop (S _ [])  = Nothing
+pop (S sz xs) = Just (S (pred sz) (tail xs), head xs)
+
+isEmpty :: Stack a -> Bool
+isEmpty (S _ []) = True
+isEmpty (S _ _)  = False
+
+size :: Stack a -> Integer
+size (S sz _) = sz
+#+end_src
