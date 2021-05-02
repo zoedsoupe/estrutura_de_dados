@@ -38,10 +38,6 @@ Decidi fazer todos os trabalhos e exercícios com a linguagem =Haskell=!
 
   Clone este repositório e rode =stack test= 🙂
 
-** Estruturas
-
-Em construção...
-
 ** Exercícios
 *** LE1
 1. [[./src/LE1/Cilindro/README.org][Cilindro]]
@@ -50,6 +46,9 @@ Em construção...
 4. [[./src/LE1/Clientes/README.org][Clientes]]
 5. [[./src/LE1/Matriz/README.org][Matrizes]]
 6. [[./src/LE1/Recursao/README.org][Recursão]]
+
+*** LE2
+1. [[./src/LE2/Stack/README.org][Stack]]
 
 ** Testes
   Todos os testes podem ser achados na sua respectiva pasta dentro do diretório [[./test][test]].
