@@ -1,7 +1,6 @@
 module Helpers.Stack where
 
 import           Data.List                      ( intercalate )
-import           Debug.Trace                    ( trace )
 import           Helpers
 import qualified LE2.Stack.TAD                 as Stack
 
@@ -30,15 +29,14 @@ isCloseParen _   = False
 parse :: String -> IO ()
 parse s = go s Stack.new
  where
-  go xx yy | trace ("go " ++ show xx ++ " " ++ show yy) False = undefined
-  go "" st
-    | Stack.isEmpty st = putStrLn $ toFailure "Erro: abre parentêses não casa!"
-    | otherwise = putStrLn $ toSuccess "Parsing finalizado!"
+  go "" st | Stack.isEmpty st = putStrLn $ toSuccess "Parsing finalizado!"
+           | otherwise = putStrLn $ toFailure "Erro: abre parentêses não casa!"
   go (ch : chs) st
     | isOpenParen ch = go chs $ Stack.push st ch
     | isCloseParen ch = if Stack.isEmpty st
       then putStrLn $ toFailure "Erro: fecha parentêses não casa!"
       else let Just (st', _) = Stack.pop st in go chs st'
+    | otherwise = go chs st
 
 -- É... Eu sei... Não me julgue...
 inversao :: IO ()
