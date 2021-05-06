@@ -1,19 +1,24 @@
-module Menu (menu) where
+module Menu
+  ( menu
+  ) where
 
-import Helpers (toBold, toFailure, exit)
+import           Helpers                        ( exit
+                                                , toBold
+                                                , toFailure
+                                                )
 
 {- | Imports das funcionalidades/estruturas -}
 
+import           Helpers.Cilindro
+import           Helpers.Clientes
+import           Helpers.ConjuntoInt
 -- | TADs
-import Helpers.Data
-import Helpers.Cilindro
-import Helpers.Clientes
-import Helpers.ConjuntoInt
-import Helpers.Stack
+import           Helpers.Data
+import           Helpers.Stack
 
 -- | Outros
-import Helpers.Matriz
-import Helpers.Recursao
+import           Helpers.Matriz
+import           Helpers.Recursao
 
 menu :: IO ()
 menu = do
@@ -24,35 +29,37 @@ menu = do
     Nothing -> putStrLn $ toFailure "Opção Inválida!"
 
   menu
-    where concatNums (i, (s, _)) = case s of
-                                     "TADs"       -> toBold s
-                                     "Outros"     -> toBold s
-                                     "Algoritmos" -> toBold s
-                                     _            -> show i ++ ") " ++ s 
+ where
+  concatNums (i, (s, _)) = case s of
+    "TADs"       -> toBold s
+    "Outros"     -> toBold s
+    "Algoritmos" -> toBold s
+    _            -> show i ++ ") " ++ s
 
 validate :: String -> Maybe Int
 validate s = isValid (reads s)
-   where isValid []            = Nothing
-         isValid ((n, _):_) 
-               | outOfBounds n = Nothing
-               | otherwise     = Just n
-         outOfBounds n = (n < 1) || (n > length choices)
+ where
+  isValid [] = Nothing
+  isValid ((n, _) : _) | outOfBounds n = Nothing
+                       | otherwise     = Just n
+  outOfBounds n = (n < 1) || (n > length choices)
 
 choices :: [(Int, (String, IO ()))]
-choices = zip [0.. ]
-  [ ("TADs", menu)
-  , ("Cilindro", runCilindro)
+choices = zip
+  [0 ..]
+  [ ("TADs"            , menu)
+  , ("Cilindro"        , runCilindro)
   , ("Conjunto Inteiro", runConjunto)
-  , ("Data", runData)
-  , ("Clientes", runClientes)
-  , ("Stack", runStack)
-  , ("Algoritmos", menu)
-  , ("Recursão", runRecursao)
-  , ("Outros", menu)
-  , ("Matrizes", runMatriz)
-  , ("Sair", exit)
+  , ("Data"            , runData)
+  , ("Clientes"        , runClientes)
+  , ("Stack"           , runStack)
+  , ("Algoritmos"      , menu)
+  , ("Recursão"        , runRecursao)
+  , ("Outros"          , menu)
+  , ("Matrizes"        , runMatriz)
+  , ("Sair"            , exit)
   ]
 
 execute :: Int -> IO ()
 execute n = doExec $ filter (\(i, _) -> i == n) choices
-   where doExec ((_, (_,f)):_) = f
+  where doExec ((_, (_, f)) : _) = f
