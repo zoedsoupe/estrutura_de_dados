@@ -1,80 +1,86 @@
 {-# LANGUAGE BangPatterns #-}
-module Helpers.Matriz (runMatriz) where
+module Helpers.Matriz
+  ( runMatriz
+  ) where
 
-import Control.DeepSeq
-import LE1.Matriz.Medidores
-import Control.Monad (forM_)
-import qualified LE1.Matriz.Lista as L
-import qualified LE1.Matriz.Array as A
-import Helpers (toBold, toInfo, toSuccess, evens)
+import           Control.DeepSeq
+import           Control.Monad                  ( forM_ )
+import           Helpers                        ( evens
+                                                , toBold
+                                                , toInfo
+                                                , toSuccess
+                                                )
+import qualified LE1.Matriz.Array              as A
+import qualified LE1.Matriz.Lista              as L
+import           LE1.Matriz.Medidores
 
 introMatriz :: IO ()
 introMatriz = do
   putStrLn $ toInfo "Iniciando demonstração sobre Matrizes!"
-  putStrLn $ toInfo "Implementei 2 tipos de Matriz -> com Arrays e com Linked Lists para fazer uma comparação\n"
+  putStrLn
+    $ toInfo
+        "Implementei 2 tipos de Matriz -> com Arrays e com Linked Lists para fazer uma comparação\n"
 
 medeLista :: IO ()
 medeLista = do
-  let (a100, b100)   = (L.matriz 100 100, L.matriz 100 100)     :: (L.Matriz Int, L.Matriz Int)
-  let (a300, b300)   = (L.matriz 300 300, L.matriz 300 300)     :: (L.Matriz Int, L.Matriz Int)
-  let (a500, b500)   = (L.matriz 500 500, L.matriz 500 500)     :: (L.Matriz Int, L.Matriz Int)
-  let (a1000, b1000) = (L.matriz 1000 1000, L.matriz 1000 1000) :: (L.Matriz Int, L.Matriz Int)
+  let (a100, b100) =
+        (L.matriz 100 100, L.matriz 100 100) :: (L.Matriz Int, L.Matriz Int)
+  let (a300, b300) =
+        (L.matriz 300 300, L.matriz 300 300) :: (L.Matriz Int, L.Matriz Int)
+  let (a500, b500) =
+        (L.matriz 500 500, L.matriz 500 500) :: (L.Matriz Int, L.Matriz Int)
+  let (a1000, b1000) =
+        (L.matriz 1000 1000, L.matriz 1000 1000) :: (L.Matriz Int, L.Matriz Int)
   start' <- start
   putStrLn $ toInfo "somando matrizes com 100 elementos..."
   timerc start' "soma matriz lista 100"
-  (a100 + b100) `deepseq`
-    timerc start' "fim soma lista 100"
+  (a100 + b100) `deepseq` timerc start' "fim soma lista 100"
   putStrLn $ toInfo "somando matrizes com 300 elementos..."
   timerc start' "soma matriz lista 300"
-  (a300 + b300) `deepseq`
-    timerc start' "fim soma lista 300"
+  (a300 + b300) `deepseq` timerc start' "fim soma lista 300"
   putStrLn $ toInfo "somando matrizes com 500 elementos..."
   timerc start' "soma matriz lista 500"
-  (a500 + b500) `deepseq`
-    timerc start' "fim soma lista 500"  
+  (a500 + b500) `deepseq` timerc start' "fim soma lista 500"
   putStrLn $ toInfo "somando matrizes com 1000 elementos..."
   timerc start' "soma matriz lista 1000"
-  (a1000 + b1000) `deepseq`
-    timerc start' "fim soma lista 1000"
+  (a1000 + b1000) `deepseq` timerc start' "fim soma lista 1000"
   putStrLn $ toInfo "multiplicando matrizes com 100 elementos..."
   timerc start' "mult matriz lista 100"
-  (a100 * a100) `deepseq`
-    timerc start' "fim mult lista 100"
+  (a100 * a100) `deepseq` timerc start' "fim mult lista 100"
   putStrLn $ toInfo "multiplicando matrizes com 300 elementos..."
   timerc start' "mult matriz lista 300"
-  (a300 * a300) `deepseq`
-    timerc start' "fim mult lista 300"
+  (a300 * a300) `deepseq` timerc start' "fim mult lista 300"
   putStrLn $ toInfo "multiplicando matrizes com 500 elementos..."
   timerc start' "mult matriz lista 500"
-  (a500 * a500) `deepseq`
-    timerc start' "fim mult lista 500"
+  (a500 * a500) `deepseq` timerc start' "fim mult lista 500"
   putStrLn $ toInfo "multiplicando matrizes com 1000 elementos..."
   timerc start' "mult matriz lista 1000"
-  (a1000 * a1000) `deepseq`
-    timerc start' "fim mult lista 1000"  
+  (a1000 * a1000) `deepseq` timerc start' "fim mult lista 1000"
   end <- getVals start'
   forM_ (evens $ timert end) (putStrLn . toSuccess)
 
 medeArray :: IO ()
 medeArray = do
-  let (a100, b100)   = (A.matriz 100 100, A.matriz 100 100)     :: (A.Matriz, A.Matriz)
-      (a300, b300)   = (A.matriz 300 300, A.matriz 300 300)     :: (A.Matriz, A.Matriz)
-      (a500, b500)   = (A.matriz 500 500, A.matriz 500 500)     :: (A.Matriz, A.Matriz)
-      (a1000, b1000) = (A.matriz 1000 1000, A.matriz 1000 1000) :: (A.Matriz, A.Matriz)
+  let
+    (a100, b100) = (A.matriz 100 100, A.matriz 100 100) :: (A.Matriz, A.Matriz)
+    (a300, b300) = (A.matriz 300 300, A.matriz 300 300) :: (A.Matriz, A.Matriz)
+    (a500, b500) = (A.matriz 500 500, A.matriz 500 500) :: (A.Matriz, A.Matriz)
+    (a1000, b1000) =
+      (A.matriz 1000 1000, A.matriz 1000 1000) :: (A.Matriz, A.Matriz)
   start' <- start
   putStrLn $ toInfo "somando matrizes com 100 elementos..."
   timerc start' "soma matriz lista 100"
-  let !_ =  A.somaMatriz a100 b100
+  let !_ = A.somaMatriz a100 b100
   timerc start' "fim soma lista 100"
-  putStrLn $ toInfo "somando matrizes com 300 elementos..."  
+  putStrLn $ toInfo "somando matrizes com 300 elementos..."
   timerc start' "soma matriz lista 300"
-  let !_ =  A.somaMatriz a300 b300
+  let !_ = A.somaMatriz a300 b300
   timerc start' "fim soma lista 300"
-  putStrLn $ toInfo "somando matrizes com 500 elementos..."  
+  putStrLn $ toInfo "somando matrizes com 500 elementos..."
   timerc start' "soma matriz lista 500"
-  let !_ =  A.somaMatriz a500 b500
+  let !_ = A.somaMatriz a500 b500
   timerc start' "fim soma lista 500"
-  putStrLn $ toInfo "somando matrizes com 1000 elementos..."  
+  putStrLn $ toInfo "somando matrizes com 1000 elementos..."
   timerc start' "soma matriz lista 1000"
   let !_ = A.somaMatriz a1000 b1000
   timerc start' "fim soma lista 1000"
@@ -82,7 +88,7 @@ medeArray = do
   timerc start' "mult matriz lista 100"
   let !_ = A.multiplicaMatriz a100 b100
   timerc start' "fim mult lista 100"
-  putStrLn $ toInfo "multiplicando matrizes com 300 elementos..."  
+  putStrLn $ toInfo "multiplicando matrizes com 300 elementos..."
   timerc start' "mult matriz lista 300"
   let !_ = A.multiplicaMatriz a300 b300
   timerc start' "fim mult lista 300"
@@ -93,7 +99,7 @@ medeArray = do
   putStrLn $ toInfo "multiplicando matrizes com 1000 elementos..."
   timerc start' "mult matriz lista 1000"
   let !_ = A.multiplicaMatriz a1000 b1000
-  timerc start' "fim mult lista 100"    
+  timerc start' "fim mult lista 100"
   end <- getVals start'
   forM_ (evens $ timert end) (putStrLn . toSuccess)
 

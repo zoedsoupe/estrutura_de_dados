@@ -1,24 +1,33 @@
-module Helpers.Cilindro (runCilindro) where
+module Helpers.Cilindro
+  ( runCilindro
+  ) where
 
-import Helpers (toBold, toInfo, promptLine, toSuccess, yellow)
-import qualified LE1.Cilindro.TAD as Cilindro
+import           Helpers                        ( promptLine
+                                                , toBold
+                                                , toInfo
+                                                , toSuccess
+                                                , yellow
+                                                )
+import qualified LE1.Cilindro.TAD              as Cilindro
 
 introCilindro :: IO ()
 introCilindro = do
   putStrLn $ toInfo "Iniciando demonstração do TAD Cilindro"
-  putStrLn $ toInfo "Este TAD recebe como entrada uma 2-tupla (par) de Double, sendo o primeiro elem o raio e o segundo a altura\n"
+  putStrLn
+    $ toInfo
+        "Este TAD recebe como entrada uma 2-tupla (par) de Double, sendo o primeiro elem o raio e o segundo a altura\n"
 
 getCilindro :: IO String
 getCilindro = do
   putStrLn $ toInfo "Insira um Cilindro válido:"
   cil <- promptLine "cilindro> "
   return cil
-  
+
 runCilindro :: IO ()
 runCilindro = do
   introCilindro
   tuple <- getCilindro
-  putStrLn $ toInfo"Executando \"fromTuple/1\""  
+  putStrLn $ toInfo "Executando \"fromTuple/1\""
   c <- return $ Cilindro.fromTuple (read tuple :: (Double, Double))
   putStrLn . toSuccess $ "\nTAD == " ++ (show c) ++ "\n"
   let isVazio = Cilindro.isVazio c

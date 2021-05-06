@@ -1,17 +1,22 @@
-module Helpers.Recursao (runRecursao) where
+module Helpers.Recursao
+  ( runRecursao
+  ) where
 
-import Helpers
-import LE1.Recursao.Raiz
-import Control.Monad (when)
-import LE1.Recursao.Combinacao
+import           Control.Monad                  ( when )
+import           Helpers
+import           LE1.Recursao.Combinacao
+import           LE1.Recursao.Raiz
 
 introRecursao :: IO ()
 introRecursao = do
   putStrLn $ toInfo "Iniciando demonstração dos algoritmos recursivos..."
-  putStrLn $ toInfo "Nesta demo será mostrado os algoritmos para achar a raiz quadrada com o Método de Newton-Raphson"
-  putStrLn $ toInfo "E um algoritmo para calcular a combinação entre n e k C(n, k)\n"
+  putStrLn
+    $ toInfo
+        "Nesta demo será mostrado os algoritmos para achar a raiz quadrada com o Método de Newton-Raphson"
+  putStrLn
+    $ toInfo "E um algoritmo para calcular a combinação entre n e k C(n, k)\n"
 
-runRaiz :: IO()
+runRaiz :: IO ()
 runRaiz = do
   putStrLn $ toInfo "Primeiro, o número que você quer calcular a raiz:"
   n <- getDouble
@@ -25,13 +30,19 @@ runRaiz = do
     runRaiz
   putStrLn $ toInfo "Calculando..."
   let sqr = nSqrt n a i
-  putStrLn . toSuccess $ "Raiz de  " ++ show n ++ " é: " ++ (toBold $ show sqr) ++ "\n"
+  putStrLn
+    .  toSuccess
+    $  "Raiz de  "
+    ++ show n
+    ++ " é: "
+    ++ (toBold $ show sqr)
+    ++ "\n"
   putStrLn $ toInfo "Deseja calcular mais uma raiz? (y/n)"
   res <- askUntil "resposta> " getRes
   if res == "y"
     then runRaiz
     else putStrLn $ toSuccess "Fim demo raiz quadrada!\n"
-  
+
 
 runCombina :: IO ()
 runCombina = do
@@ -40,11 +51,22 @@ runCombina = do
   putStrLn $ toInfo "Informe o K:"
   k <- getInt
   when (n <= 0 || k <= 0) $ do
-    putStrLn $ toFailure "N ou K são negativos ou (== 0)... Impossível calcular a combinação...\n"
+    putStrLn
+      $ toFailure
+          "N ou K são negativos ou (== 0)... Impossível calcular a combinação...\n"
     runCombina
   putStrLn $ toInfo "Calculando C(n, k)..."
   let comb = combina n k
-  putStrLn . toSuccess $ "A combinação entre " ++ show n ++ " " ++ "e " ++ show k ++ " é: " ++ (toBold $ show comb) ++ "\n"
+  putStrLn
+    .  toSuccess
+    $  "A combinação entre "
+    ++ show n
+    ++ " "
+    ++ "e "
+    ++ show k
+    ++ " é: "
+    ++ (toBold $ show comb)
+    ++ "\n"
   putStrLn $ toInfo "Deseja calcular mais uma combinação? (y/n)"
   res <- askUntil "resposta> " getRes
   if res == "y"
@@ -58,4 +80,4 @@ runRecursao = do
   runRaiz
   putStrLn . toBold $ toInfo "Agora o algoritmo de combinação!\n"
   runCombina
-  putStrLn $ toSuccess "Fim demo algoritmos recursivos!\n"  
+  putStrLn $ toSuccess "Fim demo algoritmos recursivos!\n"

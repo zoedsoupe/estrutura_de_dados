@@ -1,12 +1,16 @@
-module Helpers.Data (runData) where
+module Helpers.Data
+  ( runData
+  ) where
 
-import Helpers
-import qualified LE1.Data.TAD as Data
+import           Helpers
+import qualified LE1.Data.TAD                  as Data
 
 introData :: IO ()
 introData = do
   putStrLn $ toInfo "Iniciando demonstração do TAD Data"
-  putStrLn $ toInfo "Este TAD recebe como entrada uma 3-tupla de Int, que corresponde ao formato DD/MM/AAAA\n"
+  putStrLn
+    $ toInfo
+        "Este TAD recebe como entrada uma 3-tupla de Int, que corresponde ao formato DD/MM/AAAA\n"
 
 validData :: String -> Either String String
 validData s = do
@@ -19,7 +23,7 @@ getData :: IO String
 getData = do
   dt <- promptLine "data> "
   return dt
-  
+
 runData :: IO ()
 runData = do
   introData
@@ -30,7 +34,11 @@ runData = do
   putStrLn $ toSuccess "Data criada -> " ++ toBold (show d')
   putStrLn $ toInfo "Insira uma data no formato DD/MM/AAAA:"
   d'' <- getData
-  putStrLn $ toInfo "Convertendo a string num TAD Data com os seguintes argumentos -> " ++ d''++ " " ++ (show Data.vazia)
+  putStrLn
+    $ toInfo "Convertendo a string num TAD Data com os seguintes argumentos -> "
+    ++ d''
+    ++ " "
+    ++ (show Data.vazia)
   let cData = Data.converteData d'' Data.vazia
   putStrLn $ toSuccess "Data convertida -> " ++ toBold (show cData)
   let iData   = "27/07/2021"
@@ -42,4 +50,4 @@ runData = do
   putStrLn (yellow (iData ++ " + 5 dias -> ") ++ toBold (Data.show sData))
   putStrLn (yellow (iData ++ " + 43 dias -> ") ++ toBold (Data.show sData'))
   putStrLn (yellow (iData' ++ " + 10 dias -> ") ++ toBold (Data.show sData''))
-  putStrLn $ toSuccess "\nFim demo TAD Data!\n"    
+  putStrLn $ toSuccess "\nFim demo TAD Data!\n"
