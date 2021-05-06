@@ -2,7 +2,7 @@
 #+author: Matheus de Souza Pessanha
 #+email: matheus_pessanha2001@outlook.com
 
-Este documento se refere aos exercícios da LE1, segunda lista, que pode ser encontrado [[../../../docs/listas_exercicios/EDI_Atividade_Semana3.org][neste documento]].
+Este documento se refere aos exercícios da LE1, sobre eficiência de algoritmos recursivos, que pode ser encontrado [[../../../docs/listas_exercicios/EDI_Atividades_LE1.org][neste documento]].
 
 ** Raiz Quadrada pelo método de Newton-Raphson
    /Isaac Newton/ e /Joseph Raphson/ definiram um algoritmo para achar a raiz quadrada de qualquer

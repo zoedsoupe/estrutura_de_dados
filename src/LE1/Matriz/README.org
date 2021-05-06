@@ -2,7 +2,7 @@
 #+author: Matheus de Souza Pessanha
 #+email: matheus_pessanha2001@outlook.com
 
-Este documento se refere aos exercícios da LE1, segunda lista, que pode ser encontrado [[../../../docs/listas_exercicios/EDI_Atividade_Semana2.org][neste documento]].
+Este documento se refere aos exercícios da LE1, sobre eficiência de algoritmos, que pode ser encontrado [[../../../docs/listas_exercicios/EDI_Atividades_LE1.org][neste documento]].
 
 ** AVISO
    Para questões de comparações práticas, implementei os mesmos algoritmos nas suas versões usando

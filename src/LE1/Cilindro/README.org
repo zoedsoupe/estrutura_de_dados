@@ -2,7 +2,7 @@
 #+author: Matheus de Souza Pessanha
 #+email: matheus_pessanha2001@outlook.com
 
-Este documento se refere ao exercício 1 da LE1, que pode ser encontrado [[../../../docs/listas_exercicios/EDI_Atividade_Semana1.org][neste documento]].
+Este documento se refere ao exercício 1 da LE1, que pode ser encontrado [[../../../docs/listas_exercicios/EDI_Atividades_LE1.org][neste documento]].
 
 ** Interface Pública
 No começo do arquivo, defino a interface pública:
