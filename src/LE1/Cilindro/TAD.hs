@@ -40,8 +40,7 @@ calcArea (Cilindro r a) = Just area
 
 calcVolume :: Cilindro -> Maybe Volume
 calcVolume Vazio          = Nothing
-calcVolume (Cilindro r a) = Just volume
-  where volume = pi * (r * r) * a
+calcVolume (Cilindro r a) = Just volume where volume = pi * (r * r) * a
 
 fromTuple :: (Double, Double) -> Cilindro
 fromTuple (r, a) = Cilindro r a
