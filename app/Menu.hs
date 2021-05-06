@@ -9,6 +9,7 @@ import Helpers.Data
 import Helpers.Cilindro
 import Helpers.Clientes
 import Helpers.ConjuntoInt
+import Helpers.Stack
 
 -- | Outros
 import Helpers.Matriz
@@ -26,7 +27,6 @@ menu = do
     where concatNums (i, (s, _)) = case s of
                                      "TADs"       -> toBold s
                                      "Outros"     -> toBold s
-                                     "Estruturas" -> toBold s
                                      "Algoritmos" -> toBold s
                                      _            -> show i ++ ") " ++ s 
 
@@ -45,7 +45,7 @@ choices = zip [0.. ]
   , ("Conjunto Inteiro", runConjunto)
   , ("Data", runData)
   , ("Clientes", runClientes)
-  , ("Estruturas", menu)
+  , ("Stack", runStack)
   , ("Algoritmos", menu)
   , ("Recursão", runRecursao)
   , ("Outros", menu)
