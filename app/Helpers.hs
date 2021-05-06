@@ -47,3 +47,33 @@ askUntil prompt confirm = go
       case answer' of
         Left msg -> putStr msg >> go 
         Right res -> pure res
+
+-- | Getters
+
+getDouble :: IO Double
+getDouble = do
+  n <- promptLine "número> "
+  return $ (read n :: Double)
+
+getInt :: IO Integer
+getInt = do
+  n <- promptLine "número> "
+  return $ (read n :: Integer)
+
+getRes :: String -> Either String String
+getRes s = case s of
+             "y" -> Right s
+             "n" -> Right s
+             _    -> Left "Opção inválida, tente novamente\n"
+
+getNumbers :: String -> IO [Integer]
+getNumbers prompt = go []
+  where
+    go xs = do
+      ans <- promptLine prompt
+      case ans of
+        "q" -> return xs
+        x   -> do
+          x' <- return (read x :: Integer)
+          putStrLn $ toInfo "Próximo número!"
+          go (x':xs)

@@ -6,7 +6,10 @@ module LE2.Stack.TAD
   , size
   , pushList
   , (>-)
+  , extract
   ) where
+
+import Data.List (intercalate)
 
 data Stack a = S Integer [a]
   deriving (Read, Show)
@@ -34,7 +37,7 @@ isEmpty (S _ _ ) = False
 size :: Stack a -> Integer
 size (S sz _) = sz
 
--- | Helper
+-- | Helpers
 
 pushList :: Stack a -> [a] -> Stack a
 pushList s         []       = s
@@ -42,3 +45,6 @@ pushList (S sz xs) (y : ys) = pushList (S (succ sz) (y : xs)) ys
 
 (>-) :: (Monad m) => (a -> m b) -> Stack a -> m ()
 (>-) f (S _ xs) = mapM_ f xs
+
+extract :: (Show a) => Stack a -> String
+extract (S _ xs) = intercalate "" $ map show xs

@@ -11,22 +11,6 @@ introRecursao = do
   putStrLn $ toInfo "Nesta demo será mostrado os algoritmos para achar a raiz quadrada com o Método de Newton-Raphson"
   putStrLn $ toInfo "E um algoritmo para calcular a combinação entre n e k C(n, k)\n"
 
-getDouble :: IO Double
-getDouble = do
-  n <- promptLine "número> "
-  return $ (read n :: Double)
-
-getInt :: IO Int
-getInt = do
-  n <- promptLine "número> "
-  return $ (read n :: Int)
-
-getRes :: String -> Either String String
-getRes s = case s of
-             "y" -> Right s
-             "n" -> Right s
-             _    -> Left "Opção inválida, tente novamente\n"
-
 runRaiz :: IO()
 runRaiz = do
   putStrLn $ toInfo "Primeiro, o número que você quer calcular a raiz:"
