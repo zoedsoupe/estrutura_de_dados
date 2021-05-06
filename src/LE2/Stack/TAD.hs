@@ -9,8 +9,6 @@ module LE2.Stack.TAD
   , extract
   ) where
 
-import Data.List (intercalate)
-
 data Stack a = S Integer [a]
   deriving (Read, Show)
 
@@ -46,5 +44,5 @@ pushList (S sz xs) (y : ys) = pushList (S (succ sz) (y : xs)) ys
 (>-) :: (Monad m) => (a -> m b) -> Stack a -> m ()
 (>-) f (S _ xs) = mapM_ f xs
 
-extract :: (Show a) => Stack a -> String
-extract (S _ xs) = intercalate "" $ map show xs
+extract :: Stack a -> [a]
+extract (S _ xs) = xs

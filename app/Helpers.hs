@@ -1,16 +1,23 @@
 module Helpers where
 
-import System.IO (hFlush, stdout)
-import System.Exit (exitSuccess)
-import System.Console.Pretty (Pretty(..), Color(..), Style(..), style, color)
+import           System.Console.Pretty          ( Color(..)
+                                                , Pretty(..)
+                                                , Style(..)
+                                                , color
+                                                , style
+                                                )
+import           System.Exit                    ( exitSuccess )
+import           System.IO                      ( hFlush
+                                                , stdout
+                                                )
 
 evens :: [a] -> [a]
-evens (x:xs) = x:odds xs
-evens _ = []
+evens (x : xs) = x : odds xs
+evens _        = []
 
 odds :: [a] -> [a]
-odds (_:xs) = evens xs
-odds _ = []
+odds (_ : xs) = evens xs
+odds _        = []
 
 exit :: IO ()
 exit = do
@@ -40,13 +47,13 @@ promptLine prompt = do
 
 askUntil :: String -> (String -> (Either String String)) -> IO String
 askUntil prompt confirm = go
-  where
-    go = do
-      answer <- promptLine prompt
-      answer' <- return $ confirm answer
-      case answer' of
-        Left msg -> putStr msg >> go 
-        Right res -> pure res
+ where
+  go = do
+    answer  <- promptLine prompt
+    answer' <- return $ confirm answer
+    case answer' of
+      Left  msg -> putStr msg >> go
+      Right res -> pure res
 
 -- | Getters
 
@@ -60,20 +67,25 @@ getInt = do
   n <- promptLine "número> "
   return $ (read n :: Integer)
 
+getString :: IO String
+getString = do
+  s <- promptLine "texto> "
+  return s
+
 getRes :: String -> Either String String
 getRes s = case s of
-             "y" -> Right s
-             "n" -> Right s
-             _    -> Left "Opção inválida, tente novamente\n"
+  "y" -> Right s
+  "n" -> Right s
+  _   -> Left "Opção inválida, tente novamente\n"
 
 getNumbers :: String -> IO [Integer]
 getNumbers prompt = go []
-  where
-    go xs = do
-      ans <- promptLine prompt
-      case ans of
-        "q" -> return xs
-        x   -> do
-          x' <- return (read x :: Integer)
-          putStrLn $ toInfo "Próximo número!"
-          go (x':xs)
+ where
+  go xs = do
+    ans <- promptLine prompt
+    case ans of
+      "q" -> return xs
+      x   -> do
+        x' <- return (read x :: Integer)
+        putStrLn $ toInfo "Próximo número!"
+        go (x' : xs)
