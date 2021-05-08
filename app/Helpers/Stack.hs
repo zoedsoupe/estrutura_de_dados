@@ -36,8 +36,8 @@ opPriority '-' = 1
 opPriority _   = 0
 
 hasPriority :: Char -> Char -> Bool
-hasPriority op1 op2 | opPriority op1 >= opPriority op2 = True
-                    | otherwise                        = False
+hasPriority op1 op2 | opPriority op1 > opPriority op2 = True
+                    | otherwise                       = False
 
 isOperator :: Char -> Bool
 isOperator '+' = True
@@ -79,8 +79,8 @@ postfixit s = go (removeSpace s) Stack.new ""
       Just op -> if hasPriority ch op
         then go chs (Stack.push st ch) pos
         else
-          let (olders, st') = Stack.popWhile (hasPriority ch) st
-          in  go chs st' $ pos ++ olders
+          let (olders, st') = Stack.popWhile (not . hasPriority ch) st
+          in  go chs (Stack.push st' ch) $ pos ++ olders
     | otherwise = go chs st (pos ++ [ch])
   ignore _ = True
 
