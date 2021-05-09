@@ -79,7 +79,7 @@ que os códigos presentes aqui no repositório sejam minimamente entendidos.
 ***** Variáveis de tipos
       Qual seria a tipagem da função =head=, que retorna o primeiro elemento de uma lista?
       #+begin_src haskell
-	head :: [a] -> a
+head :: [a] -> a
       #+end_src
 
       Hmmm... Ok, mas o que é =a=?
@@ -101,17 +101,17 @@ que os códigos presentes aqui no repositório sejam minimamente entendidos.
 
       Bem, vamos ver a tipagem da função ~(/=)~:
       #+begin_src haskell
-	(/=) :: Eq a => a -> a -> Bool
+(/=) :: Eq a => a -> a -> Bool
       #+end_src
 
       Mais para frente explico como os operadores são, na verdade, funções em =Haskell=.
 
       A =Eq= classe define dois comportamentos, que na verdade apenas um precisa ser implementado:
-      ~(==), (/==)~. Os operadores de igualdade e desigualdade. Se um tipo faz parte da classe de tipo =Eq=, ele
+      ~(==), (/=)~. Os operadores de igualdade e desigualdade. Se um tipo faz parte da classe de tipo =Eq=, ele
       pode ter igualdade ou desigualdade.
 
       Outras classes de tipos:
-      - =Ord= -> para tipos que podem ser comparados (=5 > 6=, ~"xxx" < "yyyyyy"~)
+      - =Ord= -> para tipos que podem ser comparados (=5 > 6=, ="xxx" < "yyyyyy"=)
       - =Show= -> representa os tipos membros em forma de =String=
       - =Read= -> contrário de =Show=, recebe uma =String= e devolve um tipo membro
       - =Enum= -> tipos que podem ser enumerados (=['a'..'g']=, =[10 .. 90]=)
@@ -146,53 +146,53 @@ que os códigos presentes aqui no repositório sejam minimamente entendidos.
 
      Numa linguagem imperativa, você faria:
      #+begin_src python
-       x = [1,2,3]
+x = [1,2,3]
 
-       // [1, 2, 3]
-       print(x)
+# [1, 2, 3]
+print(x)
 
-       x.append(8)
+x.append(8)
 
-       // [1, 2, 3, 8]
-       print(x)
+# [1, 2, 3, 8]
+print(x)
      #+end_src
 
      Ou:
      #+begin_src c
-       void print(int* x, size_t size) {
-	 printf("[");
-	 for (size_t i = 0; i < size; i++)
-	   printf("%d ", x[i]);
-	 printf("]\n");
-       }
+void print(int* x, size_t size) {
+  printf("[");
+  for (size_t i = 0; i < size; i++)
+    printf("%d ", x[i]);
+  printf("]\n");
+}
 
-       int x[4] = {1, 2, 3};
+int x[4] = {1, 2, 3};
 
-       size_t size = sizeof(x) / sizeof(int);
+size_t size = sizeof(x) / sizeof(int);
 
-       // [1, 2, 3]
-       print(&x);
+// [1, 2, 3]
+print(&x);
 
-       x[3] = 8;
+x[3] = 8;
 
-       // [1, 2, 3, 8]
-       print(&x);
+// [1, 2, 3, 8]
+print(&x);
      #+end_src
 
      Em =Haskell=, você faria:
      #+begin_src haskell
-       xs = [1, 2, 3]
+xs = [1, 2, 3]
 
-       // [1, 2, 3]
-       print xs
+-- [1, 2, 3]
+print xs
 
-       ys = 8:xs
+ys = xs ++ 8
 
-       // [1, 2, 3]
-       print xs
+-- [1, 2, 3]
+print xs
 
-       // [1, 2, 3, 8]
-       print ys
+-- [1, 2, 3, 8]
+print ys
      #+end_src
 
      A primeira grande diferença aqui é:
@@ -205,7 +205,7 @@ que os códigos presentes aqui no repositório sejam minimamente entendidos.
      - =last= -> último elemento da lista;
 
      A segunda é que ao invés de modificarmos a variável =xs=, criamos uma =ys=, onde adicionamos
-     o elemento "8" como a cabeça da nova lista!
+     o elemento "8" à lista!
 
      Importante reiteirar que caso você defina uma variael =x= e tente redefinir ela em =Haskell=, você
      receberá um erro :)
@@ -226,9 +226,9 @@ que os códigos presentes aqui no repositório sejam minimamente entendidos.
 
 **** Exemplos:
      #+begin_src haskell
-       soma = (+)
+soma = (+)
 
-       res = soma 4 5
+res = soma 4 5
      #+end_src
 
      Pois bem, definimos uma variável =soma=, que recebe a função de adição!
@@ -237,14 +237,14 @@ que os códigos presentes aqui no repositório sejam minimamente entendidos.
 
      Isso significa que podemos usar nossa função =soma= na representação infixa:
      #+begin_src haskell
-     res' = 4 `soma` 5
+res' = 4 `soma` 5
      #+end_src
 
      Agora vamos ver uma =HOF=:
      #+begin_src haskell
-       xs = [1, 2, 3]
+xs = [1, 2, 3]
 
-       res'' = map (show) xs
+res'' = map (show) xs
      #+end_src
 
      Primeira observação: colocamos um apóstrofo no nome de uma variável quando
@@ -257,12 +257,12 @@ que os códigos presentes aqui no repositório sejam minimamente entendidos.
 
      Já uma closure, poderia ser assim:
      #+begin_src haskell
-       f x = (\y -> x + y)
+f x = (\y -> x + y)
 
-       soma5 = f 5
+soma5 = f 5
 
-       -- res''' == 15
-       res''' = soma5 10
+-- res''' == 15
+res''' = soma5 10
      #+end_src
 
      Ok, bastante coisa aconteceu ai...
@@ -281,7 +281,7 @@ que os códigos presentes aqui no repositório sejam minimamente entendidos.
     escopo ao redor dela.
 
     #+begin_src haskell
-      double x = (*) x 2
+double x = (*) x 2
     #+end_src
 
     Essa função é pura, pois ela não afeta nenhum escopo externo, muito menos afeta algum estado fora
@@ -296,7 +296,7 @@ que os códigos presentes aqui no repositório sejam minimamente entendidos.
     sendo apenas uma descrição do que fazer. Não existem =statements=.
 
     #+begin_src haskell
-      "Name: " ++ getLine
+"Name: " ++ getLine
     #+end_src
 
     Essa concatenação de strings dará erro de tipo, pois ~"Name: "~ é do tipo =String= e
@@ -310,9 +310,9 @@ que os códigos presentes aqui no repositório sejam minimamente entendidos.
     Imagine que tenho uma lista =[1,2,3]=, e quero fazer uma função para somar os elementos.
 
     #+begin_src haskell
-      soma :: [a] -> [a]
-      soma []     = []
-      soma (x:xs) = x + (soma xs)
+soma :: [a] -> [a]
+soma []     = []
+soma (x:xs) = x + (soma xs)
     #+end_src
 
     Interessante... Houve duas definições da mesma função, além de ser um algoritmo recursivo...
@@ -330,10 +330,10 @@ que os códigos presentes aqui no repositório sejam minimamente entendidos.
      direto na definição da função:
 
      #+begin_src haskell
-       max' :: (Ord a) => a -> a -> a
-       max' x y
-	 | x > y     = x
-	 | otherwise = y
+max' :: (Ord a) => a -> a -> a
+max' x y
+  | x > y     = x
+  | otherwise = y
      #+end_src
 
      Uma função para retornar o maior entre dois números!
@@ -350,10 +350,10 @@ que os códigos presentes aqui no repositório sejam minimamente entendidos.
      de funções e varáveis, melhorando a legibilidade do código.
 
      #+begin_src haskell
-       iniciais :: String -> String -> String
-       iniciais primeiroNome ultimoNome = [f] ++ ". " ++ [l] ++ "."
-	   where (f:_) = primeiroNome
-		 (l:_) = ultimoNome
+iniciais :: String -> String -> String
+iniciais primeiroNome ultimoNome = [f] ++ ". " ++ [l] ++ "."
+  where (f:_) = primeiroNome
+        (l:_) = ultimoNome
      #+end_src
 
      Em primeiro lugar, temos uma função que recebe dois argumentos do
