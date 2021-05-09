@@ -53,6 +53,12 @@ addSpace s  = (take 1 s) ++ " " ++ addSpace (drop 1 s)
 removeSpace :: String -> String
 removeSpace = filter $ not . isSpace
 
+stringfy :: Char -> String
+stringfy = (: [])
+
+sToInt :: String -> Int
+sToInt s = read s :: Int
+
 parse :: String -> IO ()
 parse s = go s Stack.new
  where
@@ -68,8 +74,6 @@ parse s = go s Stack.new
 postfixit :: String -> IO String
 postfixit s = go (removeSpace s) Stack.new ""
  where
-  go x y z | trace ("go " ++ show x ++ " " ++ show y ++ " " ++ show z) False =
-    undefined
   go [] st pos =
     let (remain, _) = Stack.popWhile ignore st
     in  return . addSpace $ pos ++ remain
@@ -84,6 +88,30 @@ postfixit s = go (removeSpace s) Stack.new ""
     | otherwise = go chs st (pos ++ [ch])
   ignore _ = True
 
+calc :: String -> IO String
+calc s = go ss Stack.new
+ where
+  ss = map stringfy $ removeSpace s
+  go xx yy | trace ("go " ++ show xx ++ " " ++ show yy) False = undefined
+  go [] st = let (Just result, _) = Stack.pop st in return result
+  go (x : xs) st
+    | isOperator $ head x
+    = let (Just a, st'  ) = Stack.pop st
+          (b     , st''') = case Stack.pop st' of
+            (Just y , st'') -> (y, st'')
+            (Nothing, st'') -> ("0", st'')
+          calculated = case x of
+            "+" -> add a b
+            "-" -> sub a b
+            "*" -> mult a b
+            "/" -> d a b
+      in  go xs $ Stack.push st''' calculated
+    | otherwise
+    = go xs $ Stack.push st x
+  add x y = show $ sToInt x + sToInt y
+  sub x y = show $ sToInt x - sToInt y
+  mult x y = show $ sToInt x * sToInt y
+  d x y = show $ div (sToInt x) (sToInt y)
 
 inversao :: IO ()
 inversao = do
@@ -120,13 +148,23 @@ validacao = do
 
 posfixa :: IO ()
 posfixa = do
-  putStrLn $ toInfo "Insira a expressão a ser convertida"
+  putStrLn $ toInfo "Insira a expressão a ser convertida:"
   s  <- getString
   s' <- postfixit s
   putStrLn . toSuccess $ "Sua expressão em notação posfixa é: " ++ s'
   putStrLn $ toInfo "\nGostaria de converter mais alguma expressão? (y/n)"
   res <- askUntil "resposta> " getRes
   if res == "y" then posfixa else putStrLn $ toSuccess "Fim teste Stack 4!\n"
+
+calcula :: IO ()
+calcula = do
+  putStrLn $ toInfo "Insira a expressão a ser calculada:"
+  s         <- getString
+  resultado <- calc s
+  putStrLn . toSuccess $ "O resultado da sua expressão posfixa é: " ++ resultado
+  putStrLn $ toInfo "\nGostaria de calcular mais alguma expressão? (y/n)"
+  res <- askUntil "resposta> " getRes
+  if res == "y" then calcula else putStrLn $ toSuccess "Fim teste Stack 5!\n"
 
 
 runStack :: IO ()
@@ -154,3 +192,8 @@ runStack = do
     $ toInfo
         "Dado uma expressão em notação infixa, o programa irá convertê-la para a notação posfixa!\n"
   posfixa
+  putStrLn $ toInfo "Teste número 5 -> Avaliação de expressões posfixas!"
+  putStrLn
+    $ toInfo
+        "Dado uma expressão em notação posfixa, o programa irá calcular seu resultado!\n"
+  calcula
