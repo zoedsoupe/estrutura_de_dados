@@ -2,7 +2,6 @@ module Helpers.Stack where
 
 import           Data.Char                      ( isSpace )
 import           Data.List                      ( intercalate )
-import           Debug.Trace                    ( trace )
 import           Helpers
 import qualified LE2.Stack.TAD                 as Stack
 
@@ -92,7 +91,6 @@ calc :: String -> IO String
 calc s = go ss Stack.new
  where
   ss = map stringfy $ removeSpace s
-  go xx yy | trace ("go " ++ show xx ++ " " ++ show yy) False = undefined
   go [] st = let (Just result, _) = Stack.pop st in return result
   go (x : xs) st
     | isOperator $ head x
