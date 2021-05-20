@@ -24,7 +24,7 @@ spec = do
       let s              = new
       let s'             = push s (1 :: Integer)
       let s''            = push s' 90
-      let Just (s''', x) = pop s''
+      let (Just x, s''') = pop s''
       x `shouldBe` 90
       size s''' `shouldBe` 1
 
