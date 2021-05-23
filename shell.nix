@@ -2,8 +2,12 @@
 
 with pkgs;
 
-mkShell {
-  buildInputs = [ ghc stack readline ];
+let
+  hpkgs = with haskellPackages; [
+    brittany
+  ];
+in mkShell {
+  buildInputs = [ ghc cabal-install stack readline ] ++ hpkgs;
 
-  shellHook = "SEJA BEM VINDE!";
+  shellHook = "echo 'SEJA BEM VINDE!'";
 }
