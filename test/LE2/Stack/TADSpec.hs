@@ -1,14 +1,13 @@
 module LE2.Stack.TADSpec where
 
-import Test.Hspec
+import           Test.Hspec
 
-import LE2.Stack.TAD
+import           LE2.Stack.TAD
 
 spec :: Spec
 spec = do
   describe "testa o TAD Stack" $ do
-    it "deve criar uma stack vazia corretamente" $
-      isEmpty new `shouldBe` True
+    it "deve criar uma stack vazia corretamente" $ isEmpty new `shouldBe` True
 
     it "deve inserir elementos numa stack corretamente" $ do
       let s  = new
