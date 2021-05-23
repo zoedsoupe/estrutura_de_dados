@@ -4,6 +4,7 @@ import           Data.Char                      ( isSpace )
 import           Data.List                      ( intercalate )
 import           Helpers
 import           LE2.Stack.Hexa
+import           LE2.Stack.Palin
 import qualified LE2.Stack.TAD                 as Stack
 
 introStack :: IO ()
@@ -17,8 +18,7 @@ binarize :: Int -> Int
 binarize n = go n Stack.new
  where
   go 0 s = read (intercalated s) :: Int
-  go x s = let (q, r) = divMod x 2
-               in go q $ Stack.push s r
+  go x s = let (q, r) = divMod x 2 in go q $ Stack.push s r
   intercalated s = intercalate "" $ map show $ reverse $ (Stack.<<>) s
 
 isOpenParen :: Char -> Bool
@@ -158,7 +158,7 @@ validacao = do
   parse s
   putStrLn $ toInfo "\nGostaria de validar mais alguma cadeia? (y/n)"
   res <- askUntil "resposta> " getRes
-  if res == "y" then validacao else putStrLn $ toSuccess "Fim teste Stack 3!\n"
+  if res == "y" then validacao else putStrLn $ toSuccess "Fim teste Stack 4!\n"
 
 posfixa :: IO ()
 posfixa = do
@@ -168,7 +168,7 @@ posfixa = do
   putStrLn . toSuccess $ "Sua expressão em notação posfixa é: " ++ s'
   putStrLn $ toInfo "\nGostaria de converter mais alguma expressão? (y/n)"
   res <- askUntil "resposta> " getRes
-  if res == "y" then posfixa else putStrLn $ toSuccess "Fim teste Stack 4!\n"
+  if res == "y" then posfixa else putStrLn $ toSuccess "Fim teste Stack 5!\n"
 
 calcula :: IO ()
 calcula = do
@@ -178,8 +178,18 @@ calcula = do
   putStrLn . toSuccess $ "O resultado da sua expressão posfixa é: " ++ resultado
   putStrLn $ toInfo "\nGostaria de calcular mais alguma expressão? (y/n)"
   res <- askUntil "resposta> " getRes
-  if res == "y" then calcula else putStrLn $ toSuccess "Fim teste Stack 5!\n"
+  if res == "y" then calcula else putStrLn $ toSuccess "Fim teste Stack 6!\n"
 
+palin :: IO ()
+palin = do
+  putStrLn $ toInfo "Insira a sentença a ser testada:"
+  s         <- getString
+  if isPalin s
+    then putStrLn $ toSuccess "A sentença é um palíndromo!"
+    else putStrLn $ toFailure "A sentença não é um palíndromo!"
+  putStrLn $ toInfo "\nGostaria de testar mais alguma sentença? (y/n)"
+  res <- askUntil "resposta> " getRes
+  if res == "y" then palin else putStrLn $ toSuccess "Fim teste Stack 7!\n"
 
 runStack :: IO ()
 runStack = do
@@ -216,3 +226,7 @@ runStack = do
     $ toInfo
         "Dado uma expressão em notação posfixa, o programa irá calcular seu resultado!\n"
   calcula
+  putStrLn $ toInfo "Teste número 7 -> Validação de um palíndromo!"
+  putStrLn $ toInfo
+    "Dado uma sentença, o programa irá verificar se é um palíndro ou não!\n"
+  palin
