@@ -17,8 +17,9 @@ binarize :: Int -> Int
 binarize n = go n Stack.new
  where
   go 0 s = read (intercalated s) :: Int
-  go x s = go (x `div` 2) $ Stack.push s (x `mod` 2)
-  intercalated s = intercalate "" $ map show $ (Stack.<<>) s
+  go x s = let (q, r) = divMod x 2
+               in go q $ Stack.push s r
+  intercalated s = intercalate "" $ map show $ reverse $ (Stack.<<>) s
 
 isOpenParen :: Char -> Bool
 isOpenParen '(' = True
