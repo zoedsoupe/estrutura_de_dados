@@ -3,6 +3,7 @@ module Helpers.Stack where
 import           Data.Char                      ( isSpace )
 import           Data.List                      ( intercalate )
 import           Helpers
+import           LE2.Stack.Hexa
 import qualified LE2.Stack.TAD                 as Stack
 
 introStack :: IO ()
@@ -12,10 +13,10 @@ introStack = do
     $ toInfo
         "Para essa demonstração, serão apresentados 7 testes interativos que utilizam o TAD!\n"
 
-binarize :: Integer -> Integer
+binarize :: Int -> Int
 binarize n = go n Stack.new
  where
-  go 0 s = read (intercalated s) :: Integer
+  go 0 s = read (intercalated s) :: Int
   go x s = go (x `div` 2) $ Stack.push s (x `mod` 2)
   intercalated s = intercalate "" $ map show $ (Stack.<<>) s
 
@@ -135,6 +136,20 @@ conversao = do
   res <- askUntil "resposta> " getRes
   if res == "y" then conversao else putStrLn $ toSuccess "Fim teste Stack 2!\n"
 
+hexa :: IO ()
+hexa = do
+  putStrLn $ toInfo "Insira um número:"
+  n    <- getInt
+  nbin <- return $ hexarize n
+  putStrLn
+    .  toSuccess
+    $  "O número informado em hexadecimal é: "
+    ++ nbin
+    ++ "!\n"
+  putStrLn $ toInfo "Gostaria de converter mais algum número? (y/n)"
+  res <- askUntil "resposta> " getRes
+  if res == "y" then hexa else putStrLn $ toSuccess "Fim teste Stack 3!\n"
+
 validacao :: IO ()
 validacao = do
   putStrLn $ toInfo "Insira a cadeia de parentêses:"
@@ -180,17 +195,22 @@ runStack = do
     $ toInfo
         "Dado um número decimal inteiro, o programa irá retornar o seu equivalente na base 2!\n"
   conversao
-  putStrLn $ toInfo "Teste número 3 -> Validação de \"código fonte\"!"
+  putStrLn $ toInfo "Teste número 3 -> Conversão decimal para hexadecimal!"
+  putStrLn
+    $ toInfo
+        "Dado um número decimal inteiro, o programa irá retornar o seu equivalente na base 16!\n"
+  hexa
+  putStrLn $ toInfo "Teste número 4 -> Validação de \"código fonte\"!"
   putStrLn
     $ toInfo
         "Insira uma cadeia de \"(\" e \")\" para que o programa identifique se todos os pares estão corretos!\n"
   validacao
-  putStrLn $ toInfo "Teste número 4 -> Notação infixa para posfixa!"
+  putStrLn $ toInfo "Teste número 5 -> Notação infixa para posfixa!"
   putStrLn
     $ toInfo
         "Dado uma expressão em notação infixa, o programa irá convertê-la para a notação posfixa!\n"
   posfixa
-  putStrLn $ toInfo "Teste número 5 -> Avaliação de expressões posfixas!"
+  putStrLn $ toInfo "Teste número 6 -> Avaliação de expressões posfixas!"
   putStrLn
     $ toInfo
         "Dado uma expressão em notação posfixa, o programa irá calcular seu resultado!\n"

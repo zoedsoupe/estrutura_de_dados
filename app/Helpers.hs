@@ -62,10 +62,10 @@ getDouble = do
   n <- promptLine "número> "
   return $ (read n :: Double)
 
-getInt :: IO Integer
+getInt :: IO Int
 getInt = do
   n <- promptLine "número> "
-  return $ (read n :: Integer)
+  return $ (read n :: Int)
 
 getString :: IO String
 getString = do
