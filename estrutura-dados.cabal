@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 9ac2ca8de0d67d0ac09e69f39e908aca77d0b85269172a86cc490a71139d0d91
+-- hash: 1ac90df3980efea9c21deebe90399c1bc12bb39ff58483e4f226e99b0a2df84e
 
 name:           estrutura-dados
 version:        0.3.0.0
@@ -36,6 +36,7 @@ library
       LE1.Recursao.Combinacao
       LE1.Recursao.Raiz
       LE2.Stack.Hexa
+      LE2.Stack.Palin
       LE2.Stack.TAD
   other-modules:
       Paths_estrutura_dados
@@ -46,6 +47,7 @@ library
     , array
     , base >=4.7 && <5
     , bytestring
+    , deburr
     , deepseq
     , directory
     , hspec
@@ -79,6 +81,7 @@ executable estrutura-dados-exe
     , array
     , base >=4.7 && <5
     , bytestring
+    , deburr
     , deepseq
     , directory
     , estrutura-dados
@@ -105,6 +108,7 @@ test-suite estrutura-dados-test
       LE1.Recursao.CombinacaoSpec
       LE1.Recursao.RaizSpec
       LE2.Stack.HexaSpec
+      LE2.Stack.PalinSpec
       LE2.Stack.TADSpec
       Paths_estrutura_dados
   hs-source-dirs:
@@ -115,6 +119,7 @@ test-suite estrutura-dados-test
     , array
     , base >=4.7 && <5
     , bytestring
+    , deburr
     , deepseq
     , directory
     , estrutura-dados

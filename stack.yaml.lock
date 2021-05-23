@@ -18,6 +18,13 @@ packages:
       sha256: 92969ddf22c5f54123fb2bcfbe5917b59a7e6382473b0306bcd8fb7990d9aa1a
   original:
     hackage: data-default-instances-base-0.1.0.1@sha256:985a13d7103e45a65f06f277b735ef025636014f0d29dd6de998bc7628e09be9,509
+- completed:
+    hackage: deburr-0.1.0.1@sha256:165ae1b143ce573b5da4663bd758b6b7096b2396d45f36c8b4750c23a3056029,1326
+    pantry-tree:
+      size: 310
+      sha256: ee5e70ac1e20d21122267fc5553d1a81669c20eafa41d3492f44a2c452915425
+  original:
+    hackage: deburr-0.1.0.1@sha256:165ae1b143ce573b5da4663bd758b6b7096b2396d45f36c8b4750c23a3056029,1326
 snapshots:
 - completed:
     size: 565266

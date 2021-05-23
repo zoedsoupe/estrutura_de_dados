@@ -33,6 +33,7 @@ dependencies:
 - array
 - time
 - deepseq
+- deburr
 
 library:
   source-dirs: src
