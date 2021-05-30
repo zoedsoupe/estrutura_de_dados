@@ -43,7 +43,7 @@ parse lines = go lines Stack.new []
 
   go (ch : chs) st parsed = go chs st parsed
 
-  extract st = reverse $ Stack.(<<>) st
+  extract st = reverse $ (Stack.<<>) st
 
   apply '(' = erroParen
   apply '[' = erroCol
