@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 1ac90df3980efea9c21deebe90399c1bc12bb39ff58483e4f226e99b0a2df84e
+-- hash: 926d971012a00fc1d3607d5a8a7b41219cd0a6098b692ac3f5e3ae5be86e8347
 
 name:           estrutura-dados
 version:        0.3.0.0
@@ -35,6 +35,7 @@ library
       LE1.Matriz.Medidores
       LE1.Recursao.Combinacao
       LE1.Recursao.Raiz
+      LE2.Stack.Delim
       LE2.Stack.Hexa
       LE2.Stack.Palin
       LE2.Stack.TAD
