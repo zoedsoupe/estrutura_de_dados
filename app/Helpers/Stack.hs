@@ -1,8 +1,10 @@
 module Helpers.Stack where
 
+import           Control.Monad                  ( forM_ )
 import           Data.Char                      ( isSpace )
 import           Data.List                      ( intercalate )
 import           Helpers
+import           LE2.Stack.Delim
 import           LE2.Stack.Hexa
 import           LE2.Stack.Palin
 import qualified LE2.Stack.TAD                 as Stack
@@ -60,8 +62,8 @@ stringfy = (: [])
 sToInt :: String -> Int
 sToInt s = read s :: Int
 
-parse :: String -> IO ()
-parse s = go s Stack.new
+parse' :: String -> IO ()
+parse' s = go s Stack.new
  where
   go "" st | Stack.isEmpty st = putStrLn $ toSuccess "Parsing finalizado!"
            | otherwise = putStrLn $ toFailure "Erro: abre parentêses não casa!"
@@ -151,14 +153,24 @@ hexa = do
   res <- askUntil "resposta> " getRes
   if res == "y" then hexa else putStrLn $ toSuccess "Fim teste Stack 3!\n"
 
-validacao :: IO ()
-validacao = do
+parens :: IO ()
+parens = do
   putStrLn $ toInfo "Insira a cadeia de parentêses:"
   s <- getString
-  parse s
+  parse' s
   putStrLn $ toInfo "\nGostaria de validar mais alguma cadeia? (y/n)"
   res <- askUntil "resposta> " getRes
-  if res == "y" then validacao else putStrLn $ toSuccess "Fim teste Stack 4!\n"
+  if res == "y" then parens else putStrLn $ toSuccess "Fim teste Stack 4!\n"
+
+delims :: IO ()
+delims = do
+  putStrLn $ toInfo "Insira a cadeia de delimitadores:"
+  s <- getString
+  erros <- return $ parse s
+  forM_ (map toFailure erros) putStrLn
+  putStrLn $ toInfo "\nGostaria de validar mais alguma cadeia? (y/n)"
+  res <- askUntil "resposta> " getRes
+  if res == "y" then delims else putStrLn $ toSuccess "Fim teste Stack 5!\n"
 
 posfixa :: IO ()
 posfixa = do
@@ -168,7 +180,7 @@ posfixa = do
   putStrLn . toSuccess $ "Sua expressão em notação posfixa é: " ++ s'
   putStrLn $ toInfo "\nGostaria de converter mais alguma expressão? (y/n)"
   res <- askUntil "resposta> " getRes
-  if res == "y" then posfixa else putStrLn $ toSuccess "Fim teste Stack 5!\n"
+  if res == "y" then posfixa else putStrLn $ toSuccess "Fim teste Stack 6!\n"
 
 calcula :: IO ()
 calcula = do
@@ -178,7 +190,7 @@ calcula = do
   putStrLn . toSuccess $ "O resultado da sua expressão posfixa é: " ++ resultado
   putStrLn $ toInfo "\nGostaria de calcular mais alguma expressão? (y/n)"
   res <- askUntil "resposta> " getRes
-  if res == "y" then calcula else putStrLn $ toSuccess "Fim teste Stack 6!\n"
+  if res == "y" then calcula else putStrLn $ toSuccess "Fim teste Stack 7!\n"
 
 palin :: IO ()
 palin = do
@@ -189,7 +201,7 @@ palin = do
     else putStrLn $ toFailure "A sentença não é um palíndromo!"
   putStrLn $ toInfo "\nGostaria de testar mais alguma sentença? (y/n)"
   res <- askUntil "resposta> " getRes
-  if res == "y" then palin else putStrLn $ toSuccess "Fim teste Stack 7!\n"
+  if res == "y" then palin else putStrLn $ toSuccess "Fim teste Stack 8!\n"
 
 runStack :: IO ()
 runStack = do
@@ -211,22 +223,27 @@ runStack = do
     $ toInfo
         "Dado um número decimal inteiro, o programa irá retornar o seu equivalente na base 16!\n"
   hexa
-  putStrLn $ toInfo "Teste número 4 -> Validação de \"código fonte\"!"
+  putStrLn $ toInfo "Teste número 4 -> Validação de parentêses!"
   putStrLn
     $ toInfo
         "Insira uma cadeia de \"(\" e \")\" para que o programa identifique se todos os pares estão corretos!\n"
-  validacao
-  putStrLn $ toInfo "Teste número 5 -> Notação infixa para posfixa!"
+  parens
+  putStrLn $ toInfo "Teste número 5 -> Validação de delimitadores!"
+  putStrLn
+    $ toInfo
+        "Insira uma cadeia de \"(\" e \")\",\"[\" e \"]\" ou \"{\" e \"}\"para que o programa identifique se todos os pares estão corretos!\n"
+  delims
+  putStrLn $ toInfo "Teste número 6 -> Notação infixa para posfixa!"
   putStrLn
     $ toInfo
         "Dado uma expressão em notação infixa, o programa irá convertê-la para a notação posfixa!\n"
   posfixa
-  putStrLn $ toInfo "Teste número 6 -> Avaliação de expressões posfixas!"
+  putStrLn $ toInfo "Teste número 7 -> Avaliação de expressões posfixas!"
   putStrLn
     $ toInfo
         "Dado uma expressão em notação posfixa, o programa irá calcular seu resultado!\n"
   calcula
-  putStrLn $ toInfo "Teste número 7 -> Validação de um palíndromo!"
+  putStrLn $ toInfo "Teste número 8 -> Validação de um palíndromo!"
   putStrLn $ toInfo
     "Dado uma sentença, o programa irá verificar se é um palíndro ou não!\n"
   palin

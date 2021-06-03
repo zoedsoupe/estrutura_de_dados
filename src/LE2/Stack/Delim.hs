@@ -1,50 +1,81 @@
 module LE2.Stack.Delim
   ( parse
+  , erroAbreParen
+  , erroAbreCol
+  , erroAbreChaves
+  , erroFechaParen
+  , erroFechaCol
+  , erroFechaChaves
   ) where
 
+import           GHC.Exts                       ( sortWith )
 import qualified LE2.Stack.TAD                 as Stack
 
-erroParen :: String
-erroParen = "Erro: fecha parentêses não casa!"
+import           Debug.Trace                    ( trace )
 
-erroCol :: String
-erroCol = "Erro: fecha colchetes não casa!"
-
-erroChaves :: String
-erroChaves = "Erro: fecha chaves não casa!"
+tokenize :: String -> [(Char, Int)]
+tokenize s = zip (filter ehDelim s) [0 ..]
 
 parse :: String -> [String]
-parse lines = go lines Stack.new []
+parse lines = go (tokenize lines) Stack.new []
  where
-  go "" st parsed | Stack.isEmpty st = parsed
-                  | otherwise        = map apply (extract st) ++ parsed
+  go x y z | trace ("go: " ++ show x ++ " " ++ show y ++ " " ++ show z) False =
+    undefined
+  go [] st parsed
+    | Stack.isEmpty st = map fst $ sort parsed
+    | otherwise        = map fst . sort $ parsed ++ map swap ((Stack.<<>) st)
 
-  go ('(' : chs) st parsed = go chs (Stack.push st '(') parsed
-  go ('[' : chs) st parsed = go chs (Stack.push st '[') parsed
-  go ('{' : chs) st parsed = go chs (Stack.push st '{') parsed
+  go (('(', idx) : xs) st parsed = go xs (Stack.push st (')', idx)) parsed
+  go (('[', idx) : xs) st parsed = go xs (Stack.push st (']', idx)) parsed
+  go (('{', idx) : xs) st parsed = go xs (Stack.push st ('}', idx)) parsed
 
-  go (')' : chs) st parsed
-    | Stack.peek st == Just '('
-    = let (Just _, st') = Stack.pop st in go chs st' parsed
-    | otherwise
-    = go chs st $ erroParen : parsed
+  go (pair : xs) st parsed | Stack.isEmpty st = go xs st $ apply pair : parsed
 
-  go (']' : chs) st parsed
-    | Stack.peek st == Just '['
-    = let (Just _, st') = Stack.pop st in go chs st' parsed
-    | otherwise
-    = go chs st $ erroCol : parsed
+  go ((')', _) : xs) st parsed | Just (')', _) <- Stack.peek st =
+    let (Just _, st') = Stack.pop st in go xs st' parsed
 
-  go ('}' : chs) st parsed
-    | Stack.peek st == Just '{'
-    = let (Just _, st') = Stack.pop st in go chs st' parsed
-    | otherwise
-    = go chs st $ erroChaves : parsed
+  go ((']', _) : xs) st parsed | Just (']', _) <- Stack.peek st =
+    let (Just _, st') = Stack.pop st in go xs st' parsed
 
-  go (ch : chs) st parsed = go chs st parsed
+  go (('}', _) : xs) st parsed | Just ('}', _) <- Stack.peek st =
+    let (Just _, st') = Stack.pop st in go xs st' parsed
 
-  extract st = reverse $ (Stack.<<>) st
+  go (pair : xs) st parsed = go xs st $ apply pair : parsed
 
-  apply '(' = erroParen
-  apply '[' = erroCol
-  apply '{' = erroChaves
+  swap ('(', idx) = apply (')', idx)
+  swap (')', idx) = apply ('(', idx)
+  swap ('[', idx) = apply (']', idx)
+  swap (']', idx) = apply ('[', idx)
+  swap ('{', idx) = apply ('}', idx)
+  swap ('}', idx) = apply ('{', idx)
+
+  apply ('(', idx) = (erroAbreParen, idx)
+  apply (')', idx) = (erroFechaParen, idx)
+  apply ('[', idx) = (erroAbreCol, idx)
+  apply (']', idx) = (erroFechaCol, idx)
+  apply ('{', idx) = (erroAbreChaves, idx)
+  apply ('}', idx) = (erroFechaChaves, idx)
+
+  sort = sortWith (abs . snd)
+
+erroFechaParen :: String
+erroFechaParen = "Erro: fecha parentêses não casa!"
+
+erroFechaCol :: String
+erroFechaCol = "Erro: fecha colchetes não casa!"
+
+erroFechaChaves :: String
+erroFechaChaves = "Erro: fecha chaves não casa!"
+
+erroAbreParen :: String
+erroAbreParen = "Erro: abre parentêses não casa!"
+
+erroAbreCol :: String
+erroAbreCol = "Erro: abre colchetes não casa!"
+
+erroAbreChaves :: String
+erroAbreChaves = "Erro: abre chaves não casa!"
+
+ehDelim :: Char -> Bool
+ehDelim ch | elem ch "()[]{}" = True
+           | otherwise        = False

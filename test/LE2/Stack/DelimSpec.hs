@@ -4,15 +4,6 @@ import           Test.Hspec
 
 import           LE2.Stack.Delim
 
-erroParen :: String
-erroParen = "Erro: fecha parentêses não casa!"
-
-erroCol :: String
-erroCol = "Erro: fecha colchetes não casa!"
-
-erroChaves :: String
-erroChaves = "Erro: fecha chaves não casa!"
-
 spec :: Spec
 spec = do
   describe "testa o casamento de parênteses, colchetes e chaves!" $ do
@@ -48,20 +39,26 @@ spec = do
       let hs = "]]{}}{"
       let is = "(])]{{"
       let js = "{}{[))"
+      let ks = "([{})"
+      let ls = "([{])"
+      let ms = "([{}]"
       let xs = "("
       let ys = "["
       let zs = "{"
 
-      parse as `shouldBe` [erroChaves, erroCol, erroParen]
-      parse bs `shouldBe` [erroParen]
-      parse cs `shouldBe` [erroCol]
-      parse ds `shouldBe` [erroChaves]
-      parse es `shouldBe` [erroCol]
-      parse fs `shouldBe` [erroChaves]
-      parse gs `shouldBe` [erroParen]
-      parse xs `shouldBe` [erroParen]
-      parse ys `shouldBe` [erroCol]
-      parse zs `shouldBe` [erroChaves]
-      parse hs `shouldBe` [erroChaves, erroChaves, erroCol, erroCol]
-      parse is `shouldBe` [erroChaves, erroChaves, erroCol, erroCol]
-      parse js `shouldBe` [erroCol, erroChaves, erroParen, erroParen]
+      parse as `shouldBe` [erroAbreParen, erroAbreCol, erroAbreChaves]
+      parse bs `shouldBe` [erroAbreParen]
+      parse cs `shouldBe` [erroAbreCol]
+      parse ds `shouldBe` [erroAbreChaves]
+      parse es `shouldBe` [erroFechaCol]
+      parse fs `shouldBe` [erroFechaChaves]
+      parse gs `shouldBe` [erroFechaParen]
+      parse hs `shouldBe` [erroFechaCol, erroFechaCol, erroFechaChaves, erroAbreChaves]
+      parse is `shouldBe` [erroFechaCol, erroFechaCol, erroAbreChaves, erroAbreChaves]
+      parse js `shouldBe` [erroAbreChaves, erroAbreCol, erroFechaParen, erroFechaParen]
+      parse ks `shouldBe` [erroAbreCol]
+      parse ls `shouldBe` [erroAbreChaves]
+      parse ms `shouldBe` [erroAbreParen]
+      parse xs `shouldBe` [erroAbreParen]
+      parse ys `shouldBe` [erroAbreCol]
+      parse zs `shouldBe` [erroAbreChaves]
