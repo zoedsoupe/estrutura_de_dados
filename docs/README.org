@@ -15,8 +15,14 @@ Neste pasta, serão encontrados todo o material de apoio indicado e também as l
 9. [[./apresentacoes/EDI_aula09.pdf][Aula 09 - Pilhas: Aplicações - Parte 2]]
 10. [[./apresentacoes/EDI_aula10.pdf][Aula 10 - Pilhas: Aplicações - Parte 3]]
 11. [[./apresentacoes/EDI_aula11.pdf][Aula 11 - Filas: Implementação TAD]]
-12. [[./apresentacoes/EDI_aula12.pdf][Aula 12 - Filas: Aplicações]]
+12. [[./apresentacoes/EDI_aula12.pdf][Aula 12 - Filas: Aplicações - Parte 1]]
 13. [[./apresentacoes/EDI_aula13.pdf][Aula 13 - Filas: Estáticas vs Dinâmicas]]
+14. [[./apresentacoes/EDI_aula14.pdf][Aula 14 - Filas: Aplicações - Parte 2]]
+15. [[./apresentacoes/EDI_aula15.pdf][Aula 15 - Listas: Definição e Implementação]]
+16. [[./apresentacoes/EDI_aula16.pdf][Aula 16 - Listas: Aplicações]]
+17. [[./apresentacoes/EDI_aula17.pdf][Aula 17 - Listas: Outros tipos]]
+18. [[./apresentacoes/EDI_aula18.pdf][Aula 18 - Árvores: Definição]]
+19. [[./apresentacoes/EDI_aula19.pdf][Aula 19 - Árvores: Busca Binária]]
 
 ** Listas
 
