@@ -20,6 +20,33 @@ Colocarei aqui minhas soluções e testes tanto para a primeira parte da matéri
 
 Decidi fazer todos os trabalhos e exercícios com a linguagem =Haskell=!
 
+** Aviso!
+
+Este repositório está em fase de desenvolvimento e ainda sofrerá múltiplas
+mudanças nas implementações!
+
+Junto a isso, não é recomendado o uso dessas estruturas fora do âmbito para estudos,
+pois existem implementações bem mais robustas.
+
+O ponto mais importante para se levar em conta é que os exercícios que faço passados
+pela cadeira de Estrutura de Dados da minha universidade, obviamente comtempla
+estruturas que são ineretemente imperativas/mutáveis ou simplesmente não adequadas
+para uso num paradigma funcional e muito menos numa linguagem "preguiçosa".
+
+Minhas implementações desses exercícios tem o único intuito de cumprir os exercícios
+propostos e de forma alguma visão a melhor performance.
+
+Entretanto, tenho ciência que há implementações e estruturas que foram desenvolvidas
+especificadamente para o paradigma funcional. Um desses materiais é encontrado nesse
+repositório que é o livro _Purely Functional Data Structures_ do _Chris Okasaki_.
+
+Minha intenção é que após cumprir os exercícios da cadeira na universidade eu irei
+me aprofundar no quesito mais teório dessas estruturas e irei realizar as implementações.
+
+Com isso, é possível perceber que algumas estruturas não fazem muito sentido no mundo
+funcional, como uma =Lista Duplamente Encadeada=, onde um =Zipper= seria muito mais
+adequado e perfomático.
+
 ** Introdução ao Haskell
    Caso você nunca tenha visto nada sobre =Haskell=, leia [[./INTRODUCAO.org][este arquivo]].
 ** Como contribuir?
