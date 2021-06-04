@@ -1,4 +1,12 @@
-module LE2.Queue.TAD where
+module LE2.Queue.TAD
+  ( new
+  , isEmpty
+  , enq
+  , deq
+  , size
+  , front
+  , rear
+  ) where
 
 data Queue a = Q Integer [a] Integer [a]
   deriving (Read, Show)
