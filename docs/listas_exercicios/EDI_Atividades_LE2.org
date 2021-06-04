@@ -13,7 +13,7 @@
 
 *** Atividades para LE2
 
-**** Considerando os conceitos sobre Pilha:
+**** Considerando os conceitos sobre Pilhas:
 
 1. Escreva um programa que converta um número decimal em hexadecimal,
    *usando* o método de divisões sucessivas e *uma pilha*. Obs. Lembrar
@@ -56,3 +56,80 @@
    queremos descobrir todas elas. O programa deve ser capaz de continuar
    a busca após a primeira configuração válida. Contar o número de
    soluções encontradas e imprimir essas configurações na tela.
+
+**** Considerando os conceitos sobre Filas:
+
+1. Escreva um programa em para avaliar o resultado de uma expressão prefixa. 
+   O programa deverá utilizar uma fila para armazenar os elementos da expressão 
+   (operadores e operandos). O processo de avaliação consiste em fazer a leitura 
+   dos elementos armazenados (tokens) na fila, substituindo-se, sempre que encontrada, 
+   uma sequência de um operador seguida de dois operandos pelo resultado da operação 
+   indicada. Caso contrário, os elementos lidos são reinseridos na fila. O processo 
+   é repetido até a fila conter um único elemento que é o resultado da expressão.
+   Por exemplo, a seguinte expressão é uma expressão prefixa cujo resultado é 159.
+
+   [[../../assets/le2/prefixa_1.png]]
+
+   Por exemplo, quando um operador é seguido de dois operandos, tal como + 2 8, 
+   colocamos o resultado, 10, na fila. Após a primeira avaliação da expressão temos:
+
+   [[../../assets/le2/prefixa_2.png]]
+
+   Após a segunda avaliação, temos:
+
+   [[../../assets/le2/prefixa_3.png]]
+
+   Após a terceira avaliação, temos:
+
+   [[../../assets/le2/prefixa_4.png]]
+
+   Após a quarta avaliação, temos:
+
+   [[../../assets/le2/prefixa_5.png]]
+
+2. Usando somente algoritmos no TAD fila, escreva uma função em chamada catQueue() 
+   que concatene duas filas. A segunda fila deve ser colocada no final da primeira fila. 
+   Considere os casos em que: 
+     i. a segunda fila precisa ser preservada; 
+     ii. a segunda fila não deve ser preservada; 
+     iii. posso adicionar operações extras ao TAD para ganhar eficiência 
+          na concatenação em ii);
+
+3. Escreva um programa em que classifique as palavras em um texto, disponível na 
+   forma de arquivo, em categorias de acordo com a letra inicial de cada palavra. 
+   As palavras iniciadas com a mesma letra deverão ser colocadas em uma mesma fila. 
+   Após a classificação, exiba o número de palavras existentes em cada categoria.
+
+**** Considerando os conceitos sobre Listas:
+
+1. Escreva um programa que some polinômios. Cada polinômio deve ser representado 
+   como uma lista encadeada. O primeiro nó na lista representa o termo de maior grau, 
+   enquanto que o último representa o termo de menor grau. Cada nó contém três campos: 
+     i. coeficiente do termo; 
+     ii. expoente do termo; 
+     iii. o ponteiro ao seguinte termo.
+   Os polinômios podem ser adicionados utilizando um processo de intercalação. 
+   As duas listas são combinadas por intercalação, além de realizar uma operação de 
+   soma quando os exponentes forem iguais. Observe o exemplo da Figura.
+
+   [[../../assets/le2/poli.png]]
+
+   Regras para a adição:
+     i. Se os expoentes são iguais, os coeficientes são somados e o resultado inserido;
+     ii. Se os expoentes são diferentes, o termo com maior expoente devera ser inserido, 
+         enquanto o menor aguarda para ser comparado com outro termo. 
+     iii. Se o resultado da adição é 0, o termo deve ser eliminado do polinômio soma.
+     iv. Se um polinômio termina antes o outro, os termos restantes do polinômio maior 
+         serão adicionados no polinômio soma.
+
+   Os dados do polinômio (coeficientes e potências) podem ser lidos de um arquivo ou ingressados do teclado. Imprima os dois polinômios de entrada e o polinômio soma.
+
+2. Modifique a TAD Lista de maneira a implementar uma lista duplamente encadeada. 
+   Inclua uma função para percorrer a lista no sentido inverso (backward). Teste a 
+   TAD duplamente encadeada usando os dados de censo populacional das cidades dos EUA. 
+   Crie uma lista duplamente encadeada com esses dados, ordenada com base no campo população. Imprima os dados da lista em ordem crescente (forward) e decrescente (backward).
+
+   [[../../assets/le2/table1.png]] [[../../assets/le2/table2.png]]
+
+3. Defina o conceito de lista multi-encadeada. Ilustre graficamente. Dar um exemplo de 
+   aplicação.
