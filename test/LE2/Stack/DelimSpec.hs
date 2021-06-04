@@ -46,6 +46,9 @@ spec = do
       let ys = "["
       let zs = "{"
 
+      parse xs `shouldBe` [erroAbreParen]
+      parse ys `shouldBe` [erroAbreCol]
+      parse zs `shouldBe` [erroAbreChaves]
       parse as `shouldBe` [erroAbreParen, erroAbreCol, erroAbreChaves]
       parse bs `shouldBe` [erroAbreParen]
       parse cs `shouldBe` [erroAbreCol]
@@ -59,6 +62,3 @@ spec = do
       parse ks `shouldBe` [erroAbreCol]
       parse ls `shouldBe` [erroAbreChaves]
       parse ms `shouldBe` [erroAbreParen]
-      parse xs `shouldBe` [erroAbreParen]
-      parse ys `shouldBe` [erroAbreCol]
-      parse zs `shouldBe` [erroAbreChaves]

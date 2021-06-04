@@ -40,7 +40,8 @@ parse lines = go (tokenize lines) Stack.new []
   go (('}', _) : xs) st parsed | Just ('}', _) <- Stack.peek st =
     let (Just _, st') = Stack.pop st in go xs st' parsed
 
-  go (pair : xs) st parsed = go xs st $ apply pair : parsed
+  go (pair : xs) st parsed =
+    let (_, st') = Stack.pop st in go (pair : xs) st' $ apply pair : parsed
 
   swap ('(', idx) = apply (')', idx)
   swap (')', idx) = apply ('(', idx)
