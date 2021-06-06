@@ -11,16 +11,12 @@ module LE2.Stack.Delim
 import           GHC.Exts                       ( sortWith )
 import qualified LE2.Stack.TAD                 as Stack
 
-import           Debug.Trace                    ( trace )
-
 tokenize :: String -> [(Char, Int)]
 tokenize s = zip (filter ehDelim s) [0 ..]
 
 parse :: String -> [String]
 parse lines = go (tokenize lines) Stack.new []
  where
-  go x y z | trace ("go: " ++ show x ++ " " ++ show y ++ " " ++ show z) False =
-    undefined
   go [] st parsed
     | Stack.isEmpty st = map fst $ sort parsed
     | otherwise        = map fst . sort $ parsed ++ map swap ((Stack.<<>) st)
