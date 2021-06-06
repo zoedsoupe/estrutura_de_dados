@@ -28,7 +28,7 @@ eval s = res . go $ fill (tokenize s) Queue.new
 
   go q = undefined
 
-  res q | Queue.size 1 == 1 = let (Just (Num r), _) = Queue.deq q in r
+  res q | Queue.size q == 1 = let (Just (Num r), _) = Queue.deq q in r
         | otherwise         = 0
 
   calc '+' x y = Num $ x + y

@@ -12,7 +12,11 @@ data Queue a = Q Integer [a] Integer [a]
   deriving (Read, Show)
 
 instance Semigroup (Queue a) where
-  (<>) _ _ = undefined
+  (<>) (Q x xs y ys) (Q w ws z zs) =
+    Q $$ x + w $$ cat xs (reverse ws) $$ y + z $$ cat ys (reverse zs)
+   where
+    cat xs []       = xs
+    cat xs (y : ys) = cat (y : xs) ys
 
 instance Monoid (Queue a) where
   mempty = Q 0 [] 0 []
@@ -44,3 +48,6 @@ rear :: Queue a -> Maybe a
 rear (Q _ [] _ []) = Nothing
 rear (Q _ xs _ []) = Just (head xs)
 rear (Q _ _  _ ys) = Just (head ys)
+
+($$) f x = f x
+infixl 0 $$
