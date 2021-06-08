@@ -4,8 +4,10 @@
 
 Este documento se refere a implementação de uma =Pilha= como um =TAD= como mencionado na [[../../../docs/apresentacoes/EDI_aula07.pdf][Aula 07]].
 
+Além disso, as explicações para as implementações dos exercícios da [[../../../docs/listas_exercicios/EDI_Atividades_LE2.org][LE2]].
+
 ** Interface Pública
-Como definimos um =TAD=, expomos apenas as funções públicas:
+Como definimos um =TAD=, vamos expôr apenas as funções públicas:
 #+begin_src haskell
 module LE2.Stack.TAD
   ( new
@@ -13,6 +15,11 @@ module LE2.Stack.TAD
   , pop
   , isEmpty
   , size
+  , (<>>)
+  , (>-)
+  , (<<>)
+  , peek
+  , popWhile
   ) where
 #+end_src
 
@@ -21,20 +28,8 @@ Primeiramente defino o contrutor do =TAD Stack=, que recebe um inteiro represent
 e um parâmetro de tipo que representa o tipo da =Pilha=. Note que a estrutura interna deste =TAD= é implementada com
 listas do =Haskell=, que são =Listas Encadeadas=!
 
-Depois, criamos uma instância da =Stack= na classe de tipo =Semigroup=, a qual nos permite usar o operador de
-concatenação =(<>)= assim como em listas.
-
-Por último crio uma instância da =Stack= na classe de tipos =Monoid= que nos permite criar versões vazias de nossas
-estruturas.
-
 #+begin_src haskell
 data Stack a = S Integer [a] deriving (Read, Show)
-
-instance Semigroup (Stack a) where
-  (<>) (S sz1 xs) (S sz2 ys) = S (sz1 + sz2) (xs <> ys)
-
-instance Monoid (Stack a) where
-  mempty = S 0 []
 #+end_src
 
 *** Funções principais
@@ -50,24 +45,233 @@ o item que foi removido. Como dito anteriormente, uma =Stack= é uma estrutura =
 na verdade é a =Stack= antiga, com seu tamnho menos um e retornando a cauda (=tail=) dos itens originais. Já o item
 removido é de fato o cabeçalho da lista.
 
-Também implemento uma função para verificar se uma =Stack= é vazia e por último a função =size= retorna o tamnho
-atual de uma =Stack=.
+Também implemento uma função para verificar se uma =Stack= é vazia e uma função =size= que retorna o tamanho atual de uma =Stack=.
 
 #+begin_src haskell
 new :: Stack a
-new = mempty
+new = S 0 []
 
 push :: Stack a -> a -> Stack a
-push (S sz xs) x = S (succ sz) (x:xs)
+push (S sz xs) x = S (succ sz) (x : xs)
 
-pop :: Stack a -> Maybe (Stack a, a)
-pop (S _ [])  = Nothing
-pop (S sz xs) = Just (S (pred sz) (tail xs), head xs)
+pop :: Stack a -> (Maybe a, Stack a)
+pop st@(S _  []) = (Nothing, st)
+pop (   S sz xs) = (Just (head xs), S (pred sz) (tail xs))
 
 isEmpty :: Stack a -> Bool
 isEmpty (S _ []) = True
-isEmpty (S _ _)  = False
+isEmpty (S _ _ ) = False
 
 size :: Stack a -> Integer
 size (S sz _) = sz
+
+peek :: Stack a -> Maybe a
+peek (S _ []     ) = Nothing
+peek (S _ (x : _)) = Just x
+#+end_src
+*** Funções adicionais
+Para facilidar o uso desse =TAD= num paradigma puramente funcional/declarativo, implementei algumas funções que permitem interagir com a =Stack= de uma forma mais dinâmica, mas ainda sim
+mantendo suas características!
+
+A primeira função é um operador - =(<>>)= - para inserir uma lista inteira na =Stack=. Recursivamente percorro a lista passada por parâmetro e vou colocando cada elemento no início da =Stack=. Essa função poderia ser implementada em termos da =push=.
+
+O segundo operado - =(>-)= - aplica uma ação monádica em cada elemento da =Stack=. Na verdade, esseé o único operador que "fere" as regras de uma =Stack=. Porém, apenas uso ela para imprimir os elementos na demonstração em =CLI=, usando a mônada =IO=.
+
+Um outro operador - =(<<>)= - extrai todos os elementos de uma =Stack= para uma lista comum. Naturalmente, os elementos estarão na ordem inversa na qual foram inseridos!. Essa função também poderia ser implementada em termos da =pop=.
+
+Já a =popWhile= recebe uma função que funciona como um teste. Enquanto esse teste for verdadeiro para cada elemento da =Stack=, realizamos a opração =pop=. Ao final, é retornada uma lista com todos os elementos que passaram no teste e uma nova =Stack= que não possui tais elementos.
+
+#+begin_src haskell
+-- | Insere uma lista na Stack onde o
+-- último elemento da lista será o topo
+(<>>) :: Stack a -> [a] -> Stack a
+(<>>) s         []       = s
+(<>>) (S sz xs) (y : ys) = S (succ sz) (y : xs) <>> ys
+
+-- | Mapeia uma ação monádica numa Stack
+-- descartando o resultado
+(>-) :: (Monad m) => (a -> m b) -> Stack a -> m ()
+(>-) f (S _ xs) = mapM_ f xs
+
+-- | Extrai os elementos
+(<<>) :: Stack a -> [a]
+(<<>) (S _ []) = []
+(<<>) (S _ xs) = extract xs []
+ where
+  extract []       zs = zs
+  extract (y : ys) zs = extract ys (y : zs)
+
+popWhile :: (a -> Bool) -> Stack a -> ([a], Stack a)
+popWhile p stack =
+  let (top, rest) = pop stack
+  in  case top of
+        Nothing -> ([], rest)
+        Just x  -> if p x
+          then let (others, rest') = popWhile p rest in (x : others, rest')
+          else ([], rest)
+#+end_src
+** Exercícios da LE2
+*** Conversão para Hexadecimal
+A questão pede para que dado um número inteiro, seja devolvido tal número na base 16.
+
+Para solucionar o problema, implemento 3 funções:
+1. =zeroASCII= -> constante que define o código na tabela ASCII do dígito 0.
+2. =intToDigit= -> dado um dígito, a função retorna seu correspondente no tipo =Char=, levando
+   em conta as devidas conversões de números entre 10..15 na base 16. Para qualquer outro dígito (em suma 0..9), retorno o código ASCII dele mais o do dígito 0.
+3. =hexarize= -> função principal onde usa outra função secundária que recebe o número passado
+   como parâmetro e uma =Stack= vazia. Com a ajuda de =guards=, verifico se o número é menor que 16. Caso sim eu converto o número e removo todos os elementos da =Stack=, formando a =String= final. Já caso o número seja maior que 16, uso a função =divMod= que devolve um par onde o primeiro elemento representa a divisão e o segundo elemento representa o resto da divisão entre os dois parâmetros. No caso, divido sempre o número por 16 e recursivamente envio o quociente e dou =push= no resto da divisão (convertido para =Char=) na =Stack=.
+
+Essa implementação está coberta por testes, que podem ser vistos [[../../../test/LE2/Stack/HexaSpec.hs][neste arquivo]].
+
+#+begin_src haskell
+module LE2.Stack.Hexa ( hexarize ) where
+
+import           Data.Char                      ( chr )
+import qualified LE2.Stack.TAD                 as Stack
+
+zeroASCII :: Int
+zeroASCII = 48
+
+intToDigit :: Int -> Char
+intToDigit 10 = 'A'
+intToDigit 11 = 'B'
+intToDigit 12 = 'C'
+intToDigit 13 = 'D'
+intToDigit 14 = 'E'
+intToDigit 15 = 'F'
+intToDigit x  = chr $ x + zeroASCII
+
+hexarize :: Int -> String
+hexarize n = go n Stack.new
+ where
+  go x s
+    | x < 16
+    = [intToDigit x] ++ (reverse $ (Stack.<<>) s)
+    | otherwise
+    = let (q, r) = x `divMod` 16 in go q $ Stack.push s (intToDigit r)
+#+end_src
+*** Verificação de Palíndromos
+Na função =parse=, primeiramente eu valido e converto a =String=, removendo operadores, delimitadores e aspas. Em seguida uso a função =deburr= que é fornecida por uma biblioteca da linguagem para remover caracteres com acento e representação unicode.
+
+A função =isPalin= em si é bem simples: percorre a =String= (lista de =Char=) e executa =push= em cada elemento numa =Stack=. No final, extraío recursivamente os elementos dessa =Stack= e verifico se as duas =String= são iguais! Caso seja verdadeiro, a =String= é um palíndromo.
+
+Para ver os testes dessa implementação, siga para [[../../../test/LE2/Stack/PalinSpec.hs][esse arquivo]].
+
+#+begin_src haskell
+module LE2.Stack.Palin
+  ( isPalin
+  ) where
+
+import           Data.Char                      ( toLower )
+import           Data.List                      ( intercalate )
+import qualified LE2.Stack.TAD                 as Stack
+import           Text.Deburr                    ( deburr )
+
+parse :: String -> String
+parse s =
+  deburr $ map toLower [ ch | ch <- s, not (ch `elem` ' ' : ",.?!-:;\"\'") ]
+
+isPalin :: String -> Bool
+isPalin s = go (parse s) Stack.new
+ where
+  go []         st = (parse s) == extract st []
+  go (ch : chs) st = go chs $ Stack.push st ch
+  extract st xs
+    | Stack.isEmpty st = xs
+    | otherwise = let (Just c, st') = Stack.pop st in extract st' (xs ++ [c])
+#+end_src
+*** Casamento de delimitadores
+Esse é um dos exercícios mais verbosos.
+
+*AVISO* Essa implementação não está 100% correta! Ela não é capaz de reconhecer delimitadores em níveis diferentes caso exista apenas o par aberto. Exemplo: caso o input seja =({}])= o programa não consegue reconhecer que existe apenas um erro: o fecha colchetes não casa. Nesse caso, ele acusa que o abre parênteses e o fecha parênteses também estão incorretos.
+
+Ainda não consegui solucionar este problema e abri uma [[https://github.com/Mdsp9070/estrutura_de_dados/issues/6][issue]] neste repositório.
+
+Pois bem; Antes de verificar os delimitadores, crio "tokens", que na verdade é uma lista com pares onde o primeiro elemento é o próprio delimitador e o segundo elemento um inteiro que representa a posição desse delimitador no input. Fiz isso para poder apresentar os erros no final na ordem correta! A função também filtra na =String= apenas um elementos que são delimitadores!
+
+Durante a recursão caso eu encontre algum delimitador aberto - =([{= eu dou =push= no seu correspondente fechado - =)]}= - na =Stack=. Por meio do /pattern matching/, caso o delimitador seja um fechado e a =Stack= esteja vazia, isso representa um erro de casamento.
+
+Agora, caso seja encontrado algum delimitador que fecha e a =Stack= possui elementos, uso a função =peek= para saber se há o correspondente na =Stack=. Caso sim, removo ele da =Stack= e sigo a recursão. Caso contrário eu removo o elemento atual na =Stack=, adiciono o delimitador atual na recursão de volta a lista e adiciono o erro dele.
+
+Caso tenha interesse em ver os testes, eles estão disponíveis [[../../../test/LE2/Stack/DelimSpec.hs][nesse arquivo]].
+
+#+begin_src haskell
+module LE2.Stack.Delim
+  ( parse
+  , erroAbreParen
+  , erroAbreCol
+  , erroAbreChaves
+  , erroFechaParen
+  , erroFechaCol
+  , erroFechaChaves
+  ) where
+
+import           GHC.Exts                       ( sortWith )
+import qualified LE2.Stack.TAD                 as Stack
+
+tokenize :: String -> [(Char, Int)]
+tokenize s = zip (filter ehDelim s) [0 ..]
+
+parse :: String -> [String]
+parse lines = go (tokenize lines) Stack.new []
+ where
+  go [] st parsed
+    | Stack.isEmpty st = map fst $ sort parsed
+    | otherwise        = map fst . sort $ parsed ++ map swap ((Stack.<<>) st)
+
+  go (('(', idx) : xs) st parsed = go xs (Stack.push st (')', idx)) parsed
+  go (('[', idx) : xs) st parsed = go xs (Stack.push st (']', idx)) parsed
+  go (('{', idx) : xs) st parsed = go xs (Stack.push st ('}', idx)) parsed
+
+  go (pair : xs) st parsed | Stack.isEmpty st = go xs st $ apply pair : parsed
+
+  go ((')', _) : xs) st parsed | Just (')', _) <- Stack.peek st =
+    let (Just _, st') = Stack.pop st in go xs st' parsed
+
+  go ((']', _) : xs) st parsed | Just (']', _) <- Stack.peek st =
+    let (Just _, st') = Stack.pop st in go xs st' parsed
+
+  go (('}', _) : xs) st parsed | Just ('}', _) <- Stack.peek st =
+    let (Just _, st') = Stack.pop st in go xs st' parsed
+
+  go (pair : xs) st parsed =
+    let (_, st') = Stack.pop st in go (pair : xs) st' $ apply pair : parsed
+
+  swap ('(', idx) = apply (')', idx)
+  swap (')', idx) = apply ('(', idx)
+  swap ('[', idx) = apply (']', idx)
+  swap (']', idx) = apply ('[', idx)
+  swap ('{', idx) = apply ('}', idx)
+  swap ('}', idx) = apply ('{', idx)
+
+  apply ('(', idx) = (erroAbreParen, idx)
+  apply (')', idx) = (erroFechaParen, idx)
+  apply ('[', idx) = (erroAbreCol, idx)
+  apply (']', idx) = (erroFechaCol, idx)
+  apply ('{', idx) = (erroAbreChaves, idx)
+  apply ('}', idx) = (erroFechaChaves, idx)
+
+  sort = sortWith (abs . snd)
+
+erroFechaParen :: String
+erroFechaParen = "Erro: fecha parentêses não casa!"
+
+erroFechaCol :: String
+erroFechaCol = "Erro: fecha colchetes não casa!"
+
+erroFechaChaves :: String
+erroFechaChaves = "Erro: fecha chaves não casa!"
+
+erroAbreParen :: String
+erroAbreParen = "Erro: abre parentêses não casa!"
+
+erroAbreCol :: String
+erroAbreCol = "Erro: abre colchetes não casa!"
+
+erroAbreChaves :: String
+erroAbreChaves = "Erro: abre chaves não casa!"
+
+ehDelim :: Char -> Bool
+ehDelim ch | elem ch "()[]{}" = True
+           | otherwise        = False
 #+end_src

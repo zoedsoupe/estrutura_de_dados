@@ -14,14 +14,8 @@ module LE2.Stack.TAD
 data Stack a = S Integer [a]
   deriving (Read, Show)
 
-instance Semigroup (Stack a) where
-  (<>) (S sz1 xs) (S sz2 ys) = S (sz1 + sz2) (xs <> ys)
-
-instance Monoid (Stack a) where
-  mempty = S 0 []
-
 new :: Stack a
-new = mempty
+new = S 0 []
 
 push :: Stack a -> a -> Stack a
 push (S sz xs) x = S (succ sz) (x : xs)
