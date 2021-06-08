@@ -46,7 +46,7 @@ front (Q _ xs _ _ ) = Just (head xs)
 
 rear :: Queue a -> Maybe a
 rear (Q _ [] _ []) = Nothing
-rear (Q _ xs _ []) = Just (head xs)
+rear (Q _ xs _ []) = Just (last xs)
 rear (Q _ _  _ ys) = Just (head ys)
 
 ($$) f x = f x

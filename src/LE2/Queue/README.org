@@ -1,0 +1,158 @@
+#+title: TAD Queue
+#+author: Matheus de Souza Pessanha
+#+email: matheus_pessanha2001@outlook.com
+
+Este documento se refere a implementação de uma =Pilha= como um =TAD= como mencionado na [[../../../docs/apresentacoes/EDI_aula11.pdf][Aula 11]].
+
+Este documento também reúne as implementações para os exercícios sobre =Filas=, que podem ser encontrado na [[../../../docs/listas_exercicios/EDI_Atividades_LE2.org][lista de exercícios LE2]].
+
+** Interface Pública
+Essas são as funções expostas pela minha implementação do =TAD Queue=.
+
+#+begin_src haskell
+module LE2.Queue.TAD
+  ( new
+  , isEmpty
+  , enq
+  , deq
+  , size
+  , front
+  , rear
+  ) where
+#+end_src
+** Implementação
+Primeiramente defino como será o contrutor dessa =Queue=. A princípio eu poderia usar apenas uma lista, porém isso causaria sérios problemas de performance, visto que listas em =Haskell= são =Listas Encadeadas= e portanto, adicionar elementos no seu final possui eficiência =O(n)=.
+
+Usando 2 listas, uma para realizar as operaçÕes de =dequeue= e a segunda para realizar a operação de =enqueue=, conseguimos implementar uma =Queue= com eficiência =O(1)= tanto para adicionar ou remover elementos, pelo menos na médias dos casos.
+
+Os =Integer= nos contrutores representam o tamanho de cada lista.
+
+A implementação da /Classe de Tipo/ =Semigroup= será abordada futuramente! Quando explicarei a função para concatenar duas =Queues=.
+
+Já a implementação da /Classe de Tipo/ =Monoid=, nesse aso, permite o uso da funçõo =mempty= que retorna uma =Queue= vazia.
+
+#+begin_src haskell
+data Queue a = Q Integer [a] Integer [a]
+  deriving (Read, Show)
+
+instance Semigroup (Queue a) where
+  (<>) (Q x xs y ys) (Q w ws z zs) =
+    Q $$ x + w $$ cat xs (reverse ws) $$ y + z $$ cat ys (reverse zs)
+   where
+    cat xs []       = xs
+    cat xs (y : ys) = cat (y : xs) ys
+
+instance Monoid (Queue a) where
+  mempty = Q 0 [] 0 []
+#+end_Src
+*** Funções Principais
+A primeira função é implementada em termos da =mempty= e adiciona a camada de "interface pública" para o =TAD=. Retorna apenas uma =Queue= vazia.
+
+Já a =isEmpty= verifica se dada uma =Queue=, ela está vazia ou não.
+
+A =enq= representa a operação de =enqueue= e é bem direta: aumenta o tamnho da segunda lista em 1 e adiciona o elemento no começo da lista.
+
+Para realizar a operação de =dequeue=, precisamos fazer alguns passos adicionais. Primeiro, essa função retorna um par onde o primeiro elemento é o possível elemento removido da =Queue= envolvido numa mônada =Maybe= e o segundo elemento a nova =Queue=.
+Caso a =Queue= esteja vazia, apenas retorno =(Nothing, q)= onde =q= é a própria =Queue=.
+Agora, se a primeira lista interna dessa =Queue= estiver vazia, apenas substituimos a primeria pelo inverso da segunda lista. Lembre-se: sempre manter a performance. Obviamente, caso tenha havido muitas operações de =enqueue=, o ato de reverter a ordem dos elementos será demorado, por isso a performance dessa implementação não é garantida sempre.
+Por último, se houover algum elemento na primeira lista interna, basta retornar o par onde o primeiro elemento é a cabeça da lista e o segundo elemento a nova =Queue=, com o tamanho da primeira lista diminuido em 1 e tal lista recebe a cauda (o restante) da primeira lista interna.
+
+A =size= retorna a soma do tamanho das listas internas, que representa o tamanho da =Queue= inteira.
+
+A operação de =front= devolve o primeiro elemento da =Queue=, porém, não o remove! Se a primeira lista estiver vazia, basta retornar o último elemento da segunda lista (novamente, outro ponto em que a performance pode ser afetada).
+
+Já a operação =rear= mostra o último elemento enfileirado, mas sem removê-lo! Segue o mesmo padrão da operação de =front=, porém agora, caso a seguinda lista esteja vazia, devolvo o último elemento da primeira lista interna, caso contrário apenas devolvo o primeiro elemento da segunda lista interna.
+
+#+begin_src haskell
+new :: Queue a
+new = mempty
+
+isEmpty :: Queue a -> Bool
+isEmpty (Q _ [] _ []) = True
+isEmpty _             = False
+
+enq :: Queue a -> a -> Queue a
+enq (Q x xs y ys) w = Q x xs (succ y) (w : ys)
+
+deq :: Queue a -> (Maybe a, Queue a)
+deq q@(Q _ [] _ []) = (Nothing, q)
+deq (  Q x [] y ys) = deq $ Q y (reverse ys) x []
+deq (  Q x xs y ys) = (Just (head xs), Q (pred x) (tail xs) y ys)
+
+size :: Queue a -> Integer
+size (Q x _ y _) = x + y
+
+front :: Queue a -> Maybe a
+front (Q _ [] _ []) = Nothing
+front (Q _ [] _ ys) = Just (last ys)
+front (Q _ xs _ _ ) = Just (head xs)
+
+rear :: Queue a -> Maybe a
+rear (Q _ [] _ []) = Nothing
+rear (Q _ xs _ []) = Just (head xs)
+rear (Q _ _  _ ys) = Just (head ys)
+
+($$) f x = f x
+infixl 0 $$
+#+end_src
+** Exercícios LE2
+*** Cálculo de uma expressão prefixa
+Em construção...
+*** Concatenação de =Queues=
+Pois bem, como dito no começo deste documento, deixei de explicar a instância da /Classe de Tipo/ =Semigroup= pois é nela onde defino a função - operador =(<>)= - o qual é o responsável por concatenar duas =Queues=.
+
+Para entender essa implementação, preciso explicar não só a instância da /Classe de Tipo/ mas também a função de ajuda =($$)=.
+
+A concatenação apesar de verbosa, é simples:
+
+Dado duas =Queues=:
+- concateno a primeira lista interna das duas =Queues=, na qual preciso reverter a ordem da primeira lista da segunda =Queue= para respeitar a ordem de inserção.
+- concateno a segunda lista interna das duas =Queues= onde também é necessário reverter a segunda lista interna da segunda =Queue=, mantendo a ordem de inserção.
+- somo o tamanho de cada lista interna de cada =Queue= com sua correspondente.
+
+Ok, mas oq significa o =($$)=? Eu queria evitar a quantidade de parênteses usados nessa implementação e o operador =($)= não era o suficiente, pois ele é right-associative e eu precisava de um operador left-associative.
+
+Esse exercício ainda não possui testes implementados! Caso tenha interesse em contribuir, abra uma PR.
+
+#+begin_src haskell
+instance Semigroup (Queue a) where
+  (<>) (Q x xs y ys) (Q w ws z zs) =
+    Q $$ x + w $$ cat xs (reverse ws) $$ y + z $$ cat ys (reverse zs)
+   where
+    cat xs []       = xs
+    cat xs (y : ys) = cat (y : xs) ys
+
+($$) f x = f x
+infixl 0 $$
+#+end_src
+*** Separação por categorias
+Escolhi separar o input em duas categorias, ou seja, duas =Queues=:
+1. uma para palavras iniciadas em vogais
+2. outra para palavras iniciadas em consoantes
+
+A implementação é bem simples:
+- separo a =String= em palavras (divido por espaços em branco)
+- crio duas filas
+- para cada palavra na lista, verifico se a primeira letra é uma vogal, caso seja
+  eu enfileiro na primeria =Queue=, caso contrário na segunda =Queue=. Por último retorno quantas palavras foram enfileiradas em cada =Queue= em um par!
+
+Este exercício também não possui testes, por enquanto.
+
+#+begin_src haskell
+module LE2.Queue.Category where
+
+import           Data.Char                      ( toLower )
+import qualified LE2.Queue.TAD                 as Queue
+
+split :: String -> (Integer, Integer)
+split s = go (words s) Queue.new Queue.new
+ where
+  go [] q1 q2 = (Queue.size q1, Queue.size q2)
+
+  go (w@(ch : _) : xs) q1 q2 | ehVogal ch = go xs (Queue.enq q1 w) q2
+                             | otherwise  = go xs q1 (Queue.enq q2 w)
+
+ehVogal :: Char -> Bool
+ehVogal ch | toLower ch `elem` "aeiou" = True
+ehVogal _                              = False
+#+end_src
