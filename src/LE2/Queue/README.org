@@ -2,7 +2,7 @@
 #+author: Matheus de Souza Pessanha
 #+email: matheus_pessanha2001@outlook.com
 
-Este documento se refere a implementação de uma =Pilha= como um =TAD= como mencionado na [[../../../docs/apresentacoes/EDI_aula11.pdf][Aula 11]].
+Este documento se refere a implementação de uma =Fila= como um =TAD= como mencionado na [[../../../docs/apresentacoes/EDI_aula11.pdf][Aula 11]].
 
 Este documento também reúne as implementações para os exercícios sobre =Filas=, que podem ser encontrado na [[../../../docs/listas_exercicios/EDI_Atividades_LE2.org][lista de exercícios LE2]].
 
