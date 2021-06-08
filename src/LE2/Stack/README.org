@@ -275,3 +275,5 @@ ehDelim :: Char -> Bool
 ehDelim ch | elem ch "()[]{}" = True
            | otherwise        = False
 #+end_src
+*** Problema das 8 rainhas
+Em construção...
