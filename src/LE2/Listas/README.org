@@ -1,0 +1,132 @@
+#+title: TAD Doubly Linked List
+#+author: Matheus de Souza Pessanha
+#+email: matheus_pessanha2001@outlook.com
+
+Este documento se refere a implementação de uma =Lista Duplamente Encadeada= como um =TAD= como mencionado na [[../../../docs/apresentacoes/EDI_aula17.pdf][Aula 17]].
+
+Este documento também reúne as implementações para os exercícios sobre =Listas=, que podem ser encontrado na [[../../../docs/listas_exercicios/EDI_Atividades_LE2.org][lista de exercícios LE2]].
+
+*AVISO* A estrutura de =Listas Encadeadas= já são naturalmente implementada em =Haskell=. Entretando, por ser uma linguagem puramente funcional/declarativa, algumas estruturas de dados não são possíveis de serem implementadas ou não são recomendadas por questões de inviabiliade das operações ou por performance. Entretando, decidi implementar uma =Lista Duplamente Encadeada= de forma mutável (mas ainda sim pura e "segunra") em =Haskell=. Ela não é nem um pouco intuitiva. Também poderia-se implementar de forma 100% pura, sem referências à mônada =IO= usando um conceito chamado de =tie the knot=, que funciona pela linguagem ser absolutamente "preguiçosa", porém essa versão imutável da estrutura é extremamente incoveniente de se utilizar e é trabalhoso adicionar elementos.
+
+** Interface Pública
+Essas são as funções disponíveis para interagir com esse =TAD=.
+
+#+begin_src haskell
+module LE2.Listas.TAD
+  ( new
+  , pop
+  , push
+  ) where
+#+end_src
+** Implementação
+Temos dois contrutores: um para =Node= e um geral para a =Lista=.
+
+A mônada =IORef= é uma especialização da mônada =ST=, que permite mutações em =Haskell=. Porém essa em questão é focada em operações que irão resultar exclusivamente em efeitos externos, como imprimir na tela, por exemplo.
+
+É importante lembrar que o uso da mônada =IORef= quase nunca é indicado a não ser nesse caso onde interaçÕes com o mundo externo é indispensável.
+
+Cada =Node= é uma estrutura /record/ onde possui 3 campos:
+1. o =prev= que representa o =Node= anterior
+2. =value= que é o valor do =Node= atual
+3. =next= que representa o próximo =Node=
+
+Já a =Lista= é um /record/ formado por 2 campos:
+1. o primeiro =Node=, representado pelo =first=
+2. =last= que representa o último =Node= da =Lista=
+
+Com exeção do valor atual de um =Node=, todos os camops tem o tipo envolvido pela mônada =IORef= que engloba a mônada =Maybe=.
+
+#+begin_src haskell
+data Node a = Node
+  { prev  :: IORef (Maybe (Node a))
+  , value :: a
+  , next  :: IORef (Maybe (Node a))
+  }
+
+data List a = List
+  { first :: IORef (Maybe (Node a))
+  , last  :: IORef (Maybe (Node a))
+  }
+#+end_src
+*** Funções Principais
+A função para construir uma nova =Lista= é bem simples: crio duas refêrencias externas com o valor =Nothing=.
+
+Apesar da =push= e =pop= serem bem verbosas, a ideia por trás delas não é tão complexa. Porém, lidar com valores envolvidos por mônadas, em especial uma que representa mutações e refêrencias ao mundo externo ao mesmo tempo, se torna algo "trabalhoso".
+
+Na função =push=, verifico se o último elemento da =Lista=, existe, =Just x= . Nesse caso, precisamos contruir um novo =Node=, fazer o campo =next= apontar para o novo último elemento e adicionar este =Node= como o novo =last= elemento da =Lista=. Já caso o último elemento não exista, crio um novo =Node=, e digo que os campos =first= e =last= da =Lista= apontam para esse novo =Node=.
+
+Com a função =pop=, ocorre o seguinte: recupero o último elemento da =Lista=, caso ele não exista, apenas devolvo =Nothing=. No caso do último elemento existir, pegamos o =Node= anterior a ele e verificamos sua existência, caso ele não exista, apontamos os campos =first= e =last= da =Lista= para =Nothing= e caso ele exista apontamos o campo =next= para o =Nothing= e o =last= para o =prev=. De qualquer forma, retorno o valor do último last =Node=, considerando a existência dele.
+
+#+begin_src haskell
+new :: IO (List a)
+new = List <$> newIORef Nothing <*> newIORef Nothing
+
+push :: List a -> a -> IO ()
+push list value = do
+  last' <- readIORef $ last list
+  case last' of
+    Nothing -> do
+      node <- Node <$> newIORef Nothing <*> pure value <*> newIORef Nothing
+      writeIORef (first list) (Just node)
+      writeIORef (last list)  (Just node)
+    Just last' -> do
+      node <- Node <$> newIORef (Just last') <*> pure value <*> newIORef Nothing
+      writeIORef (next last') (Just node)
+      writeIORef (last list)  (Just node)
+
+pop :: List a -> IO (Maybe a)
+pop list = do
+  last' <- readIORef (last list)
+  case last' of
+    Nothing    -> pure Nothing
+    Just last' -> do
+      prev' <- readIORef $ prev last'
+      case prev' of
+        Nothing -> do
+          writeIORef (first list) Nothing
+          writeIORef (last list)  Nothing
+        Just prev' -> do
+          writeIORef (next prev') Nothing
+          writeIORef (last list)  (Just prev')
+      pure $ Just $ value last'
+#+end_src
+** Exercćios LE2
+*** Soma de polinômios
+Como dito anterirormente, =Listas Encadeadas= já são implementadas em =Haskell=, com isso, esse exercío não utiliza nenhum =TAD= em si.
+
+Crio um construtor para representar um polinômio: uma lista de pares onde o primeiro elemento representa o coeficiente e o segundo o expoente!
+
+Crio duas funções de ordenação, uma de forma crescente e outra decrescente.
+
+Na função principal - =run= - a condição de parada da recursão é uma das duas listas estarem vazias! Caso contrário sempre verifico se o expoente atual do primeiro polinômio é igual ao expoente atual do segundo polinômio, caso seja, somo os coeficientes e adiciono o resultado na lista. Caso o primeiro expoente seja menor que o segundo, adiciono o primeiro par a lista de resultado e o segundo par de volta a sua lista de polinômio. E caso o primeiro expoente seja maior que o segundo expoente, adicicono o segundo par a lista de resultado e o primeiro par de volta a seu polinômio. Sempre realizando uma chamada recursiva com o restante de cada um dos polinômios.
+
+Esta implementação precisa de testes!
+
+#+begin_src haskell
+module LE2.Listas.Poli
+  ( add
+  ) where
+
+import           Data.List                      ( sortBy )
+import           Data.Ord                       ( comparing )
+
+type Poly = [(Int, Int)]
+
+sort :: Poly -> Poly
+sort = sortBy (comparing $ abs . snd)
+
+sortDesc :: Poly -> Poly
+sortDesc = sortBy (flip $ comparing $ abs . snd)
+
+run :: Poly -> Poly -> Poly
+run [] ys = ys
+run xs [] = xs
+run (x@(a, b) : xs) (y@(c, d) : ys) | b == d = (a + c, b) : add xs ys
+                                    | b < d  = x : add xs (y : ys)
+                                    | b > d  = y : add (x : xs) ys
+
+add :: Poly -> Poly -> Poly
+add xs ys = sortDesc $ run (sort xs) (sort ys)
+#+end_src
+*** Lista Duplamente Encadeada
+O =TAD= foi implementado, porém este exercício ainda não foi solucionado!
